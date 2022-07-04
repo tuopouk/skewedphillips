@@ -47,7 +47,7 @@ try:
 except:
     locale.setlocale(locale.LC_ALL, 'fi-FI')
 
-in_dev = True
+in_dev = False
 
 MODELS = {
     
@@ -121,7 +121,7 @@ app = Dash(name = __name__,
            #              'content':'width=device-width, initial_scale=1.0, maximum_scale=1.2, minimum_scale=0.5'}],
            external_stylesheets = external_stylesheets
           )
-app.scripts.config.serve_locally = False
+app.scripts.config.serve_locally = True
 #app.scripts.append_script({"external_url": "https://cdn.plot.ly/plotly-locale-fi-latest.js"})
 app.title = 'Phillipsin vinouma'
 
@@ -1051,7 +1051,7 @@ def serve_layout():
                                          html.Div(style = {'text-align':'center'},children = [
                                              html.Br(),
                                              html.Label(['Sovellus ', 
-                                                      html.A('GitHub:ssa', href='https://github.com/tuopouk/suomenavainalueet')
+                                                      html.A('GitHub:ssa', href='https://github.com/tuopouk/skewedphillips')
                                                      ],style={'textAlign':'center','font-family':'Arial', 'font-size':20})
                                      ])
                                          ],xs =12, sm=12, md=12, lg=6, xl=6)
@@ -1611,7 +1611,7 @@ def update_hyperparameter_selections(model_name):
                 children.append(html.Br())
                 children.append(dbc.Col([dcc.Slider(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
                                    value = value,
-                                   max = 10*(value+1),
+                                   max = 5*(value+1),
                                    min = value,
                                    marks=None,
                                    tooltip={"placement": "bottom", "always_visible": True},
@@ -2826,5 +2826,7 @@ def update_selections(*args):
 
 
 app.layout = serve_layout
+
+# Start app.
 if __name__ == "__main__":
-    app.run_server(debug=in_dev,threaded=True)
+    app.run_server(debug=in_dev)
