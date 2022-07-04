@@ -27,7 +27,7 @@ import os
 import base64
 import io
 import dash
-from dash_extensions.enrich import Dash,ServersideOutput, Output, Input, State
+from dash_extensions.enrich import ServersideOutput, Output, Input, State, Dash
 from dash.exceptions import PreventUpdate
 # import plotly.express as px
 #import orjson
@@ -104,9 +104,12 @@ spinners = ['graph', 'cube', 'circle', 'dot' ,'default']
 p_font_size = 18
 graph_height = 800
 
-external_stylesheets = [dbc.themes.SUPERHERO,
+external_stylesheets = [
+                        # "https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/superhero/bootstrap.min.css",
+                        
+                          dbc.themes.SUPERHERO,
                         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
-                        'https://codepen.io/chriddyp/pen/brPBPO.css'
+                          'https://codepen.io/chriddyp/pen/brPBPO.css'
                        ]
 
 
@@ -117,8 +120,8 @@ app = Dash(name = __name__,
            server = server,
            external_scripts = ["https://raw.githubusercontent.com/plotly/plotly.js/master/dist/plotly-locale-fi.js",
                                "https://cdn.plot.ly/plotly-locale-fi-latest.js"],
-           # meta_tags = [{'name':'viewport',
-           #              'content':'width=device-width, initial_scale=1.0, maximum_scale=1.2, minimum_scale=0.5'}],
+              # meta_tags = [{'name':'viewport',
+              #               'content':'width=device-width, initial_scale=0.1, maximum_scale=0.1, minimum_scale=0.1'}],
            external_stylesheets = external_stylesheets
           )
 app.scripts.config.serve_locally = True
@@ -303,7 +306,7 @@ def draw_phillips_curve():
                                           tickfont = dict(size=14,family = 'Arial Black')),
                                height= graph_height,
                                template='seaborn',  
-                               autosize=True,
+                               # autosize=True,
                                hoverlabel = dict(font_size = 14, font_family = 'Arial'),
                                 legend = dict(font=dict(size=14),
                                                orientation='h',
@@ -777,7 +780,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1000px",
+                            "maxHeight": "1800px",
 
                             "overflow": "auto"
                         },
@@ -950,9 +953,15 @@ def serve_layout():
                                                       'font-size':p_font_size
                                                      }),
                                           html.Br(),
-                                          html.H4('Tuetut selaimet',style={'textAlign':'center','font-family':'Arial Black'}),
+                                          html.H4('Tuetut selaimet ja tekniset rajoitukset',style={'textAlign':'center','font-family':'Arial Black'}),
                                           html.Br(),
                                           html.P("Sovellus on testattu toimivaksi Google Chromella ja Mozilla Firefoxilla. Edge- ja Internet Explorer -selaimissa sovellus ei toimi. Opera, Safari -ja muita selaimia ei ole testattu.",
+                                                 style={
+                                                     'textAlign':'center',
+                                                     'font-family':'Arial', 
+                                                      'font-size':p_font_size
+                                                     }),
+                                          html.P("Mobiililaitteella sovellus toimii parhaiten valitessa sivun esitystavaksi tietokonesivusto.",
                                                  style={
                                                      'textAlign':'center',
                                                      'font-family':'Arial', 
@@ -1072,7 +1081,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                         #"position": "fixed",
-                        "maxHeight": "1000px",
+                        "maxHeight": "1800px",
                           # "height":"1400px",
                     
                         "overflow": "auto"
@@ -1176,7 +1185,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1000px",
+                            "maxHeight": "1800px",
 
                             "overflow": "auto"
                         },
@@ -1299,7 +1308,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1000px",
+                            "maxHeight": "1800px",
 
                             "overflow": "auto"
                         },
@@ -1390,7 +1399,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1200px",
+                            "maxHeight": "1800px",
 
                             "overflow": "auto"
                         },
@@ -1471,7 +1480,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1000px",
+                            "maxHeight": "1800px",
 
                             "overflow": "auto"
                         },
@@ -1860,6 +1869,7 @@ def update_forecast_results(n_clicks,
                         hyperparam_values,
                         pca, 
                         explained_variance):
+
     
     if n_clicks > 0:
     
@@ -1952,7 +1962,7 @@ def update_forecast_results(n_clicks,
         
         
         
-        return forecast_df.reset_index().to_dict('records'), forecast_div, [html.Br(),forecast_download_button] 
+        return [forecast_df.reset_index().to_dict('records'), forecast_div, [html.Br(),forecast_download_button]] 
 
 @app.callback(
     Output("forecast_download", "data"),
@@ -2436,7 +2446,7 @@ def open_slider(averaging, common_change):
     
     if averaging:
         
-        return dbc.Row([dbc.Col([
+        return [dbc.Row([dbc.Col([
             
             html.H5('Valitse kuinka monen edeltävän kuukauden keskiarvoa käytetään.', style = {'text-align':'center', 'font-family':'Arial Black'}),
             html.Br(),
@@ -2455,7 +2465,7 @@ def open_slider(averaging, common_change):
                           
                         ),
             
-                        ],xs =12, sm=12, md=12, lg=6, xl=6)],justify='center')
+                        ],xs =12, sm=12, md=12, lg=6, xl=6)],justify='center')]
     elif common_change:
         return dbc.Row([dbc.Col([
             
@@ -2765,7 +2775,7 @@ def update_eda_plot(values):
 
             html.Br(),
             dcc.Graph(figure = go.Figure(data = traces,
-          layout = go.Layout(title = dict(text = 'Valitut hyödykkeet vs Työttömyysaste', x=.5, font=dict(family='Arial Black',size=22)),
+          layout = go.Layout(title = dict(text = 'Valitut hyödykkeet vs.<br>Työttömyysaste', x=.5, font=dict(family='Arial Black',size=22)),
                             xaxis= dict(title = dict(text='Hyödykkeiden pisteluku', font=dict(family='Arial Black',size=18)),
                                         tickfont = dict(family = 'Arial Black', size = 16)),
                             height = graph_height,
@@ -2774,7 +2784,8 @@ def update_eda_plot(values):
                             template = 'seaborn',
                             yaxis = dict(title = dict(text='Työttömyysaste (%)', font=dict(family='Arial Black',size=18)),
                                          tickfont = dict(family = 'Arial Black', size = 16))
-                             )
+                             ),
+          
           ),
                       config = config_plots)]
 
