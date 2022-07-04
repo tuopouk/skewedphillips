@@ -877,7 +877,7 @@ def serve_layout():
                                                     'font-family':'Arial', 
                                                      'font-size':p_font_size
                                                     }), 
-                                         html.P('Inflaatiota mitataan kuluttajahintaindeksin vuosimuutoksen avulla. Kuluttajahintaindeksi on Tilastokeskuksen koostama indikaattori, joka mittaa satoja hyödykkeitä sisältävän hyödykekorin hinnan muutosta johonkin perusvuoden (tässä tapauksessa vuoden 2010) hintatasoon nähden. Tässä sovelluksessa voi valita kuluttajahintaindeksin komponentteja eli hyödykeryhmien indeksien pistelukuja työttömyyden ennustamiseen.',
+                                         html.P('Inflaatiota mitataan kuluttajahintaindeksin vuosimuutoksen avulla. Kuluttajahintaindeksi on Tilastokeskuksen koostama indikaattori, joka mittaa satoja hyödykkeitä sisältävän hyödykekorin hinnan muutosta johonkin perusvuoden (tässä tapauksessa vuoden 2010) hintatasoon nähden. Tässä sovelluksessa voi valita kuluttajahintaindeksin komponentteja eli hyödykeryhmien indeksien pistelukuja työttömyyden ennustamiseen. Ennuste perustuu siten käyttäjän itse koostamaan hyödykekoriin.',
                                                 style={
                                                     'textAlign':'center',
                                                     'font-family':'Arial', 
@@ -2829,4 +2829,4 @@ app.layout = serve_layout
 
 # Start app.
 if __name__ == "__main__":
-    app.run_server(debug=in_dev)
+    app.run_server(debug=in_dev, threaded = True)
