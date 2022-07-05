@@ -802,17 +802,6 @@ fourth_class_options = [{'label':c, 'value':c} for c in fourth_classes]
 fifth_class_options = [{'label':c, 'value':c} for c in fifth_classes]
 
 
-# selection_options = {"Aakkosjärjestyksessä":feature_options,
-#     "Korrelaatio (laskeva)":corr_desc_options,
-#    "Korrelaatio (nouseva)":corr_asc_options,
-#     "Absoluuttinen korrelaatio (laskeva)":corr_asc_options,
-#     "Absoluuttinen korrelaatio (nouseva)":corr_asc_options,
-#     "Pääluokittain":main_class_options,
-#     "2. luokka": second_class_options,
-#     "3. luokka": third_class_options,
-#     "4. luokka": fourth_class_options,
-#     }
-
 
 initial_options = corr_abs_desc_options
 initial_features = [[list(f.values())[0] for f in corr_abs_desc_options][i] for i in random.sample(range(len(corr_abs_desc_options)),6)]
@@ -823,14 +812,21 @@ def serve_layout():
     return dbc.Container(fluid=True,children=[
         
         html.Br(),
-        html.H1('Phillipsin vinouma',style={'textAlign':'center', 'font-size':60}),
+        html.H1('Phillipsin vinouma',
+                style={'textAlign':'center', 
+                       'font-family':'Arial',
+                       'font-style': 'bold',
+                       'font-size':60}),
         html.Br(),
-        html.H6('Työttömyyden ennustaminen hintatason muutoksilla',style={'textAlign':'center', 'font-size':20}),
+        html.H6('Työttömyyden ennustaminen hintatason muutoksilla',
+                style={'textAlign':'center',
+                       'font-style': 'italic', 
+                       'font-family':'Arial',
+                       'font-size':20}),
         html.Br(),
         html.P('Valitse haluamasi välilehti alla olevia otsikoita klikkaamalla.',
                style = {
-                   'text-align':'center',
-                    'font-style': 'italic', 
+                   'text-align':'center', 
                    'font-family':'Arial', 
                     'font-size':p_font_size
                    }),
@@ -872,24 +868,26 @@ def serve_layout():
                           dbc.Col(xs =12, sm=12, md=12, lg=8, xl=8, children =[
                          
                                   html.Br(),
-                                  html.H6('Taloustieteen kymmenes perusperiaate:',style = {'text-align':'center', 'font-family':'Arial Black','font-style': 'italic', 'font-weight': 'bold', 'font-size':20}),
-                                  html.P('Työttömyyden ja inflaation kesken vallitsee lyhyellä ajalla ristiriita. Täystyöllisyyttä ja vakaata hintatasoa on vaikea saavuttaa yhtä aikaa.', 
+                                  
+                                  html.P('“The world is its own best model.”', 
                                         style = {
                                             'text-align':'center',
                                             'font-style': 'italic', 
                                             'font-family':'Arial', 
                                               'font-size':p_font_size
                                             }),
-                                  html.P('(Matti Pohjola, 2019, Taloustieteen oppikirja, s. 250, ISBN:978-952-63-5298-5)', 
+                                  html.P('(Rodney Brooks)', 
                                         style={
                                             'textAlign':'center',
                                             'font-family':'Arial', 
                                               'font-size':p_font_size-4
                                             }),
+                                  
+
                                   html.Br(),
                                   html.H4('Esittely',style={'textAlign':'center','font-family':'Arial Black'}),
                                   html.Br(),
-                                  html.P('Tällä työkalulla voi vapaasti kehitellä koneoppimismenetelmän, joka pyrkii ennustamaan tulevien kuukausien työttömyysastetta ottaen huomioon aiemmat toteutuneet työttömyysasteet, kuukausittaiset työttömyyden kausivaihtelut sekä käyttäjän itse valitsemien hyödykkeiden kuluttajahintaindeksit. Ennuste tehdään sillä oletuksella, että valittujen hyödykkeiden hintataso muuttuu käyttäjän syöttämän oletetun keskimääräisen kuukausimuutoksen mukaan. Lisäksi koneoppimismenetelmän voi valita ja algoritmien hyperparametrit voi säätää itse. Menetelmää voi testata valitulle aikavälille ennen ennusteen tekemistä. Hintaindeksien valintaa helpottaakseen, voi niiden keskinäisiä suhteita ja suhdetta työttömyysasteeseen tutkia sille varatulla välilehdellä. ', 
+                                  html.P('Tällä työkalulla voi vapaasti kehitellä koneoppimismenetelmän, joka pyrkii ennustamaan tulevien kuukausien työttömyysastetta ottaen huomioon aiemmat toteutuneet työttömyysasteet, kuukausittaiset työttömyyden kausivaihtelut sekä käyttäjän itse valitsemien hyödykkeiden kuluttajahintaindeksit. Näin on mahdollista tuottaa skenaariopohjaisia ennustemalleja kun tiettyjen hyödykkeiden tai yleisindeksin oletetaan muuttuvan tietyllä tavalla. Ennuste tehdään sillä oletuksella, että valittujen hyödykkeiden hintataso muuttuu käyttäjän syöttämän oletetun keskimääräisen kuukausimuutoksen mukaan. Lisäksi koneoppimismenetelmän voi valita ja algoritmien hyperparametrit voi säätää itse. Menetelmää voi testata valitulle aikavälille ennen ennusteen tekemistä. Hintaindeksien valintaa helpottaakseen, voi niiden keskinäisiä suhteita ja suhdetta työttömyysasteeseen tutkia sille varatulla välilehdellä. ', 
                                         style={
                                             'textAlign':'center',
                                             'font-family':'Arial', 
@@ -949,10 +947,35 @@ def serve_layout():
                                                     'font-family':'Arial', 
                                                       'font-size':p_font_size
                                                     }), 
+                                          html.P('Phillipsin käyrälle on omistettu oma lukunsa kauppatieteellisen yliopistotutkinnon kansantaloustieteen pääsykoekirjassa, ja siitä seuraa yksi kymmenestä taloustieteen perusperiaatteesta.',
+                                                style={
+                                                    'textAlign':'center',
+                                                    'font-family':'Arial', 
+                                                      'font-size':p_font_size
+                                                    }),
                                           html.Br(),
+                                                                            
+                                          html.H6('Taloustieteen kymmenes perusperiaate:',style = {'text-align':'center', 
+                                                                                                   'font-family':'Arial Black',
+                                                                                                   'font-style': 'italic', 
+                                                                                                   'font-weight': 'bold', 
+                                                                                                   'font-size':20}),
+                                          html.P('Työttömyyden ja inflaation kesken vallitsee lyhyellä ajalla ristiriita. Täystyöllisyyttä ja vakaata hintatasoa on vaikea saavuttaa yhtä aikaa.', 
+                                                style = {
+                                                    'text-align':'center',
+                                                    'font-style': 'italic', 
+                                                    'font-family':'Arial', 
+                                                      'font-size':p_font_size
+                                                    }),
+                                          html.P('(Matti Pohjola, 2019, Taloustieteen oppikirja, s. 250, ISBN:978-952-63-5298-5)', 
+                                                style={
+                                                    'textAlign':'center',
+                                                    'font-family':'Arial', 
+                                                      'font-size':p_font_size-4
+                                                    }),
         
                                           html.Br(),
-                                          html.P('Tällä työkalulla on mahdollista rakentaa koneoppimisen ratkaisu, joka, perustuen Phillipsin teoriaan, pyrkii ennustamaan työttömyyttä valittujen hyödykkeiden hintatason olettamien avulla. Sovellus jakaantuu ennustajapiirteiden valintaan, tutkivaan analyysiin, menetelmän suunnitteluun, toteutuksen testaamiseen sekä lyhyen aikavälin ennusteen tekemiseen.',
+                                          html.P('Tämä sovellus perustuu inflaation ja työttömyyden välisen suhteen hyödyntämiseen. Sen esittäminen matemaattisesti olisi vaikeaa ja olisi altis poikkeustapauksille. Siksi lieneekin, kuten Rodney Brooks on ilmaissut, havinnoida ilmiötä ja ja pyrkiä oppimaan siitä. Tässä on sopiva paikka hyödyntää koneoppimista, vaikkakin soveltaminen ei olekaan yksiselitteistä. Siksi tällä työkalulla on mahdollista rakentaa kokeellisesti koneoppimisen ratkaisu, joka, perustuen Phillipsin teoriaan, pyrkii ennustamaan työttömyyttä valittujen hyödykkeiden hintatason olettamien avulla. Sovellus jakaantuu ennustajapiirteiden valintaan, tutkivaan analyysiin, menetelmän suunnitteluun, toteutuksen testaamiseen sekä lyhyen aikavälin ennusteen tekemiseen.',
                                                 style={
                                                     'textAlign':'center',
                                                     'font-family':'Arial', 
