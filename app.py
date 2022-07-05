@@ -825,6 +825,8 @@ def serve_layout():
         html.Br(),
         html.H1('Phillipsin vinouma',style={'textAlign':'center', 'font-size':60}),
         html.Br(),
+        html.H6('Työttömyyden ennustaminen hintatason muutoksilla',style={'textAlign':'center', 'font-size':20}),
+        html.Br(),
         html.P('Valitse haluamasi välilehti alla olevia otsikoita klikkaamalla.',
                style = {
                    'text-align':'center',
