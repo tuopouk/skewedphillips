@@ -856,7 +856,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1400px",
+                            "maxHeight": "1800px",
 
                             "overflow": "auto"
                         },
@@ -1159,9 +1159,9 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                         #"position": "fixed",
-                        "maxHeight": "1400px",
+                        "maxHeight": "1800px",
                        
-                          # "height":"1400px",
+                          # "height":"1800px",
                     
                         "overflow": "auto"
                     },
@@ -1301,7 +1301,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1400px",
+                            "maxHeight": "1800px",
 
                             "overflow": "auto"
                         },
@@ -1452,7 +1452,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1400px",
+                            "maxHeight": "1800px",
 
                             "overflow": "auto"
                         },
@@ -1551,7 +1551,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1400px",
+                            "maxHeight": "1800px",
 
                             "overflow": "auto"
                         },
@@ -1639,7 +1639,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1400px",
+                            "maxHeight": "1800px",
 
                             "overflow": "auto"
                         },
@@ -2652,11 +2652,11 @@ def update_time_series(values):
                                                                       x=.5,
                                                                       font=dict(
                                                                           family='Arial Black',
-                                                                          # size=20
+                                                                           size=20
                                                                           )),
                                                          height=graph_height,
                                                          legend=dict(font=dict(
-                                                             # size=12,
+                                                              size=12,
                                                              family='Arial')),
                                                          xaxis = dict(title=dict(text = 'Aika',
                                                                                  font=dict(
