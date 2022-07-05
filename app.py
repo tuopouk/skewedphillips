@@ -10,19 +10,16 @@ import numpy as np
 import requests
 import plotly.graph_objs as go
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_absolute_error, mean_squared_error, mean_absolute_percentage_error
-from sklearn.svm import SVR, LinearSVR
+from sklearn.metrics import mean_absolute_percentage_error
+from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor,AdaBoostRegressor, GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
-from sklearn.neural_network import MLPRegressor
-from sklearn.svm import SVR
 from sklearn.decomposition import PCA
 import dash_daq
 from flask import Flask
 import os
-import base64
 import io
-from dash_extensions.enrich import callback_context, Dash ,ALL, Output,dcc,html, Input, State
+from dash_extensions.enrich import callback_context,Dash  ,ALL, Output,dcc,html, Input, State
 from dash.exceptions import PreventUpdate
 import random
 import dash_bootstrap_components as dbc
@@ -98,7 +95,8 @@ external_stylesheets = [
                         
                          dbc.themes.SUPERHERO,
                          "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
-                          'https://codepen.io/chriddyp/pen/brPBPO.css'
+                          'https://codepen.io/chriddyp/pen/brPBPO.css',
+                          
                        ]
 
 
@@ -111,8 +109,8 @@ app = Dash(name = __name__,
            server = server,
            external_scripts = ["https://raw.githubusercontent.com/plotly/plotly.js/master/dist/plotly-locale-fi.js",
                                "https://cdn.plot.ly/plotly-locale-fi-latest.js"],
-               # meta_tags = [{'name':'viewport',
-               #               'content':'width=device-width, initial_scale=1.0'}],
+            # meta_tags=[{'name': 'viewport',
+            #                 'content': 'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1,'}],
            external_stylesheets = external_stylesheets
           )
 # app.scripts.config.serve_locally = True
@@ -294,14 +292,16 @@ def draw_phillips_curve():
             layout = go.Layout(
                                xaxis=dict(showspikes=True,
                                           title = dict(text='Työttömyysaste (%)', font=dict(size=16, family = 'Arial Black')), 
-                                          tickformat = ' ', 
+                                          tickformat = ' ',
+                                          automargin=True,
                                           tickfont = dict(
-                                                          # size=16, 
+                                                           size=16, 
                                                           family = 'Arial Black')
                                           ), 
                                yaxis=dict(showspikes=True,
                                           title = dict(text='Inflaatio (%)', font=dict(size=16, family = 'Arial Black')),
                                           tickformat = ' ', 
+                                          automargin=True,
                                           tickfont = dict(
                                                size=14,
                                               family = 'Arial Black')
@@ -399,13 +399,15 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                            textfont = dict(family='Arial Black', size = 14,color='white')
                            )
                     ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=14, family = 'Arial Black')),
-                                                    tickfont = dict(family = 'Arial Black', size = 14)
+                                                    tickfont = dict(family = 'Arial Black', size = 16),
+                                                    automargin=True
                                                     ),
                                        yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Arial Black',size=18)),
-                                                    tickfont = dict(family = 'Arial Black', size = 16)
+                                                    tickfont = dict(family = 'Arial Black', size = 16),
+                                                    automargin=True
                                                     ),
                                        height = graph_height-300,
-                                       legend = dict(font=dict(size=18),
+                                       legend = dict(font=dict(size=18,family='Arial'),
                                                       # orientation='h',
                                                       # xanchor='center',
                                                       # yanchor='top',
@@ -447,13 +449,15 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                             line = dict(width=2),
                             textfont = dict(family='Arial Black', size = 14,color='red'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=14, family = 'Arial Black')),
-                                                    tickfont = dict(family = 'Arial Black', size = 14)
+                                                    tickfont = dict(family = 'Arial Black', size = 16),
+                                                    automargin=True,
                                                     ),
                                         yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Arial Black',size=18)),
-                                                    tickfont = dict(family = 'Arial Black', size = 16)
+                                                    tickfont = dict(family = 'Arial Black', size = 16),
+                                                    automargin=True
                                                     ),
                                         height = graph_height-300,
-                                        legend = dict(font=dict(size=18),
+                                        legend = dict(font=dict(size=18,family='Arial'),
                                                       # orientation='h',
                                                       # xanchor='center',
                                                       # yanchor='top',
@@ -462,7 +466,6 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                       ),
                                         hoverlabel = dict(font_size = 14, font_family = 'Arial'),
                                         template = 'seaborn',
-                                      # margin=dict(autoexpand=True),
                                         title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
                                                     x=.5,
                                                     font=dict(family='Arial Black',size=20)
@@ -493,13 +496,15 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                            textfont = dict(family='Arial Black', size = 14,color='white')
                                 )
                         ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=14, family = 'Arial Black')),
-                                                        tickfont = dict(family = 'Arial Black', size = 14)
+                                                        tickfont = dict(family = 'Arial Black', size = 16),
+                                                        automargin=True
                                                         ),
                                             yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Arial Black',size=18)),
-                                                        tickfont = dict(family = 'Arial Black', size = 16)
+                                                        tickfont = dict(family = 'Arial Black', size = 16),
+                                                        automargin=True
                                                         ),
                                             height = graph_height-300,
-                                            legend = dict(font=dict(size=18),
+                                            legend = dict(font=dict(size=18, family = 'Arial'),
                                                           # orientation='h',
                                                           # xanchor='center',
                                                           # yanchor='top',
@@ -508,7 +513,6 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                           ),
                                             hoverlabel = dict(font_size = 14, font_family = 'Arial'),
                                             template = 'seaborn',
-                                          # margin=dict(autoexpand=True),
                                             title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
                                                         x=.5,
                                                         font=dict(family='Arial Black',size=20)
@@ -540,10 +544,12 @@ def plot_forecast_data(df, chart_type):
                                hovertemplate = '<b>%{x}</b>: %{y}%',
                                marker = dict(color='red'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',font=dict(
-                        # size=18, 
+                         size=18, 
                         family = 'Arial Black')),
+                        automargin=True,
+                
                                                     tickfont = dict(family = 'Arial Black', 
-                                                                    # size = 16
+                                                                     size = 16
                                                                     ),
                                                     rangeslider=dict(visible=True),
                                                     rangeselector=dict(
@@ -584,19 +590,20 @@ def plot_forecast_data(df, chart_type):
                                             font_size = 16, 
                                                          font_family = 'Arial'),
                                        legend = dict(font=dict(
-                                           # size=12,
-                                           family = 'Arial')),
+                                            size=12,
+                                           family = 'Arial Black')),
                                        yaxis = dict(title=dict(text = 'Työttömyysaste (%)',
                                                      font=dict(
-                                                         # size=18, 
+                                                          size=16, 
                                                          family = 'Arial Black')),
+                                                    automargin=True,
                                                      tickfont = dict(family = 'Arial', 
-                                                                     # size = 16
+                                                                      size = 16
                                                                      )),
                                        title = dict(text = 'Työttömyysaste ja ennuste kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
                                                     font=dict(family='Arial Black',
-                                                              # size=20
+                                                               size=20
                                                               )),
     
                                        ))
@@ -622,10 +629,11 @@ def plot_forecast_data(df, chart_type):
                                marker = dict(color='red'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',
                                                                  font=dict(
-                                                                     # size=18, 
+                                                                     size=16, 
                                                                      family = 'Arial Black')),
+                                                                 automargin=True,
                                                     tickfont = dict(family = 'Arial Black', 
-                                                                    # size = 16
+                                                                    size = 16
                                                                     ),
                                                     rangeslider=dict(visible=True),
                                                     rangeselector=dict(
@@ -666,20 +674,21 @@ def plot_forecast_data(df, chart_type):
                                            font_size = 16, 
                                            font_family = 'Arial'),
                                        legend = dict(font=dict(
-                                           # size=12, 
+                                            size=12, 
                                            family ='Arial')),
                                        yaxis = dict(title=dict(text = 'Työttömyysaste (%)',
                                                      font=dict(
-                                                         # size=18, 
+                                                          size=16, 
                                                          family = 'Arial Black')),
+                                                    automargin=True,
                                                      tickfont = dict(family = 'Arial', 
-                                                                     # size = 16
+                                                                      size = 16
                                                                      )
                                                      ),
                                        title = dict(text = 'Työttömyysaste ja ennuste kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
                                                     font=dict(family='Arial Black',
-                                                              # size=20
+                                                               size=20
                                                               )),
     
                                        )) 
@@ -811,7 +820,7 @@ initial_features = [[list(f.values())[0] for f in corr_abs_desc_options][i] for 
 
 def serve_layout():
     
-    return html.Div(children=[
+    return dbc.Container(fluid=True,children=[
         
         html.Br(),
         html.H1('Phillipsin vinouma',style={'textAlign':'center', 'font-size':60}),
@@ -847,12 +856,13 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1800",
+                            "maxHeight": "1400px",
 
                             "overflow": "auto"
                         },
+                    
                     children = [
-                        dbc.Container([
+                        html.Div(children = [
                         dbc.Row(justify='center',
                                 # style = {'margin' : '10px 10px 10px 10px'},
                                 children=[
@@ -1134,7 +1144,7 @@ def serve_layout():
                                       justify ='center',
                                       # style={'margin': '10px 10px 10px 10px'}
                                       )
-                                  ], fluid=True)
+                                  ])
                  
                         
                         
@@ -1149,7 +1159,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                         #"position": "fixed",
-                        "maxHeight": "800",
+                        "maxHeight": "1400px",
                        
                           # "height":"1400px",
                     
@@ -1291,7 +1301,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "1800",
+                            "maxHeight": "1400px",
 
                             "overflow": "auto"
                         },
@@ -1360,11 +1370,12 @@ def serve_layout():
                                                                                               x=.5,
                                                                                               font=dict(
                                                                                                   family='Arial Black',
-                                                                                                  # size=20
+                                                                                                   size=20
                                                                                                   )),
                                                                                  height=graph_height,
+                                                                                 hoverlabel=dict(font=dict(family='Arial',size=14)),
                                                                                  legend = dict(font=dict(
-                                                                                     # size=12,
+                                                                                      size=12,
                                                                                      family='Arial')),
                                                                                  xaxis = dict(title=dict(text = 'Aika',
                                                                                                          font=dict(
@@ -1372,7 +1383,7 @@ def serve_layout():
                                                                                                              family = 'Arial Black')), 
                                                                                               tickfont = dict(
                                                                                                   family = 'Arial Black', 
-                                                                                                  # size = 16
+                                                                                                   size = 16
                                                                                                   ),
                                                                                               rangeslider=dict(
                                                                                                   visible=True
@@ -1409,12 +1420,13 @@ def serve_layout():
                                                                                               ),
                                                                                  yaxis = dict(title=dict(text = 'Arvo (%)',
                                                                                                         font=dict(
-                                                                                                            # size=18, 
+                                                                                                             size=18, 
                                                                                                             family = 'Arial Black')),
                                                                                              tickformat = ' ',
+                                                                                             automargin=True,
                                                                                              tickfont = dict(
                                                                                                  family = 'Arial Black', 
-                                                                                                 # size = 16
+                                                                                                  size = 16
                                                                                                  )
                                                                                              )
                                                                                 
@@ -1440,7 +1452,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "auto",
+                            "maxHeight": "1400px",
 
                             "overflow": "auto"
                         },
@@ -1539,7 +1551,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "auto",
+                            "maxHeight": "1400px",
 
                             "overflow": "auto"
                         },
@@ -1627,7 +1639,7 @@ def serve_layout():
                     tab_style = {'font-size':28},
                     style = {
                             
-                            "maxHeight": "auto",
+                            "maxHeight": "1400px",
 
                             "overflow": "auto"
                         },
@@ -2648,20 +2660,22 @@ def update_time_series(values):
                                                              family='Arial')),
                                                          xaxis = dict(title=dict(text = 'Aika',
                                                                                  font=dict(
-                                                                                     # size=18, 
-                                                                                     family = 'Arial Black')), 
+                                                                                     size=18, 
+                                                                                     family = 'Arial Black')),
+                                                                      automargin=True,
                                                                       tickfont = dict(
                                                                           family = 'Arial Black', 
-                                                                          # size = 16
+                                                                           size = 16
                                                                           )),
                                                          yaxis = dict(title=dict(text = 'Pisteluku (perusvuosi = 2010)',
                                                                                 font=dict(
-                                                                                    # size=18, 
+                                                                                     size=18, 
                                                                                     family = 'Arial Black')),
                                                                      tickformat = ' ',
+                                                                     automargin=True,
                                                                      tickfont = dict(
                                                                          family = 'Arial Black', 
-                                                                         # size = 16
+                                                                          size = 16
                                                                          ))
                                                          )
                                       ),
@@ -2877,15 +2891,16 @@ def update_feature_correlation_plot(value1, value2):
                             xaxis= dict(title = dict(text='{} (pisteluku)'.format(' '.join(value1.split()[1:])), 
                                                      font=dict(
                                                          family='Arial Black',
-                                                         # size=16
+                                                          size=16
                                                          )),
+                                        automargin=True,
                                         tickfont = dict(
                                             family = 'Arial Black', 
-                                            # size = 16
+                                             size = 16
                                             )),
                             height = graph_height,
                             legend = dict(font=dict(
-                                # size=12,
+                                 size=12,
                                 family='Arial'),
                                           orientation='h'),
                             hoverlabel = dict(
@@ -2895,11 +2910,12 @@ def update_feature_correlation_plot(value1, value2):
                             yaxis = dict(title = dict(text='{} (pisteluku)'.format(' '.join(value2.split()[1:])), 
                                                       font=dict(
                                                           family='Arial Black',
-                                                          # size=16
+                                                          size=16
                                                           )),
+                                         automargin=True,
                                          tickfont = dict(
                                              family = 'Arial Black', 
-                                             # size = 16
+                                             size = 16
                                              ))
                              )
           ),
@@ -2959,17 +2975,18 @@ def update_eda_plot(values):
                             xaxis= dict(title = dict(text='Hyödykkeiden pisteluku', 
                                                      font=dict(
                                                          family='Arial Black',
-                                                         # size=18
+                                                          size=18
                                                          )),
+                                        automargin=True,
                                         tickfont = dict(
                                             family = 'Arial Black', 
-                                            # size = 16
+                                             size = 16
                                             )
                                         ),
                             height = graph_height,
                             legend = dict(title ='<b>Hyödykkeet, suluissa korrelaatio</b>', 
                                           font=dict(
-                                              # size=12,
+                                               size=12,
                                               family='Arial'
                                               )),
                             hoverlabel = dict(
@@ -2979,12 +2996,13 @@ def update_eda_plot(values):
                             yaxis = dict(title = dict(text='Työttömyysaste (%)', 
                                                       font=dict(
                                                           family='Arial Black',
-                                                          # size=18
+                                                           size=18
                                                           )
                                                       ),
+                                         automargin=True,
                                          tickfont = dict(
                                              family = 'Arial Black', 
-                                             # size = 16
+                                              size = 16
                                              )
                                          )
                              )
