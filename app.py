@@ -2313,7 +2313,7 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
         features = sorted(list(weights_dict.keys()))
         
         weights_df = pd.DataFrame([weights_dict]).T
-        weights_df.index.name = 'Piirre'
+        weights_df.index.name = 'Hyödyke'
         weights_df.columns = ['Oletettu keskimääräinen kuukausimuutos (%)']
         
         model_name = method_selection_results['model']
