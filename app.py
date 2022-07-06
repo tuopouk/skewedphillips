@@ -2035,7 +2035,6 @@ def update_hyperparameter_selections(model_name):
                                                   style = {'font-family':'Arial','color': 'black'},
                                                   options = [{'label':c, 'value': c} for c in param_options[hyperparameter] if c not in ['precomputed','poisson']],
                                                   value = value),
-                                                 html.Br(),
                                                  html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
                                     )
                         children.append(html.Br())
