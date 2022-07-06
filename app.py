@@ -21,7 +21,7 @@ import os
 import io
 from dash_extensions.enrich import callback_context,Dash  ,ALL, Output,dcc,html, Input, State
 from dash.exceptions import PreventUpdate
-from dash_bootstrap_templates import load_figure_template, ThemeChangerAIO
+from dash_bootstrap_templates import ThemeChangerAIO
 import random
 import dash_bootstrap_components as dbc
 from datetime import datetime
@@ -34,7 +34,7 @@ try:
 except:
     locale.setlocale(locale.LC_ALL, 'fi-FI')
 
-in_dev = True
+in_dev = False
 
 MODELS = {
     
@@ -666,6 +666,7 @@ def plot_forecast_data(df, chart_type):
                                                      font=dict(
                                                     size=12,
                                                    family = 'Arial Black')),
+                                       template = 'seaborn',
                                        yaxis = dict(title=dict(text = 'Työttömyysaste (%)',
                                                      font=dict(
                                                           size=16, 
@@ -2866,6 +2867,7 @@ def update_time_series(values):
                                                                           )),
                                                          
                                                          height=graph_height,
+                                                         template = 'seaborn',
                                                          margin=dict(
                                                               l=10,
                                                              r=10,
