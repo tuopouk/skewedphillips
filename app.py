@@ -1969,7 +1969,8 @@ def update_hyperparameter_selections(model_name):
                                    min = value,
                                    marks=None,
                                    tooltip={"placement": "bottom", "always_visible": True},
-                                   step = 1)
+                                   step = 1),
+                                  html.Br()
                                          ],xs =12, sm=12, md=12, lg=12, xl=12)
                                 )
                 
@@ -1984,7 +1985,8 @@ def update_hyperparameter_selections(model_name):
                                                        max=0.99,
                                                        type = 'number',
                                                        value = value,
-                                                       step=0.01)],xs =12, sm=12, md=12, lg=2, xl=2)
+                                                       step=0.01),
+                                                      html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
                                     )
                 elif hyperparameter in LESS_THAN_HALF:
                         
@@ -1995,7 +1997,8 @@ def update_hyperparameter_selections(model_name):
                                                            max=0.49,
                                                            type = 'number',
                                                            value = value,
-                                                           step=0.01)],xs =12, sm=12, md=12, lg=2, xl=2)
+                                                           step=0.01),
+                                                          html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
                                         )
                     
                 else:
@@ -2006,6 +2009,7 @@ def update_hyperparameter_selections(model_name):
                                                        type = 'number',
                                                        value = value,
                                                        step=0.01),
+                                                      html.Br()
                                              ],xs =12, sm=12, md=12, lg=2, xl=2)
                                     )
                     
@@ -2018,7 +2022,8 @@ def update_hyperparameter_selections(model_name):
                 children.append(dbc.Col([dbc.Switch(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'}, 
                                           style={'font-size':30},
                                           value=value,
-                                          )],xs =12, sm=12, md=12, lg=2, xl=2)
+                                          ),
+                                         html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
                                 )
                 children.append(html.Br())
                 
