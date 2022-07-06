@@ -654,7 +654,7 @@ def plot_forecast_data(df, chart_type):
                                             # t=120,
                                             # pad=4
                                        ),
-                                       template='seaborn',
+                                      
                                        hoverlabel = dict(
                                             font_size = 16, 
                                                          font_family = 'Arial'),
