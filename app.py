@@ -21,6 +21,7 @@ import os
 import io
 from dash_extensions.enrich import callback_context,Dash  ,ALL, Output,dcc,html, Input, State
 from dash.exceptions import PreventUpdate
+from dash_bootstrap_templates import load_figure_template, ThemeChangerAIO
 import random
 import dash_bootstrap_components as dbc
 from datetime import datetime
@@ -33,7 +34,7 @@ try:
 except:
     locale.setlocale(locale.LC_ALL, 'fi-FI')
 
-in_dev = False
+in_dev = True
 
 MODELS = {
     
@@ -114,10 +115,13 @@ spinners = ['graph', 'cube', 'circle', 'dot' ,'default']
 p_font_size = 18
 graph_height = 800
 
+dbc_css = ("https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates@V1.0.2/dbc.min.css")
+
 external_stylesheets = [
                         # "https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/superhero/bootstrap.min.css",
                         
                          dbc.themes.SUPERHERO,
+                         dbc_css,
                          "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
                           'https://codepen.io/chriddyp/pen/brPBPO.css',
                           
@@ -318,6 +322,7 @@ def draw_phillips_curve():
                                           title = dict(text='Työttömyysaste (%)', font=dict(size=16, family = 'Arial Black')), 
                                           tickformat = ' ',
                                           automargin=True,
+                                          
                                           tickfont = dict(
                                                            size=16, 
                                                           family = 'Arial Black')
@@ -330,6 +335,13 @@ def draw_phillips_curve():
                                                size=14,
                                               family = 'Arial Black')
                                           ),
+                                margin=dict(
+                                    l=10,
+                                    r=10,
+                                    # b=100,
+                                     # t=120,
+                                     # pad=4
+                                ),
                                height= graph_height,
                                template='seaborn',  
                                # autosize=True,
@@ -432,12 +444,19 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                     automargin=True
                                                     ),
                                        height = graph_height-300,
-                                       legend = dict(font=dict(size=18,family='Arial'),
-                                                      # orientation='h',
-                                                      # xanchor='center',
-                                                      # yanchor='top',
-                                                      # x=.08,
-                                                      # y=1.2
+                                       margin=dict(
+                                            l=10,
+                                           r=10,
+                                           # b=100,
+                                            # t=120,
+                                            # pad=4
+                                       ),
+                                       legend = dict(font=dict(size=12,family='Arial'),
+                                                      orientation='h',
+                                                      xanchor='center',
+                                                      yanchor='top',
+                                                       x=.5,
+                                                       y=1.06
                                                      ),
                                        hoverlabel = dict(font_size = 14, font_family = 'Arial'),
                                        template = 'seaborn',
@@ -482,13 +501,20 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                     automargin=True
                                                     ),
                                         height = graph_height-300,
-                                        legend = dict(font=dict(size=18,family='Arial'),
-                                                      # orientation='h',
-                                                      # xanchor='center',
-                                                      # yanchor='top',
-                                                      # x=.08,
-                                                      # y=1.2
+                                        legend = dict(font=dict(size=12,family='Arial'),
+                                                       orientation='h',
+                                                       xanchor='center',
+                                                       yanchor='top',
+                                                        x=.5,
+                                                        y=1.06
                                                       ),
+                                        margin=dict(
+                                             l=10,
+                                            r=10,
+                                            # b=100,
+                                             # t=120,
+                                             # pad=4
+                                        ),
                                         hoverlabel = dict(font_size = 14, font_family = 'Arial'),
                                         template = 'seaborn',
                                         title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
@@ -529,12 +555,19 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                         automargin=True
                                                         ),
                                             height = graph_height-300,
-                                            legend = dict(font=dict(size=18, family = 'Arial'),
-                                                          # orientation='h',
-                                                          # xanchor='center',
-                                                          # yanchor='top',
-                                                          # x=.08,
-                                                          # y=1.2
+                                            margin=dict(
+                                                 l=10,
+                                                r=10,
+                                                # b=100,
+                                                 # t=120,
+                                                 # pad=4
+                                            ),
+                                            legend = dict(font=dict(size=12,family='Arial'),
+                                                           orientation='h',
+                                                           xanchor='center',
+                                                           yanchor='top',
+                                                            x=.5,
+                                                            y=1.06
                                                           ),
                                             hoverlabel = dict(font_size = 14, font_family = 'Arial'),
                                             template = 'seaborn',
@@ -550,6 +583,10 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                     
 def plot_forecast_data(df, chart_type):
     
+    
+    hover_true = ['<b>{}</b><br>Työttömyysaste: {} %'.format(data.index[i].strftime('%B %Y'), data.Työttömyysaste.values[i]) for i in range(len(data))]
+    hover_pred = ['<b>{}</b><br>Työttömyysaste: {} %'.format(df.index[i].strftime('%B %Y'), round(df.Työttömyysaste.values[i],1)) for i in range(len(df))]
+    
 
     if chart_type == 'lines':
     
@@ -559,14 +596,14 @@ def plot_forecast_data(df, chart_type):
                                           name = 'Toteutunut',
                                           showlegend=True,
                                           mode="lines", 
-                                          hovertemplate = '<b>%{x}</b>: %{y}%',
+                                          hovertemplate =  hover_true,##'<b>%{x}</b>: %{y}%',
                                           marker = dict(color='green')),
                     go.Scatter(x=df.index, 
                                y = np.round(df.Työttömyysaste,1), 
                                name = 'Ennuste',
                                showlegend=True,
                                mode="lines", 
-                               hovertemplate = '<b>%{x}</b>: %{y}%',
+                               hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
                                marker = dict(color='red'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',font=dict(
                          size=18, 
@@ -610,13 +647,25 @@ def plot_forecast_data(df, chart_type):
                                                     
                                                     ),
                                        height=graph_height,
+                                       margin=dict(
+                                            l=10,
+                                           r=10,
+                                           # b=100,
+                                            # t=120,
+                                            # pad=4
+                                       ),
                                        template='seaborn',
                                        hoverlabel = dict(
                                             font_size = 16, 
                                                          font_family = 'Arial'),
-                                       legend = dict(font=dict(
-                                            size=12,
-                                           family = 'Arial Black')),
+                                       legend = dict(orientation='h',
+                                                     x=.5,
+                                                     y=.01,
+                                                     xanchor='center',
+                                                      yanchor='bottom',
+                                                     font=dict(
+                                                    size=12,
+                                                   family = 'Arial Black')),
                                        yaxis = dict(title=dict(text = 'Työttömyysaste (%)',
                                                      font=dict(
                                                           size=16, 
@@ -628,7 +677,7 @@ def plot_forecast_data(df, chart_type):
                                        title = dict(text = 'Työttömyysaste ja ennuste kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
                                                     font=dict(family='Arial Black',
-                                                               size=20
+                                                               size=16
                                                               )),
     
                                        ))
@@ -643,14 +692,14 @@ def plot_forecast_data(df, chart_type):
                                           name = 'Toteutunut',
                                           showlegend=True,
                                           # mode="lines", 
-                                          hovertemplate = '<b>%{x}</b>: %{y}%',
+                                          hovertemplate = hover_true,#'<b>%{x}</b>: %{y}%',
                                           marker = dict(color='green')),
                     go.Bar(x=df.index, 
                                y = np.round(df.Työttömyysaste,1), 
                                name = 'Ennuste',
                                showlegend=True,
                                # mode="lines", 
-                               hovertemplate = '<b>%{x}</b>: %{y}%',
+                               hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
                                marker = dict(color='red'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',
                                                                  font=dict(
@@ -694,13 +743,25 @@ def plot_forecast_data(df, chart_type):
                                                     
                                                     ),
                                        height=graph_height,
+                                       margin=dict(
+                                            l=10,
+                                           r=10,
+                                           # b=100,
+                                            # t=120,
+                                            # pad=4
+                                       ),
                                        template='seaborn',
                                        hoverlabel = dict(
                                            font_size = 16, 
                                            font_family = 'Arial'),
-                                       legend = dict(font=dict(
-                                            size=12, 
-                                           family ='Arial')),
+                                       legend = dict(orientation='h',
+                                                     x=.5,
+                                                     y=.01,
+                                                     xanchor='center',
+                                                      yanchor='bottom',
+                                                     font=dict(
+                                                    size=12,
+                                                   family = 'Arial Black')),
                                        yaxis = dict(title=dict(text = 'Työttömyysaste (%)',
                                                      font=dict(
                                                           size=16, 
@@ -713,7 +774,7 @@ def plot_forecast_data(df, chart_type):
                                        title = dict(text = 'Työttömyysaste ja ennuste kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
                                                     font=dict(family='Arial Black',
-                                                               size=20
+                                                               size=16
                                                               )),
     
                                        )) 
@@ -838,7 +899,16 @@ initial_features = [[list(f.values())[0] for f in corr_abs_desc_options][i] for 
 
 def serve_layout():
     
-    return dbc.Container(fluid=True,children=[
+    return dbc.Container(fluid=True, className = 'dbc', children=[
+        
+        dbc.Row(
+            [
+                dbc.Col(ThemeChangerAIO(aio_id="theme", 
+                                        button_props={'title':'Vaihda teemaa.'},
+                                        radio_props={"value":dbc.themes.SUPERHERO})),
+                
+            ]
+        ),
         
         html.Br(),
         html.H1('Phillipsin vinouma',
@@ -880,7 +950,8 @@ def serve_layout():
             dbc.Tab(label='Ohje ja esittely',
                     tab_id = 'ohje',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':28},
+                    tab_style = {'font-size':22,
+                                 'font-family':'Arial Black'},
                     style = {
                             
                             "maxHeight": "1800px",
@@ -951,7 +1022,7 @@ def serve_layout():
                                                   [dcc.Graph(figure= draw_phillips_curve(),
                                                         config = config_plots
                                                         )
-                                                  ],style={'textAlign':'center'},
+                                                  ],style={'textAlign':'center'}
                                                    
                                                  
                                                       )
@@ -1211,7 +1282,8 @@ def serve_layout():
             dbc.Tab(label ='Hyödykkeiden valinta',
                     tab_id ='feature_tab',
                      tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':28},
+                    tab_style = {'font-size':22,
+                                 'font-family':'Arial Black'},
                     style = {
                         #"position": "fixed",
                         "maxHeight": "1800px",
@@ -1241,7 +1313,7 @@ def serve_layout():
                                     style = {'text-align':'center',
                                             'font-family':'Arial',
                                             'font-size':p_font_size}),
-                            html.P('Hyödykevalikon voi rajata tai lajitella sen yllä olevasta alasvetovalikosta. Valittavanasi on joko aakkosjärjestys, korrelaatiojärjestykset (Pearsonin korrelaatiokertoimen mukaan) tai rajaus Tilastokeskuksen hyödykehierarkian mukaan.',
+                            html.P('Hyödykevalikon voi rajata tai lajitella sen yllä olevasta alasvetovalikosta. Valittavanasi on joko aakkosjärjestys, korrelaatiojärjestykset (Pearsonin korrelaatiokertoimen mukaan) tai rajaus Tilastokeskuksen hyödykehierarkian mukaan. Korrelaatiojärjestyksellä tässä viitataan jokaisen hyödykkeen hintaindeksin arvojen ja saman ajankohdan työtömyysasteiden välistä korrelaatiokerrointa, joka on laskettu Pearsonin metodilla. Nämä voi lajitella laskevaan tai nousevaan järjestykseen joko todellisen arvon mukaan (suurin positiivinen - pienin negatiivinen) tai itseisarvon (ilman etumerkkiä +/-) mukaan.',
                                     style = {'text-align':'center',
                                             'font-family':'Arial',
                                             'font-size':p_font_size}),
@@ -1353,7 +1425,8 @@ def serve_layout():
             dbc.Tab(label = 'Tutkiva analyysi',
                     tab_id = 'eda_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':28},
+                    tab_style = {'font-size':22,
+                                 'font-family':'Arial Black'},
                     style = {
                             
                             "maxHeight": "1800px",
@@ -1376,7 +1449,7 @@ def serve_layout():
                          ],
                              justify = 'center', 
                              style = {'textAlign':'center',
-                                       'margin':'10px 10px 10px 10px'
+                                       # 'margin':'10px 10px 10px 10px'
                                       }
                              ),
                     
@@ -1400,7 +1473,7 @@ def serve_layout():
                                     ], xs =12, sm=12, md=12, lg=6, xl=6, align ='start'
                                 )
                          ],justify='center', 
-                          style = {'margin' : '10px 10px 10px 10px'}
+                          # style = {'margin' : '10px 10px 10px 10px'}
                      ),
 
                     # html.Br(),
@@ -1416,7 +1489,10 @@ def serve_layout():
                              html.Div(style={'textAlign':'center'},children=[
                                  html.H3('Alla olevassa kuvaajassa on esitetty inflaatio ja työttömyys Suomessa kuukausittain.',
                                         style = {'font-family':'Arial', 'text-aling':'center'}),
-                                 dcc.Graph(figure = go.Figure(data=[go.Scatter(x = data.index,
+                                 html.Div(id = 'employement_inflation_div',
+                                          
+                                          children=[dcc.Graph(id ='employement_inflation',
+                                                     figure = go.Figure(data=[go.Scatter(x = data.index,
                                                                                y = data.Työttömyysaste,
                                                                                name = 'Työttömyysaste',
                                                                                mode = 'lines',
@@ -1430,16 +1506,28 @@ def serve_layout():
                                                                                               x=.5,
                                                                                               font=dict(
                                                                                                   family='Arial Black',
-                                                                                                   size=20
+                                                                                                   size=16
                                                                                                   )),
                                                                                  height=graph_height,
+                                                                                 margin=dict(
+                                                                                      l=10,
+                                                                                     r=10,
+                                                                                     # b=100,
+                                                                                      # t=120,
+                                                                                      # pad=4
+                                                                                 ),
                                                                                  hoverlabel=dict(font=dict(family='Arial',size=14)),
-                                                                                 legend = dict(font=dict(
+                                                                                 legend = dict(orientation = 'h',
+                                                                                                xanchor='center',
+                                                                                                yanchor='top',
+                                                                                                x=.5,
+                                                                                                y=1.04,
+                                                                                               font=dict(
                                                                                       size=12,
                                                                                      family='Arial')),
                                                                                  xaxis = dict(title=dict(text = 'Aika',
                                                                                                          font=dict(
-                                                                                                             # size=18, 
+                                                                                                              size=18, 
                                                                                                              family = 'Arial Black')), 
                                                                                               tickfont = dict(
                                                                                                   family = 'Arial Black', 
@@ -1493,7 +1581,7 @@ def serve_layout():
                                                                                  )
                                                                                  ),
                                            config=config_plots
-                                           )
+                                           )])
                                  ])
                                 
                             
@@ -1501,7 +1589,7 @@ def serve_layout():
                         
                          ],
                          justify='center', 
-                         style = {'margin' : '10px 10px 10px 10px'}
+                         # style = {'margin' : '10px 10px 10px 10px'}
                          )
                 
                      ]
@@ -1509,7 +1597,8 @@ def serve_layout():
             dbc.Tab(label='Menetelmän valinta',
                     tab_id ='hyperparam_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':28},
+                    tab_style = {'font-size':22,
+                                 'font-family':'Arial Black'},
                     style = {
                             
                             "maxHeight": "1800px",
@@ -1616,7 +1705,8 @@ def serve_layout():
             dbc.Tab(label='Testaaminen',
                     tab_id ='test_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':28},
+                    tab_style = {'font-size':22,
+                                 'font-family':'Arial Black'},
                     style = {
                             
                             "maxHeight": "1800px",
@@ -1693,7 +1783,7 @@ def serve_layout():
                                 ),
                             dbc.Col([html.Div(id = 'test_results_div')],xs = 12, sm = 12, md = 12, lg = 8, xl = 8)
                             ], justify = 'center', 
-                             style = {'margin' : '10px 10px 10px 10px'}
+                             # style = {'margin' : '10px 10px 10px 10px'}
                             ),
                  
                         
@@ -1704,7 +1794,8 @@ def serve_layout():
             dbc.Tab(label='Ennustaminen',
                     tab_id = 'forecast_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':28},
+                    tab_style = {'font-size':22,
+                                 'font-family':'Arial Black'},
                     style = {
                             
                             "maxHeight": "1800px",
@@ -1775,7 +1866,7 @@ def serve_layout():
                                     dbc.Col([dcc.Loading(id = 'forecast_results_div',type = spinners[random.randint(0,len(spinners)-1)])],
                                             xs = 12, sm = 12, md = 12, lg = 8, xl = 8)
                                     ], justify = 'center', 
-                             style = {'margin' : '10px 10px 10px 10px'}
+                             # style = {'margin' : '10px 10px 10px 10px'}
                                     )
                                        
                             
@@ -2170,7 +2261,7 @@ def update_test_results(n_clicks,
                                     style = {'textAlign':'right'}
                                   ),
                               html.Br(),
-                              dcc.Loading(id ='test_graph_div',type = spinners[random.randint(0,len(spinners)-1)])
+                              html.Div([dcc.Loading(id ='test_graph_div',type = spinners[random.randint(0,len(spinners)-1)])])
    
                         ],style= {'textAlign':'center'}),
                     html.Br(),
@@ -2539,9 +2630,9 @@ def update_test_chart_type(chart_type,df):
     
     df = df.reset_index().drop_duplicates(subset='Aika', keep='last').set_index('Aika')[['Työttömyysaste','Ennuste','mape']].dropna(axis=0)
 
-    return dcc.Graph(id ='test_graph', 
+    return [dcc.Graph(id ='test_graph', 
                      figure = plot_test_results(df,chart_type), 
-                     config = config_plots)      
+                     config = config_plots)     ]
 
 
 
@@ -2766,15 +2857,29 @@ def update_time_series(values):
                          showlegend=True,                         
                          name = ' '.join(value.split()[1:]),
                          mode = 'lines+markers') for value in values]
-    return dcc.Graph(figure=go.Figure(data=traces,
-                                      layout = go.Layout(title = dict(text = 'Valittujen arvojen indeksikehitys',
+    return html.Div([dcc.Graph(figure=go.Figure(data=traces,
+                                      layout = go.Layout(title = dict(text = 'Valittujen arvojen<br>indeksikehitys',
                                                                       x=.5,
                                                                       font=dict(
                                                                           family='Arial Black',
                                                                            size=20
                                                                           )),
+                                                         
                                                          height=graph_height,
-                                                         legend=dict(font=dict(
+                                                         margin=dict(
+                                                              l=10,
+                                                             r=10,
+                                                             # b=100,
+                                                              # t=120,
+                                                              # pad=4
+                                                         ),
+                                                         legend=dict(
+                                                              orientation = 'h',
+                                                                      # x=.1,
+                                                                      # y=1,
+                                                                      xanchor='center',
+                                                                      yanchor='top',
+                                                                     font=dict(
                                                               size=12,
                                                              family='Arial')),
                                                          xaxis = dict(title=dict(text = 'Aika',
@@ -2799,7 +2904,7 @@ def update_time_series(values):
                                                          )
                                       ),
                      config = config_plots
-                     )
+                     )])
 
 
 
@@ -2940,7 +3045,7 @@ def update_feature_corr_selection(features_values):
                                 style = {'font-size':16, 'font-family':'Arial','color': 'black'},
                                 placeholder = 'Valitse hyödyke.')
         ],xs =12, sm=12, md=12, lg=6, xl=6),
-        #html.Br(),
+        html.Br(),
             dbc.Col([
                 html.H4('Valitse toinen hyödyke'),
                 dcc.Dropdown(id = 'f_corr2',
@@ -2962,7 +3067,7 @@ def update_feature_corr_selection(features_values):
      Input('f_corr2','value')]    
     
 )
-def update_feature_correlation_plot(value1, value2):
+def update_feature_correlation_plot(value1, value2, theme):
     
     if value1 is None or value2 is None:
         raise PreventUpdate 
@@ -3000,13 +3105,20 @@ def update_feature_correlation_plot(value1, value2):
   
     
     return [
-            dcc.Graph(figure = go.Figure(data = traces,
+            html.Div([dcc.Graph(figure = go.Figure(data = traces,
           layout = go.Layout(title = dict(text = '<b>{}</b> vs.<br><b>{}</b><br>(Kokonaiskorrelaatio: {})'.format(' '.join(value1.split()[1:]), ' '.join(value2.split()[1:]), corr_factor), 
                                           x=.5, 
                                           font=dict(
                                               family='Arial',
-                                              # size=22
+                                               size=18
                                               )),
+                             margin=dict(
+                                  l=10,
+                                 r=10,
+                                 # b=100,
+                                  # t=120,
+                                  # pad=4
+                             ),
                             xaxis= dict(title = dict(text='{} (pisteluku)'.format(' '.join(value1.split()[1:])), 
                                                      font=dict(
                                                          family='Arial Black',
@@ -3038,7 +3150,7 @@ def update_feature_correlation_plot(value1, value2):
                                              ))
                              )
           ),
-                      config = config_plots)]
+                      config = config_plots)])]
 
 
 
@@ -3080,15 +3192,12 @@ def update_eda_plot(values):
         
   
     
-    return html.Div([
-
-            html.Br(),
-            dcc.Graph(figure = go.Figure(data = traces,
+    return [dcc.Graph(figure = go.Figure(data = traces,
           layout = go.Layout(title = dict(text = 'Valitut hyödykkeet vs.<br>Työttömyysaste', 
                                           x=.5, 
                                           font=dict(
                                               family='Arial Black',
-                                              # size=22
+                                               size=18
                                               )
                                           ),
                             xaxis= dict(title = dict(text='Hyödykkeiden pisteluku', 
@@ -3102,12 +3211,23 @@ def update_eda_plot(values):
                                              size = 16
                                             )
                                         ),
+                            margin=dict(
+                                 l=10,
+                                r=10,
+                                # b=100,
+                                 # t=120,
+                                 # pad=4
+                            ),
                             height = graph_height,
-                            legend = dict(title ='<b>Hyödykkeet, suluissa korrelaatio</b>', 
-                                          font=dict(
-                                               size=12,
-                                              family='Arial'
-                                              )),
+                            legend = dict(
+                                 orientation = 'h',
+                                         # x=.1,
+                                         # y=1,
+                                         xanchor='center',
+                                         yanchor='top',
+                                        font=dict(
+                                 size=12,
+                                family='Arial')),
                             hoverlabel = dict(
                                  font_size = 16, 
                                 font_family = 'Arial'),
@@ -3125,10 +3245,7 @@ def update_eda_plot(values):
                                              )
                                          )
                              )
-          
-          ),
-                      config = config_plots,
-                      responsive = 'auto')])
+          ),config = config_plots)]
 
 @app.callback(
     [
