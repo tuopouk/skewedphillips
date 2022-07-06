@@ -654,8 +654,7 @@ def plot_forecast_data(df, chart_type):
                                             # t=120,
                                             # pad=4
                                        ),
-                                      
-                                       hoverlabel = dict(
+                                      hoverlabel = dict(
                                             font_size = 16, 
                                                          font_family = 'Arial'),
                                        legend = dict(orientation='h',
@@ -1510,6 +1509,7 @@ def serve_layout():
                                                                                                    size=16
                                                                                                   )),
                                                                                  height=graph_height,
+                                                                                 template = 'seaborn',
                                                                                  margin=dict(
                                                                                       l=10,
                                                                                      r=10,
@@ -3069,7 +3069,7 @@ def update_feature_corr_selection(features_values):
      Input('f_corr2','value')]    
     
 )
-def update_feature_correlation_plot(value1, value2, theme):
+def update_feature_correlation_plot(value1, value2):
     
     if value1 is None or value2 is None:
         raise PreventUpdate 
