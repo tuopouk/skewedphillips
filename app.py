@@ -70,7 +70,31 @@ MODELS = {
         
     
     }
-UNWANTED_PARAMS = ['verbose','cache_size', 'max_iter', 'warm_start', 'max_features','tol','subsample']
+UNWANTED_PARAMS = ['verbose',
+                   #'cache_size', 
+                   'max_iter',
+                   'warm_start',
+                    'max_features',
+                   'tol',
+                   'subsample'
+                
+                   
+                   ]
+LESS_THAN_ONE = [
+        
+                   'alpha',
+                   'validation_fraction',
+                   
+    
+    ]
+
+LESS_THAN_HALF = [
+        
+        
+                   'min_weight_fraction_leaf',
+                 
+    
+    ]
 
 config_plots = {'locale':'fi',
 #                 'editable':True,
@@ -1511,6 +1535,10 @@ def serve_layout():
                                 html.P('Lisäksi voit valita hyödynnetäänkö pääkomponenttianalyysiä piirteiden karsimiseksi. Pääkompomponenttianalyysi on tilastollis-tekninen kohinanpoistomenetelmä, jolla pyritään parantamaan ennusteen laatua. Siinä valituista piirteistä muodostetaan lineaarikombinaatioita siten, että alkuperäisessä datassa oleva variaatio säilyy tietyn suhdeluvun verran muunnetussa aineistossa. Variaatio voi säätää haluamakseen. Kuten hyperparametrien tapauksessa, on tämäkin määrittely puhtaasti empiirinen.',
                                         style = {'text-align':'center',
                                                 'font-family':'Arial',
+                                                'font-size':p_font_size}),
+                                html.P('Mikäli hyperparametrin laatikon reunat ovat punaisena, niin arvo ei ole sopiva. Testaaminen ja ennustaminen epäonnistuvat, jos hyperparametreihin sovelleta sallittuja arvoja. Voit tarkastaa sallitut arvot mallin dokumentaatiosta.',
+                                        style = {'text-align':'center',
+                                                'font-family':'Arial',
                                                 'font-size':p_font_size})
                             ],xs =12, sm=12, md=12, lg=9, xl=9)
                         ], justify = 'center', 
@@ -1946,14 +1974,41 @@ def update_hyperparameter_selections(model_name):
                                 )
                 
             elif type(value) == float:
-                children.append(dbc.Col([html.H6(hyperparameter+':', style={'text-align':'left','font-size':15,'font-family':'Arial'})],xs =12, sm=12, md=12, lg=2, xl=2)),
-                children.append(html.Br())
-                children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
-                                                   min = 0,
-                                                   type = 'number',
-                                                   value = value,
-                                                   step=0.01)],xs =12, sm=12, md=12, lg=2, xl=2)
-                                )
+                
+                if hyperparameter in LESS_THAN_ONE:
+                    
+                    children.append(dbc.Col([html.H6(hyperparameter+':', style={'text-align':'left','font-size':15,'font-family':'Arial'})],xs =12, sm=12, md=12, lg=2, xl=2)),
+                    children.append(html.Br())
+                    children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
+                                                       min = 0,
+                                                       max=0.99,
+                                                       type = 'number',
+                                                       value = value,
+                                                       step=0.01)],xs =12, sm=12, md=12, lg=2, xl=2)
+                                    )
+                elif hyperparameter in LESS_THAN_HALF:
+                        
+                        children.append(dbc.Col([html.H6(hyperparameter+':', style={'text-align':'left','font-size':15,'font-family':'Arial'})],xs =12, sm=12, md=12, lg=2, xl=2)),
+                        children.append(html.Br())
+                        children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
+                                                           min = 0,
+                                                           max=0.49,
+                                                           type = 'number',
+                                                           value = value,
+                                                           step=0.01)],xs =12, sm=12, md=12, lg=2, xl=2)
+                                        )
+                    
+                else:
+                    children.append(dbc.Col([html.H6(hyperparameter+':', style={'text-align':'left','font-size':15,'font-family':'Arial'})],xs =12, sm=12, md=12, lg=2, xl=2)),
+                    children.append(html.Br())
+                    children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
+                                                       min = 0,
+                                                       type = 'number',
+                                                       value = value,
+                                                       step=0.01),
+                                             ],xs =12, sm=12, md=12, lg=2, xl=2)
+                                    )
+                    
                 children.append(html.Br())
                 
             
@@ -1970,6 +2025,8 @@ def update_hyperparameter_selections(model_name):
             elif type(value) == str:
                     
                     if type(param_options[hyperparameter]) == list:
+                        
+                        
                         children.append(dbc.Col([html.H6(hyperparameter+':', style={'text-align':'left','font-size':15,'font-family':'Arial'})],xs =12, sm=12, md=12, lg=2, xl=2)),
                         children.append(html.Br())
                         children.append(dbc.Col([dcc.Dropdown(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'}, 
@@ -1977,8 +2034,11 @@ def update_hyperparameter_selections(model_name):
                                                   #label = hyperparameter,
                                                   style = {'font-family':'Arial','color': 'black'},
                                                   options = [{'label':c, 'value': c} for c in param_options[hyperparameter] if c not in ['precomputed','poisson']],
-                                                  value = value)],xs =12, sm=12, md=12, lg=2, xl=2)
+                                                  value = value),
+                                                 html.Br(),
+                                                 html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
                                     )
+                        children.append(html.Br())
                         children.append(html.Br())
                        
      
