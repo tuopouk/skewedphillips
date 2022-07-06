@@ -363,6 +363,7 @@ def test_results(test_df):
     past_df['Ennuste'] = np.round(test_df.Työttömyysaste,1)
     
     mape = mean_absolute_percentage_error(past_df.Työttömyysaste,past_df.Ennuste)
+    past_df['n_feat'] = test_df.n_feat.values[0]
     
     past_df['mape'] = mape
     
@@ -537,7 +538,7 @@ def plot_forecast_data(df, chart_type):
                                           hovertemplate = '<b>%{x}</b>: %{y}%',
                                           marker = dict(color='green')),
                     go.Scatter(x=df.index, 
-                               y = df.Työttömyysaste, 
+                               y = np.round(df.Työttömyysaste,1), 
                                name = 'Ennuste',
                                showlegend=True,
                                mode="lines", 
@@ -621,7 +622,7 @@ def plot_forecast_data(df, chart_type):
                                           hovertemplate = '<b>%{x}</b>: %{y}%',
                                           marker = dict(color='green')),
                     go.Bar(x=df.index, 
-                               y = df.Työttömyysaste, 
+                               y = np.round(df.Työttömyysaste,1), 
                                name = 'Ennuste',
                                showlegend=True,
                                # mode="lines", 
@@ -713,7 +714,8 @@ def predict(df, model, features, feature_changes = None, length=6, use_pca = Fal
   label = 'change'
   x = df[feat]
   y = df[label]
-  
+
+  n_feat  = len(features) 
 
   X = scl.fit_transform(x)
 
@@ -722,7 +724,9 @@ def predict(df, model, features, feature_changes = None, length=6, use_pca = Fal
   if use_pca:
     
     X = pca.fit_transform(X)
-  
+    n_feat = len(pd.DataFrame(X).columns)
+    
+    
   model.fit(X,y)
 
   last_row = df.iloc[-1:,:].copy()
@@ -769,7 +773,8 @@ def predict(df, model, features, feature_changes = None, length=6, use_pca = Fal
     results.append(dff)
 
   result = pd.concat(results)
- 
+  result['n_feat'] = n_feat
+  
  
   return result
 
@@ -876,12 +881,13 @@ def serve_layout():
                                             'font-family':'Arial', 
                                               'font-size':p_font_size
                                             }),
-                                  html.P('(Rodney Brooks)', 
+                                  html.A([html.P('(Rodney Brooks)', 
+                                        
                                         style={
                                             'textAlign':'center',
                                             'font-family':'Arial', 
                                               'font-size':p_font_size-4
-                                            }),
+                                            })], href = 'https://en.wikipedia.org/wiki/Rodney_Brooks', target="_blank"),
                                   
 
                                   html.Br(),
@@ -975,7 +981,7 @@ def serve_layout():
                                                     }),
         
                                           html.Br(),
-                                          html.P('Tämä sovellus perustuu inflaation ja työttömyyden välisen suhteen hyödyntämiseen. Sen esittäminen matemaattisesti olisi vaikeaa ja olisi altis poikkeustapauksille. Siksi lieneekin, kuten Rodney Brooks on ilmaissut, havinnoida ilmiötä ja ja pyrkiä oppimaan siitä. Tässä on sopiva paikka hyödyntää koneoppimista, vaikkakin soveltaminen ei olekaan yksiselitteistä. Siksi tällä työkalulla on mahdollista rakentaa kokeellisesti koneoppimisen ratkaisu, joka, perustuen Phillipsin teoriaan, pyrkii ennustamaan työttömyyttä valittujen hyödykkeiden hintatason olettamien avulla. Sovellus jakaantuu ennustajapiirteiden valintaan, tutkivaan analyysiin, menetelmän suunnitteluun, toteutuksen testaamiseen sekä lyhyen aikavälin ennusteen tekemiseen.',
+                                          html.P('Tämä sovellus perustuu inflaation ja työttömyyden välisen suhteen hyödyntämiseen. Sen esittäminen matemaattisesti olisi vaikeaa ja olisi altis poikkeustapauksille. Siksi lieneekin, kuten AI-pioneeri Rodney Brooks on ilmaissut, havinnoida ilmiötä ja ja pyrkiä oppimaan siitä. Tässä on sopiva paikka hyödyntää koneoppimista, vaikkakin soveltaminen ei olekaan yksiselitteistä. Siksi tällä työkalulla on mahdollista rakentaa kokeellisesti koneoppimisen ratkaisu, joka, perustuen Phillipsin teoriaan, pyrkii ennustamaan työttömyyttä valittujen hyödykkeiden hintatason olettamien avulla. Sovellus jakaantuu ennustajapiirteiden valintaan, tutkivaan analyysiin, menetelmän suunnitteluun, toteutuksen testaamiseen sekä lyhyen aikavälin ennusteen tekemiseen.',
                                                 style={
                                                     'textAlign':'center',
                                                     'font-family':'Arial', 
@@ -987,7 +993,7 @@ def serve_layout():
                                                     'font-family':'Arial', 
                                                       'font-size':p_font_size
                                                     }), 
-                                          html.P('Tutkivan analyysin avulla voi arvioida mitkä piirteet sopisivat parhaiten ennusteen selittäjiksi. Tutkivassa analyysissa tarkastellaan muuttujien välisiä korrelaatiota. Tässä sovelluksessa voi tehdä korrelaatioperusteisen ennusteen. Pääsääntönä on valita ennustajiksi niitä hyödykeryhmiä, jotka korreloivat eniten työttömyyden kanssa sekä vähiten keskenään. Myös koneoppimisalgoritmin valinta ja sen uniikkien hyperparametrien säätäminen vaikutta tulokseen. Testin avulla saa informaatiota siitä, miten valittu menetelmä olisi onnistunut ennustamaan työttömyyttä aikaisempina ajankohtina.',
+                                          html.P('Tutkivan analyysin avulla voi arvioida mitkä hyödykkeet sopisivat parhaiten ennusteen selittäjiksi. Tutkivassa analyysissa tarkastellaan muuttujien välisiä korrelaatiota. Tässä sovelluksessa voi tehdä korrelaatioperusteisen ennusteen. Pääsääntönä on valita ennustajiksi niitä hyödykeryhmiä, jotka korreloivat eniten työttömyyden kanssa sekä vähiten keskenään. Myös koneoppimisalgoritmin valinta ja sen uniikkien hyperparametrien säätäminen vaikutta tulokseen. Testin avulla saa informaatiota siitä, miten valittu menetelmä olisi onnistunut ennustamaan työttömyyttä aikaisempina ajankohtina.',
                                                 style={
                                                     'textAlign':'center',
                                                     'font-family':'Arial', 
@@ -1004,13 +1010,13 @@ def serve_layout():
                                                       'font-size':p_font_size
                                                     }),
                                           html.Br(),
-                                          html.P('1. Piirteiden valinta. Valitse haluamasi hyödykeryhmät alasvetovalikosta. Näiden avulla ennustetaan työttömyyttä Phillipsin teorian mukaisesti.', 
+                                          html.P('1. Hyödykkeiden valinta. Valitse haluamasi hyödykeryhmät alasvetovalikosta. Näiden avulla ennustetaan työttömyyttä Phillipsin teorian mukaisesti.', 
                                                 style = {
                                                     'text-align':'center', 
                                                     'font-family':'Arial', 
                                                       'font-size':p_font_size
                                                     }),
-                                          html.P('2. Tutkiva analyysi. Voit tarkastella ja analysoida valitsemiasi piirteitä. Voit tarvittaessa palata edelliseen vaiheeseen ja poistaa tai lisätä piirteitä.',
+                                          html.P('2. Tutkiva analyysi. Voit tarkastella ja analysoida valitsemiasi hyödykkeitä. Voit tarvittaessa palata edelliseen vaiheeseen ja poistaa tai lisätä hyödykkeitä.',
                                                 style = {
                                                     'text-align':'center', 
                                                     'font-family':'Arial', 
@@ -1178,7 +1184,7 @@ def serve_layout():
 
 ),
             
-            dbc.Tab(label ='Piirteiden valinta',
+            dbc.Tab(label ='Hyödykkeiden valinta',
                     tab_id ='feature_tab',
                      tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':28},
@@ -1275,7 +1281,7 @@ def serve_layout():
                         
                             dbc.Col([
                                 
-                                html.H3('Aseta arvioitu piirteiden keskimääräinen kuukausimuutos prosenteissa.',
+                                html.H3('Aseta arvioitu hyödykkeiden hintaindeksien keskimääräinen kuukausimuutos prosenteissa.',
                                                         style = {'text-align':'center',
                                                                   'font-family':'Arial Black'}),
                                 html.Br(),
@@ -1332,13 +1338,18 @@ def serve_layout():
                         },
                      children = [
                     
-                     dbc.Row([html.Br(),
+                     dbc.Row([
+                         
+                         dbc.Col([
+                             html.Br(),
                               html.Br(),
                               html.P('Tässä osiossa työttömyysastetta sekä valittujen kuluttajahintaindeksin hyödykeryhmien keskinäistä suhdetta sekä muutosta ajassa. Alla voit nähdä kuinka eri hyödykeryhmien hintaindeksit korreloivat keskenään sekä työttömyysasteen kanssa. Voit myös havainnoida indeksien, inflaation sekä sekä työttömyysasteen aikasarjoja. Kuvattu korrelaatio perustuu Pearsonin korrelaatiokertoimeen.',
                                      style = {'font-family':'Arial',
                                                'font-size':p_font_size, 
                                               'text-align':'center'}),
-                              html.Br()],
+                              html.Br()
+                              ],xs =12, sm=12, md=12, lg=9, xl=9)
+                         ],
                              justify = 'center', 
                              style = {'textAlign':'center',
                                        'margin':'10px 10px 10px 10px'
@@ -1484,20 +1495,24 @@ def serve_layout():
                     
                     children = [
                         dbc.Row([
-                            html.Br(),
-                            html.P('Tässä osiossa voit valita koneoppimisalgoritmin, säätää sen hypeparametrit sekä halutessasi hyödyntää pääkomponenttianalyysia valitsemallasi tavalla.',
-                                    style = {'text-align':'center',
-                                            'font-family':'Arial',
-                                            'font-size':p_font_size}),
-                            html.P('Valitse ensin algoritmi, minkä jälkeen alle ilmestyy sille ominaiset hyperparametrit, joita voit säätää sopiviksi. Hyperparametrit luetaan dynaamisesti suoraan Scikit-learn -kirjaston dokumentaatiosta, eikä niille siksi ole suomenkielistä käännöstä. Säätövalikoiden alta löytyy linkki valitun algoritmin dokumentaatiosivulle, jossa aiheesta voi lukea enemmän. Hyperparametrien säädölle ei ole yhtä ainutta tapaa, vaan eri arvoja on testattava iteratiivisesti.',
-                                    style = {'text-align':'center',
-                                            'font-family':'Arial',
-                                            'font-size':p_font_size}),
-                            html.Br(),
-                            html.P('Lisäksi voit valita hyödynnetäänkö pääkomponenttianalyysiä piirteiden karsimiseksi. Pääkompomponenttianalyysi on tilastollis-tekninen kohinanpoistomenetelmä, jolla pyritään parantamaan ennusteen laatua. Siinä valituista piirteistä muodostetaan lineaarikombinaatioita siten, että alkuperäisessä datassa oleva variaatio säilyy tietyn suhdeluvun verran muunnetussa aineistossa. Variaatio voi säätää haluamakseen. Kuten hyperparametrien tapauksessa, on tämäkin määrittely puhtaasti empiirinen.',
-                                    style = {'text-align':'center',
-                                            'font-family':'Arial',
-                                            'font-size':p_font_size})
+                            
+                            dbc.Col([
+                            
+                                html.Br(),
+                                html.P('Tässä osiossa voit valita koneoppimisalgoritmin, säätää sen hyperparametrit sekä halutessasi hyödyntää pääkomponenttianalyysia valitsemallasi tavalla.',
+                                        style = {'text-align':'center',
+                                                'font-family':'Arial',
+                                                'font-size':p_font_size}),
+                                html.P('Valitse ensin algoritmi, minkä jälkeen alle ilmestyy sille ominaiset hyperparametrit, joita voit säätää sopiviksi. Hyperparametrit luetaan dynaamisesti suoraan Scikit-learn -kirjaston dokumentaatiosta, eikä niille siksi ole suomenkielistä käännöstä. Säätövalikoiden alta löytyy linkki valitun algoritmin dokumentaatiosivulle, jossa aiheesta voi lukea enemmän. Hyperparametrien säädölle ei ole yhtä ainutta tapaa, vaan eri arvoja on testattava iteratiivisesti.',
+                                        style = {'text-align':'center',
+                                                'font-family':'Arial',
+                                                'font-size':p_font_size}),
+                                html.Br(),
+                                html.P('Lisäksi voit valita hyödynnetäänkö pääkomponenttianalyysiä piirteiden karsimiseksi. Pääkompomponenttianalyysi on tilastollis-tekninen kohinanpoistomenetelmä, jolla pyritään parantamaan ennusteen laatua. Siinä valituista piirteistä muodostetaan lineaarikombinaatioita siten, että alkuperäisessä datassa oleva variaatio säilyy tietyn suhdeluvun verran muunnetussa aineistossa. Variaatio voi säätää haluamakseen. Kuten hyperparametrien tapauksessa, on tämäkin määrittely puhtaasti empiirinen.',
+                                        style = {'text-align':'center',
+                                                'font-family':'Arial',
+                                                'font-size':p_font_size})
+                            ],xs =12, sm=12, md=12, lg=9, xl=9)
                         ], justify = 'center', 
                             style = {'textAlign':'center',
                                       'margin':'10px 10px 10px 10px'
@@ -1583,7 +1598,7 @@ def serve_layout():
                     children = [
                         html.Br(),
                         dbc.Row([
-                            
+                            dbc.Col([   
                                         html.H4('Menetelmän testaaminen', style = {'textAlign':'center',
                                                                                       'font-family':'Arial Black'}),
                                         html.Br(),
@@ -1601,7 +1616,7 @@ def serve_layout():
                                                       'font-size':p_font_size})
                             
                             
-                            
+                            ],xs =12, sm=12, md=12, lg=9, xl=9)
                             ], justify = 'center', 
                             style = {'textAlign':'center', 
                                       'margin':'10px 10px 10px 10p'
@@ -1638,7 +1653,7 @@ def serve_layout():
                                       html.Br(),  
                                       html.Div(id = 'test_size_indicator', style = {'textAlign':'center'}),
                                       html.Br(),
-                                      html.Div(id = 'test_button_div',children = [html.P('Valitse ensin piirteitä.',style = {
+                                      html.Div(id = 'test_button_div',children = [html.P('Valitse ensin hyödykkeitä.',style = {
                                           'text-align':'center', 
                                           'font-family':'Arial Black', 
                                             'font-size':p_font_size
@@ -1672,10 +1687,11 @@ def serve_layout():
                         html.Br(),
                         dbc.Row([
                             
+                            dbc.Col([
                                         html.H4('Ennusteen tekeminen',style={'textAlign':'center',
                                                                             'font-family':'Arial Black'}),
                                         html.Br(),
-                                        html.P('Tässä osiossa voit tehdä ennusteen valitulle ajalle. Ennustettaessa on käytössä Menetelmän valinta -välilehdellä tehdyt asetukset. Ennusteen tekemisessä hyödynnetään Piirteiden valinta -välilehdellä tehtyjä oletuksia hyödykkeiden suhteellisesta hintakehityksestä.',
+                                        html.P('Tässä osiossa voit tehdä ennusteen valitulle ajalle. Ennustettaessa on käytössä Menetelmän valinta -välilehdellä tehdyt asetukset. Ennusteen tekemisessä hyödynnetään Hyödykkeiden valinta -välilehdellä tehtyjä oletuksia hyödykkeiden suhteellisesta hintakehityksestä.',
                                               style={'text-align':'center',
                                                       'font-family':'Arial',
                                                       'font-size':p_font_size}),
@@ -1683,7 +1699,8 @@ def serve_layout():
                                               style={'text-align':'center',
                                                       'font-family':'Arial',
                                                       'font-size':p_font_size}),
-                                        html.Br(),
+                                        html.Br()
+                                    ],xs =12, sm=12, md=12, lg=9, xl=9)
                             
                             
                             ], justify = 'center', 
@@ -1716,7 +1733,7 @@ def serve_layout():
                                                   ),
                                         html.Br(),
                                         html.Div(id = 'forecast_slider_indicator',style = {'textAlign':'center'}),
-                                        html.Div(id = 'forecast_button_div',children = [html.P('Valitse ensin piirteitä.',
+                                        html.Div(id = 'forecast_button_div',children = [html.P('Valitse ensin hyödykkeitä.',
                                                                                               style = {
                                                                                                   'text-align':'center',
                                                                                                     'font-family':'Arial Black', 
@@ -2134,7 +2151,7 @@ def update_test_results(n_clicks,
              
 
         feat = features.copy()
-        feat = ['Työttömyysaste','Ennuste','month','change','mape']+feat
+        feat = ['Työttömyysaste','Ennuste','month','change','mape','n_feat']+feat
         
         button_children = dbc.Button(children=[html.I(className="fa fa-download mr-1"), 'Lataa testitulokset koneelle'],
                                        id='test_download_button',
@@ -2260,7 +2277,7 @@ def update_forecast_results(n_clicks,
                                  )
         
         feat = features.copy()
-        feat = ['Työttömyysaste','month','change']+feat
+        feat = ['Työttömyysaste','month','change','n_feat']+feat
         
         return [forecast_df[feat].reset_index().to_dict('records'), forecast_div, [html.Br(),forecast_download_button]]
     else:
@@ -2281,9 +2298,12 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
     if n_clicks > 0:
         
         
-        df = pd.DataFrame(df).set_index('Aika')
+        df = pd.DataFrame(df).set_index('Aika').copy()
         df.index = pd.to_datetime(df.index)       
         forecast_size = len(df)
+        n_feat = df.n_feat.values[0]
+        df.drop('n_feat',axis=1,inplace=True)
+        
         df = df.rename(columns = {'change':'Ennustettu kuukausimuutos (prosenttiyksiköä)',
                                   'month':'Kuukausi',
                                   'prev': 'Edellisen kuukauden ennuste',
@@ -2305,16 +2325,21 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
         if pca:
             metadict = {
                         'Pääkomponenttianalyysi' : pca,
-                        'Selitetty variaatio': explained_variance,
+                        'Selitetty variaatio': str(int(100*explained_variance))+'%',
+                        'Pääkomponetteja': n_feat,
                         'Malli': model_name,
-                        'Piirteet' : ',\n'.join(features),
+                        'Sovellettuja hyödykeryhmiä':len(features),
+                        'Sovelletut hyödykeryhmät' : ',\n'.join(features),
                         'Ennusteen pituus': str(forecast_size)+' kuukautta'
+                        
                         }
+
         else:
             metadict = {
                             'Pääkomponenttianalyysi' : pca,
                             'Malli': model_name,
-                            'Piirteet' : ',\n'.join(features),
+                            'Sovellettuja hyödykeryhmiä':len(features),
+                            'Sovelletut hyödykeryhmät' : ',\n'.join(features),
                             'Ennusteen pituus': str(forecast_size)+' kuukautta'
                             }
         
@@ -2351,7 +2376,7 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
         
         output = xlsx_io.getvalue()
 
-        return dcc.send_bytes(output, 'Ennustedata {} piirteellä '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
+        return dcc.send_bytes(output, 'Ennustedata {} hyödykkeellä '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
         
 @app.callback(
     Output("test_download", "data"),
@@ -2366,10 +2391,12 @@ def download_test_data(n_clicks, df, method_selection_results, weights_dict):
     
     if n_clicks > 0:
         
-        df = pd.DataFrame(df).set_index('Aika')
+        df = pd.DataFrame(df).set_index('Aika').copy()
         df.index = pd.to_datetime(df.index)
         mape = df.mape.values[0]
         test_size = len(df)
+        n_feat = df.n_feat.values[0]
+        df.drop('n_feat',axis=1,inplace=True)
         df.drop('mape',axis=1,inplace=True)
         df = df.rename(columns = {'change':'Ennustettu kuukausimuutos (prosenttiyksiköä)',
                                   'month':'Kuukausi',
@@ -2387,16 +2414,19 @@ def download_test_data(n_clicks, df, method_selection_results, weights_dict):
         if pca:
             metadict = {'MAPE': str(round(100*mape,2))+'%',
                         'Pääkomponenttianalyysi' : pca,
-                        'Selitetty variaatio': explained_variance,
+                        'Selitetty variaatio': str(int(100*explained_variance))+'%',
+                        'Pääkomponetteja': n_feat,
                         'Malli': model_name,
-                        'Piirteet' : ',\n'.join(features),
+                        'Sovellettuja hyödykeryhmiä':len(features),
+                        'Sovelletut hyödykeryhmät' : ',\n'.join(features),
                         'Testin pituus': str(test_size)+' kuukautta'
                         }
         else:
             metadict = {'MAPE': str(round(100*mape,2))+'%',
                             'Pääkomponenttianalyysi' : pca,
                             'Malli': model_name,
-                            'Piirteet' : ',\n'.join(features),
+                            'Sovellettuja hyödykeryhmiä':len(features),
+                            'Sovelletut hyödykeryhmät' : ',\n'.join(features),
                             'Testin pituus': str(test_size)+' kuukautta'
                             }
         
@@ -2424,7 +2454,7 @@ def download_test_data(n_clicks, df, method_selection_results, weights_dict):
         
         output = xlsx_io.getvalue()
 
-        return dcc.send_bytes(output, 'Testitulokset {} piirteellä '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
+        return dcc.send_bytes(output, 'Testitulokset {} hyödykkeellä '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
 
 
 @app.callback(
@@ -2574,7 +2604,7 @@ def add_test_button(features_values):
         
     
     elif len(features_values) == 0:
-        return [html.P('Valitse ensin piirteitä.',
+        return [html.P('Valitse ensin hyödykkeitä.',
                        style = {
                            'text-align':'center', 
                            'font-family':'Arial Black', 
@@ -2725,7 +2755,7 @@ def add_predict_button(features_values):
         raise PreventUpdate 
     
     elif len(features_values) == 0:
-        return [html.P('Valitse ensin piirteitä.',
+        return [html.P('Valitse ensin hyödykkeitä.',
                        style = {
                            'text-align':'center',
                            'font-family':'Arial', 
@@ -2797,11 +2827,11 @@ def update_corr_selection(features_values):
 
     return html.Div([
             html.Br(),
-            html.H2('Tarkastele valitun piirteen suhdetta työttömyysasteeseen.',
+            html.H2('Tarkastele valitun hyödykkeen hintaindeksin suhdetta työttömyysasteeseen.',
                     style={'textAlign':'center',
                            'font-size':28}),
             html.Br(),
-            html.P('Tällä kuvaajalla voit tarkastella valitun piirteen ja työttömyysasteen välistä korrelaatiota. Ennusteita tehtäessä on syytä valita piirteitä, jotka korreloivat vahvasti työttömyysasteen kanssa.',
+            html.P('Tällä kuvaajalla voit tarkastella valitun hyödykkeen hintaindeksin ja työttömyysasteen välistä korrelaatiota. Ennusteita tehtäessä on syytä valita piirteitä, jotka korreloivat vahvasti työttömyysasteen kanssa.',
                    style = {'font-family':'Arial','font-size':20,'text-align':'center'}),
         html.H4('Valitse hyödyke'),
         dcc.Dropdown(id = 'corr_feature',
@@ -2829,11 +2859,11 @@ def update_feature_corr_selection(features_values):
     
     return html.Div([
                 html.Br(),
-                html.H2('Tarkastele piirteiden suhteita.',
+                html.H2('Tarkastele hyödykkeiden suhteita.',
                         style={'textAlign':'center',
                                 'font-size':28}),
                 html.Br(),
-                html.P('Tällä kuvaajalla voit tarkastella piirteiden välisiä korrelaatioita. Ennusteita tehtäessä on syytä valita piirteitä, jotka korreloivat heikosti keskenään.',
+                html.P('Tällä kuvaajalla voit tarkastella hyödykkeiden välisiä korrelaatioita. Ennusteita tehtäessä on syytä valita piirteitä, jotka korreloivat heikosti keskenään.',
                        style = {'font-family':'Arial','font-size':p_font_size,'text-align':'center'}),
         
         dbc.Row(justify = 'center',children=[
