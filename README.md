@@ -6,6 +6,11 @@ Tein sovelluksen, jolla voi kokeilla eri algoritmien kykyä ennusta Suomen työt
 
 Sovelluksessa voi valita hyödykkeet ja algoritmin, säätää hyperparametrit ja asettaa oletuksen kuluttajahintojen muutoksesta.
 
+Aineistona toimii Tilastokeskuksen avoimet tietoaineistot kuluttajahintaindeksistä ja työttömyysasteesta
+
+https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__tyti/statfin_tyti_pxt_135z.px/
+https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__khi/statfin_khi_pxt_11xd.px/
+
 Sovellus löytyy osoitteesta: 
 
 http://skewedphillips.herokuapp.com/
