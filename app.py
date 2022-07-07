@@ -900,12 +900,14 @@ initial_features = [[list(f.values())[0] for f in corr_abs_desc_options][i] for 
 def serve_layout():
     
     return dbc.Container(fluid=True, className = 'dbc', children=[
-        
+        html.Br(),        
         dbc.Row(
             [
-                dbc.Col(ThemeChangerAIO(aio_id="theme", 
+                dbc.Col(
+                    ThemeChangerAIO(aio_id="theme", 
                                         button_props={'title':'Vaihda teemaa.'},
-                                        radio_props={"value":dbc.themes.SUPERHERO})),
+                                        radio_props={"value":dbc.themes.SUPERHERO})
+                        ),
    
             ]
         ),
@@ -998,7 +1000,6 @@ def serve_layout():
                 ]
             
             ),
-        
         html.Br(),
         html.H1('Phillipsin vinouma',
                 style={'textAlign':'center', 
