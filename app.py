@@ -933,11 +933,11 @@ def serve_layout():
                 dbc.Col(
                     [
                     ThemeChangerAIO(aio_id="theme", 
-                                        button_props={'title':'Vaihda teemaa',
+                                        button_props={'title':'Vaihda väriteemaa',
                                                       'size':'lg',
-                                                      'children' : 'Vaihda teemaa',
+                                                      'children' : 'Vaihda väriteemaa',
                                                       'color':'warning'},
-                                        offcanvas_props={'title':"Valitse jokin alla olevista teemoista",
+                                        offcanvas_props={'title':"Valitse jokin alla olevista väriteemoista",
                                                          'scrollable':True},
                                         radio_props={"value":dbc.themes.SUPERHERO}),
                     html.Br(),
@@ -2501,7 +2501,7 @@ def update_forecast_results(n_clicks,
                       
                       html.P('Alla olevassa kuvaajassa on esitetty toteuteet arvot sekä ennuste ajalle {} - {}.'.format(forecast_df.index.strftime('%B %Y').values[0],forecast_df.index.strftime('%B %Y').values[-1]),
                              style = p_style),
-                      html.P('Voit valita alla olevista painikkeista joko pylväs, -tai viivadiagramin. Kuvaajan pituutta voi säätä alla olevasta liukuvaliskosta. Pituutta voi rajat myös vasemman yläkulman painikkeista.',
+                      html.P('Voit valita alla olevista painikkeista joko pylväs, -tai viivadiagramin. Kuvaajan pituutta voi säätää alla olevasta liukuvaliskosta. Pituutta voi rajat myös vasemman yläkulman painikkeista.',
                              style = p_style),
                       
                       html.Div([
