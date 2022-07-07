@@ -1354,8 +1354,14 @@ def serve_layout():
                                          
                                               html.Br(),
                                               html.P("Data Scientist",
-                                                     style = p_style)
+                                                     style = p_style),
+                                              html.P("Gofore Oyj",
+                                                     style = p_style),
+                                              html.A([html.P('Ota yhteyttä sähköpostilla',style = p_style)],
+                                                     href = 'mailto:tuomas.poukkula@gofore.com?subject=Phillips: Palaute ja keskustelu',
+                                                     target='_blank')
                                               ]),
+                                          
                                                      
                   
                                    
