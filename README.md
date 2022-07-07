@@ -14,3 +14,5 @@ https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__khi/statfin_khi_pxt_11xd
 Sovellus löytyy osoitteesta: 
 
 http://skewedphillips.herokuapp.com/
+
+Sovellus toimii PWA:na, joten sen voi ladata standalone-versiona esim. Androidille tai Windowsille.
