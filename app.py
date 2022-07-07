@@ -433,7 +433,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                            text=[str(round(c,2))+' %' for c in df.Ennuste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
-                           textfont = dict(family='Arial Black', size = 14,color='white')
+                           textfont = dict(family='Arial Black', size = 14)
                            )
                     ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=14, family = 'Arial Black')),
                                                     tickfont = dict(family = 'Arial Black', size = 16),
@@ -533,7 +533,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                            text=[str(round(c,2))+' %' for c in df.Työttömyysaste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
-                           textfont = dict(family='Arial Black', size = 14,color='white')
+                           textfont = dict(family='Arial Black', size = 14)
                                     ),
                         
                         go.Bar(x=df.index.strftime('%B %Y'), 
@@ -544,7 +544,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                            text=[str(round(c,2))+' %' for c in df.Ennuste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
-                           textfont = dict(family='Arial Black', size = 14,color='white')
+                           textfont = dict(family='Arial Black', size = 14)
                                 )
                         ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=14, family = 'Arial Black')),
                                                         tickfont = dict(family = 'Arial Black', size = 16),
@@ -1045,7 +1045,7 @@ def serve_layout():
                                  'font-family':'Arial Black'},
                     style = {
                             
-                            "maxHeight": "1800px",
+                              "maxHeight": "1024px",
 
                             "overflow": "auto"
                         },
@@ -1380,9 +1380,9 @@ def serve_layout():
                                  'font-family':'Arial Black'},
                     style = {
                         #"position": "fixed",
-                        "maxHeight": "1800px",
+                        "maxHeight": "1024px",
                        
-                          # "height":"1800px",
+                          # "height":"1024px",
                     
                         "overflow": "auto"
                     },
@@ -1523,7 +1523,7 @@ def serve_layout():
                                  'font-family':'Arial Black'},
                     style = {
                             
-                            "maxHeight": "1800px",
+                            "maxHeight": "1024px",
 
                             "overflow": "auto"
                         },
@@ -1698,7 +1698,7 @@ def serve_layout():
                                  'font-family':'Arial Black'},
                     style = {
                             
-                            "maxHeight": "1800px",
+                            "maxHeight": "1024px",
 
                             "overflow": "auto"
                         },
@@ -1770,9 +1770,9 @@ def serve_layout():
                                         step = .01,
                                         tooltip={"placement": "top", "always_visible": True},
                                         marks = {
-                                                  .7: {'label':'70%', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                            .85: {'label':'85%', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                                  .99: {'label':'99%', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}}
+                                                  .7: {'label':'70%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
+                                            .85: {'label':'85%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
+                                                  .99: {'label':'99%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}}
 
                                                 }
                                       ),
@@ -1806,7 +1806,7 @@ def serve_layout():
                                  'font-family':'Arial Black'},
                     style = {
                             
-                            "maxHeight": "1800px",
+                            "maxHeight": "1024px",
 
                             "overflow": "auto"
                         },
@@ -1854,13 +1854,13 @@ def serve_layout():
                                                   step = 1,
                                                   tooltip={"placement": "top", "always_visible": True},
                                                  
-                                                  marks = {1: {'label':'kuukausi', 'style':{'font-size':18, 'fontFamily':'Arial Black','color':'white'}},
+                                                  marks = {1: {'label':'kuukausi', 'style':{'font-size':18, 'fontFamily':'Arial Black'}},
                                                           # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
                                                         
-                                                            6:{'label':'puoli vuotta', 'style':{'font-size':18, 'fontFamily':'Arial Black','color':'white'}},
+                                                            6:{'label':'puoli vuotta', 'style':{'font-size':18, 'fontFamily':'Arial Black'}},
                                                           #  9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
                                                          
-                                                          12:{'label':'vuosi', 'style':{'font-size':18, 'fontFamily':'Arial Black','color':'white'}},
+                                                          12:{'label':'vuosi', 'style':{'font-size':18, 'fontFamily':'Arial Black'}},
                                                           
 
                                                             }
@@ -1895,7 +1895,7 @@ def serve_layout():
                                  'font-family':'Arial Black'},
                     style = {
                             
-                            "maxHeight": "1800px",
+                            "maxHeight": "1024px",
 
                             "overflow": "auto"
                         },
@@ -1936,11 +1936,11 @@ def serve_layout():
                                                   value = 3,
                                                   step = 1,
                                                   tooltip={"placement": "top", "always_visible": True},
-                                                  marks = {2: {'label':'2 kuukautta', 'style':{'font-size':16, 'fontFamily':'Arial Black','color':'white'}},
+                                                  marks = {2: {'label':'2 kuukautta', 'style':{'font-size':16, 'fontFamily':'Arial Black'}},
                                                           # 3: {'label':'kolme kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                                          6:{'label':'puoli vuotta', 'style':{'font-size':16, 'fontFamily':'Arial Black','color':'white'}},
+                                                          6:{'label':'puoli vuotta', 'style':{'font-size':16, 'fontFamily':'Arial Black'}},
                                                           # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                                          12:{'label':'vuosi', 'style':{'font-size':16, 'fontFamily':'Arial Black','color':'white'}},
+                                                          12:{'label':'vuosi', 'style':{'font-size':16, 'fontFamily':'Arial Black'}},
                                                         #  24:{'label':'kaksi vuotta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}}
                                                         
                                                      
@@ -2067,11 +2067,11 @@ def update_slider_div(averaging):
                       value = 4,
                       step = 1,
                       tooltip={"placement": "top", "always_visible": True},
-                       marks = {1:{'label':'kuukausi', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
+                       marks = {1:{'label':'kuukausi', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
                                 # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                6:{'label':'puoli vuotta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
+                                6:{'label':'puoli vuotta', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
                                 # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                12:{'label':'vuosi', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}}   
+                                12:{'label':'vuosi', 'style':{'font-size':20, 'fontFamily':'Arial Black'}}   
                              }
                       
                     )]
@@ -2086,11 +2086,11 @@ def update_slider_div(averaging):
                           value = 0,
                           step = 0.1,
                           tooltip={"placement": "top", "always_visible": True},
-                           marks = {-10:{'label':'-10%', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
+                           marks = {-10:{'label':'-10%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
                                     # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                    0:{'label':'0%', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
+                                    0:{'label':'0%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
                                     # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                    10:{'label':'10%', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}}   
+                                    10:{'label':'10%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}}   
                                  }
                           
                         )
