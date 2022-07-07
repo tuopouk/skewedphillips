@@ -906,9 +906,98 @@ def serve_layout():
                 dbc.Col(ThemeChangerAIO(aio_id="theme", 
                                         button_props={'title':'Vaihda teemaa.'},
                                         radio_props={"value":dbc.themes.SUPERHERO})),
-                
+   
             ]
         ),
+        html.Br(),
+        dbc.Row(
+            
+            [
+                  dbc.Col([
+                      
+                      dbc.Button("Avaa pikaohje", 
+                                 id="open-offcanvas", 
+                                 n_clicks=0, 
+                                 outline=True,
+                                 color="primary", 
+                                 className="me-1",
+                                 style = {'font-style':'Arial Black'}),
+                      dbc.Offcanvas(
+                          [
+                              
+                          html.H6('1. Valitse hyödykkeitä Hyödykkeiden valinta -välilehdellä.', 
+                                  style = {'font-style':'Arial Black'}),
+                          html.Br(),
+                          html.P(
+                              "Valitse haluamasi hyödykkeet alasvetovalikosta. "
+                              "Voit lajitella hyödykkeet haluamallasi tavalla. "
+                              "Valitse käytetäänkö edellisten kuukausien muutoskeskiarvoja "
+                              "tai vakiomuutosta kaikille valitsinta klikkaamalla. "
+                              "Säädä olettu muutos liutin -valinnalla. "
+                              "Hienosäädä yksittäisten hyödykkeiden muutoksia muokkaamalla laatikoiden arvoja.",
+                              style = {'font-style':'Arial'}
+                          ),
+                          html.Br(),
+                          html.H6('1. Tutki valitsemiasi hyödykkeitä Tutkiva analyysi -välilehdellä.', 
+                                  style = {'font-style':'Arial Black'}),
+                          html.Br(),
+                          html.P(
+                              "Tarkastele kuvaajien avulla valittujen hyödykkeiden suhdetta työttömyysasteeseen "
+                              "tai hyödykkeiden suhteita toisiinsa. "
+                              "Voit myös tarkastella indeksien, työttömyysasteen ja inflaation aikasarjoja.",
+                              style = {'font-style':'Arial'}
+                          ),
+                          html.Br(),
+                          html.H6('3. Valitse menetelmä Menetelmän valinta -välilehdellä.', 
+                                  style = {'font-style':'Arial Black'}),
+                          html.Br(),
+                          html.P(
+                              "Valitse haluamasi koneoppimisalgoritmi alasvetovalikosta. "
+                              "Säädä algoritmin hyperparametrit. "
+                              "Valitse painikkeesta käytetäänkö pääkomponenttianalyysiä "
+                              "ja niin tehtäessä valitse säilötyn variaation määrä liutin-valinnalla.",
+                              style = {'font-style':'Arial'}
+                          ),
+                          html.Br(),
+                          html.H6('4. Testaa menetelmää Testaaminen-välilehdellä.', 
+                                  style = {'font-style':'Arial Black'}),
+                          html.Br(),
+                          html.P(
+                              "Valitse testin pituus ja klikkaa testaa nappia. "
+                              "Tarkastele testin kuvaajaa tai viedä tulokset Exceliin "
+                              "klikkaamalla 'Lataa testitulokset koneelle -nappia'. "
+                              "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä.",
+                              style = {'font-style':'Arial'}
+                          ),
+                          html.Br(),
+                          html.H6('5. Tee ennuste Ennustaminen-välilehdellä.', 
+                                  style = {'font-style':'Arial Black'}),
+                          html.Br(),
+                          html.P(
+                              "Valitse ennusteen pituus ja klikkaa ennusta nappia. "
+                              "Tarkastele ennusteen kuvaajaa tai viedä tulokset Exceliin "
+                              "klikkaamalla 'Lataa ennustedata koneelle -nappia'. "
+                              "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä. "
+                              "Voit myös säätää hyödykeindeksien oletettuja kuukausimuutoksia ja kokeilla uudestaan.",
+                              style = {'font-style':'Arial'}
+                          ),
+                          
+                          
+                          
+                        ],
+                          id="offcanvas",
+                          title="Pikaohje",
+                          scrollable=True,
+                          is_open=False,
+                          style = {'font-style':'Arial'}
+                    )
+                      
+                      
+                      ], width=1)  
+                
+                ]
+            
+            ),
         
         html.Br(),
         html.H1('Phillipsin vinouma',
@@ -923,7 +1012,9 @@ def serve_layout():
                        'font-family':'Arial',
                        'font-size':20}),
         html.Br(),
-        html.P('Valitse haluamasi välilehti alla olevia otsikoita klikkaamalla.',
+        html.P('Valitse haluamasi välilehti alla olevia otsikoita klikkaamalla. ' 
+               'Vasemmam yläkulman painikkeista saat näkyviin pikaohjeen '
+               'ja voit myös vaihtaa sivun väriteemaa.',
                style = {
                    'text-align':'center', 
                    'font-family':'Arial', 
@@ -1095,46 +1186,49 @@ def serve_layout():
                                                       'font-size':p_font_size
                                                     }),
                                           html.Br(),
-   
-                                          html.H4('Sovelluksen käyttöhje',style={'textAlign':'center','font-family':'Arial Black'}),
-                                          html.Br(),
-                                          html.P('Seuraavaksi hieman ohjeistusta sovelluksen käyttöön. Jokainen osio olisi tehtävä vastaavassa järjestyksessä. Välilehteä valitsemalla pääset suorittamaan jokaisen vaiheen. Välilehdillä on vielä yksityiskohtaisemmat ohjeet.', 
-                                                style = {
-                                                    'text-align':'center', 
-                                                    'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                    }),
-                                          html.Br(),
-                                          html.P('1. Hyödykkeiden valinta. Valitse haluamasi hyödykeryhmät alasvetovalikosta. Näiden avulla ennustetaan työttömyyttä Phillipsin teorian mukaisesti.', 
-                                                style = {
-                                                    'text-align':'center', 
-                                                    'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                    }),
+                                          
+                                          
+                                           html.H4('Sovelluksen käyttöhje',style={'textAlign':'center','font-family':'Arial Black'}),
+                                           html.Br(),
+                                           html.P('Seuraavaksi hieman ohjeistusta sovelluksen käyttöön. Jokainen osio olisi tehtävä vastaavassa järjestyksessä. Välilehteä valitsemalla pääset suorittamaan jokaisen vaiheen. Välilehdillä on vielä yksityiskohtaisemmat ohjeet.', 
+                                                    style = {
+                                                        'text-align':'center', 
+                                                        'font-family':'Arial', 
+                                                          'font-size':p_font_size
+                                                        }),
+                                           html.Br(),
+                                           html.P('1. Hyödykkeiden valinta. Valitse haluamasi hyödykeryhmät alasvetovalikosta. Näiden avulla ennustetaan työttömyyttä Phillipsin teorian mukaisesti.', 
+                                                    style = {
+                                                        'text-align':'center', 
+                                                        'font-family':'Arial', 
+                                                          'font-size':p_font_size
+                                                        }),
                                           html.P('2. Tutkiva analyysi. Voit tarkastella ja analysoida valitsemiasi hyödykkeitä. Voit tarvittaessa palata edelliseen vaiheeseen ja poistaa tai lisätä hyödykkeitä.',
-                                                style = {
-                                                    'text-align':'center', 
-                                                    'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                    }),
+                                                    style = {
+                                                        'text-align':'center', 
+                                                        'font-family':'Arial', 
+                                                          'font-size':p_font_size
+                                                        }),
                                           html.P('3. Menetelmän valinta. Tässä osiossa valitsen koneoppimisalgoritmin sekä säädät hyperparametrit. Lisäksi voi valita hyödynnetäänkö pääkomponenttianalyysiä ja kuinka paljon variaatiota säilötään.',
-                                                style = {
-                                                    'text-align':'center', 
-                                                    'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                    }),
-                                          html.P('4. Testaaminen. Voit valita menneen ajanjakson, jota malli pyrkii ennustamaan. Näin pystyt arvioimaan kuinka ennustemalli olisi toiminut jo toteutuneelle datalle.',
-                                                style = {
-                                                    'text-align':'center', 
-                                                    'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                    }),
-                                          html.P('5. Ennusteen tekeminen. ',
-                                                style = {
-                                                    'text-align':'center', 
-                                                    'font-family':'Arial', 
-                                                    'font-size':p_font_size
-                                                    }),
+                                                    style = {
+                                                        'text-align':'center', 
+                                                        'font-family':'Arial', 
+                                                          'font-size':p_font_size
+                                                        }),
+                                         html.P('4. Testaaminen. Voit valita menneen ajanjakson, jota malli pyrkii ennustamaan. Näin pystyt arvioimaan kuinka ennustemalli olisi toiminut jo toteutuneelle datalle.',
+                                                    style = {
+                                                        'text-align':'center', 
+                                                        'font-family':'Arial', 
+                                                          'font-size':p_font_size
+                                                        }),
+                                        html.P('5. Ennusteen tekeminen. Voit nyt hyödyntää valitsemaasi menetelmää tehdäksesi ennusteen tulevaisuuteen. Valitse ennusteen pituus ja klikkaa ennusta. Ennusteen voi sitten viedä myös Exceliin. Ennustetta tehdessä hyödynnetään asettamiasi hyödykkeiden muutosarvoja.',
+                                                    style = {
+                                                        'text-align':'center', 
+                                                        'font-family':'Arial', 
+                                                        'font-size':p_font_size
+                                                        }),
+                                          
+                                          html.Br(),
                                           # html.P('6. Valitse se osuus alkuperäisen datan variaatiosta, joka vähintään säilytetään PCA:ssa.',style = {'text-align':'center', 'font-family':'Arial Black', 'font-size':20}),
                                           # html.P('7. Klusteroi klikkaamalla "Klusteroi" -painiketta.',style = {'text-align':'center', 'font-family':'Arial Black', 'font-size':20}),
                                           html.H4('Pääkomponenttianalyysistä',style={'textAlign':'center','font-family':'Arial Black'}),
@@ -1487,8 +1581,10 @@ def serve_layout():
                                      ]),
                          dbc.Col(children = [
                              html.Div(style={'textAlign':'center'},children=[
-                                 html.H3('Alla olevassa kuvaajassa on esitetty inflaatio ja työttömyys Suomessa kuukausittain.',
+                                 html.Br(),
+                                 html.H2('Alla olevassa kuvaajassa on esitetty inflaatio ja työttömyys Suomessa kuukausittain.',
                                         style = {'font-family':'Arial', 'text-aling':'center'}),
+                                 html.Br(),
                                  html.Div(id = 'employement_inflation_div',
                                           
                                           children=[dcc.Graph(id ='employement_inflation',
@@ -3300,7 +3396,15 @@ def update_selections(*args):
     else:
         return fifth_class_options, "5. luokka",[f['value'] for f in fifth_class_options[:4]]
     
-
+@app.callback(
+    Output("offcanvas", "is_open"),
+    Input("open-offcanvas", "n_clicks"),
+    [State("offcanvas", "is_open")],
+)
+def toggle_offcanvas(n1, is_open):
+    if n1:
+        return not is_open
+    return is_open
 
 app.layout = serve_layout
 
