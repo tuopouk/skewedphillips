@@ -115,27 +115,33 @@ spinners = ['graph', 'cube', 'circle', 'dot' ,'default']
 p_font_size = 28
 graph_height = 800
 
-p_style = {'font-family':'Messina Modern Book',
+p_style = {
+        # #'font-family':'Messina Modern Book',
             'font-size':p_font_size,
            'text-align':'center'}
 
-p_bold_style = {'font-family':'Cadiz Semibold',
+p_bold_style = {
+        # #'font-family':'Cadiz Semibold',
             'font-size':p_font_size-5,
            'text-align':'left'}
 
-h4_style = {'font-family':'Messina Modern Semibold',
+h4_style = {
+    # #'font-family':'Messina Modern Semibold',
             'font-size':'18px',
            'text-align':'center',
            'margin-bottom': '20px'}
-h3_style = {'font-family':'Messina Modern Semibold',
+h3_style = {
+    # #'font-family':'Messina Modern Semibold',
             'font-size':'34px',
            'text-align':'center',
            'margin-bottom': '30px'}
-h2_style = {'font-family':'Messina Modern Semibold',
+h2_style = {
+    # #'font-family':'Messina Modern Semibold',
             'font-size':'52px',
            'text-align':'center',
            'margin-bottom': '30px'}
-h1_style = {'font-family':'Messina Modern Semibold',
+h1_style = {
+    # #'font-family':'Messina Modern Semibold',
             'font-size':'80px',
            'text-align':'center',
            'margin-bottom': '50px'}
@@ -989,12 +995,14 @@ def serve_layout():
                                  size = 'lg',
                                  color = 'danger',
                                  className="me-1",
-                                 style = {'font-style':'Cadiz Semibold'}),
+                                 # style = {'font-style':'Cadiz Semibold'}
+                                 ),
                     dbc.Offcanvas(
                           [
                               
                           html.H3('Tässä on lyhyt ohjeistus sovelluksen käyttöön. Yksityiskohtaisempaa informaatiota löytyy Ohje ja esittely -välilehdeltä sekä jokaisen toiminnon omalta välilehdeltään.', 
-                                  style = {'font-family':'Cadiz Semibold',
+                                  style = {
+                                      # #'font-family':'Cadiz Semibold',
                                             'text-align':'left',
                                             'font-size':22,
                                             'margin-bottom':'30px'
@@ -1002,7 +1010,8 @@ def serve_layout():
                                   ),
                               
                           html.H3('1. Valitse hyödykkeitä Hyödykkeiden valinta -välilehdellä', 
-                                  style = {'font-family':'Cadiz Semibold',
+                                  style = {
+                                      # #'font-family':'Cadiz Semibold',
                                             'text-align':'left',
                                             'font-size':20,
                                             'margin-bottom':'30px'
@@ -1016,13 +1025,15 @@ def serve_layout():
                               "tai vakiomuutosta kaikille valitsinta klikkaamalla. "
                               "Säädä olettu muutos liutin -valinnalla. "
                               "Hienosäädä yksittäisten hyödykkeiden muutoksia muokkaamalla laatikoiden arvoja.",
-                               style = {'font-family':'Cadiz Book',
+                               style = {
+                                   # #'font-family':'Cadiz Book',
                                         'font-size':16,
                                          'text-align':'left'}
                           ),
                           html.Br(),
                           html.H3('2. Tutki valitsemiasi hyödykkeitä Tutkiva analyysi -välilehdellä', 
-                                   style = {'font-family':'Cadiz Semibold',
+                                   style = {
+                                       # #'font-family':'Cadiz Semibold',
                                             'margin-bottom':'30px',
                                             'font-size':20,
                                               'text-align':'left',
@@ -1034,13 +1045,15 @@ def serve_layout():
                               "Tarkastele kuvaajien avulla valittujen hyödykkeiden suhdetta työttömyysasteeseen "
                               "tai hyödykkeiden suhteita toisiinsa. "
                               "Voit myös tarkastella indeksien, työttömyysasteen ja inflaation aikasarjoja.",
-                               style = {'font-family':'Cadiz Book',
+                               style = {
+                                   # #'font-family':'Cadiz Book',
                                         'font-size':16,
                                           'text-align':'left'}
                           ),
                           html.Br(),
                           html.H3('3. Valitse menetelmä Menetelmän valinta -välilehdellä', 
-                                   style = {'font-family':'Cadiz Semibold',
+                                   style = {
+                                       # #'font-family':'Cadiz Semibold',
                                             'margin-bottom':'30px',
                                             'font-size':20,
                                               'text-align':'left'}
@@ -1050,13 +1063,15 @@ def serve_layout():
                               "Säädä algoritmin hyperparametrit. "
                               "Valitse painikkeesta käytetäänkö pääkomponenttianalyysiä "
                               "ja niin tehtäessä valitse säilötyn variaation määrä liutin-valinnalla.",
-                               style = {'font-family':'Cadiz Book',
+                               style = {
+                                   # #'font-family':'Cadiz Book',
                                         'font-size':16,
                                           'text-align':'left'}
                           ),
                           html.Br(),
                           html.H3('4. Testaa menetelmää Testaaminen-välilehdellä', 
-                                   style = {'font-family':'Cadiz Semibold',
+                                   style = {
+                                       # #'font-family':'Cadiz Semibold',
                                              'text-align':'left',
                                              'font-size':20,
                                              'margin-bottom':'30px'
@@ -1068,13 +1083,15 @@ def serve_layout():
                               "Tarkastele testin kuvaajaa tai viedä tulokset Exceliin "
                               "klikkaamalla 'Lataa testitulokset koneelle -nappia'. "
                               "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä.",
-                              style = {'font-family':'Cadiz Book',
+                              style = {
+                                  # #'font-family':'Cadiz Book',
                                        'font-size':16,
                                         'text-align':'left'}
                           ),
                           html.Br(),
                           html.H3('5. Tee ennuste Ennustaminen-välilehdellä', 
-                                   style = {'font-family':'Cadiz Semibold',
+                                   style = {
+                                       # #'font-family':'Cadiz Semibold',
                                              'text-align':'left',
                                              'font-size':20,
                                              'margin-bottom':'30px'
@@ -1088,7 +1105,8 @@ def serve_layout():
                               "klikkaamalla 'Lataa ennustedata koneelle -nappia'. "
                               "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä. "
                               "Voit myös säätää hyödykeindeksien oletettuja kuukausimuutoksia ja kokeilla uudestaan.",
-                              style = {'font-family':'Cadiz Book',   
+                              style = {
+                                  # #'font-family':'Cadiz Book',   
                                        'font-size':16,
                                          'text-align':'left'}
                           ),
@@ -1100,7 +1118,8 @@ def serve_layout():
                           title="Pikaohje",
                           scrollable=True,
                           is_open=False,
-                          style = {'font-style':'Cadiz Book',
+                          style = {
+                              # 'font-style':'Cadiz Book',
                                    'font-size':'30px'}
                     )  
                 
@@ -1144,7 +1163,8 @@ def serve_layout():
                     tab_id = 'ohje',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'34px',
-                                 'font-family':'Cadiz Semibold'},
+                                 # #'font-family':'Cadiz Semibold'
+                                 },
                     style = {
                             
                               "maxHeight": "800px",
@@ -1166,14 +1186,14 @@ def serve_layout():
                                         style = {
                                             'text-align':'center',
                                             'font-style': 'italic', 
-                                            'font-family':'Messina Modern Book', 
+                                            #'font-family':'Messina Modern Book', 
                                               'font-size':p_font_size
                                             }),
                                   html.A([html.P('(Rodney Brooks)', 
                                         
                                         style={
                                             'textAlign':'center',
-                                            'font-family':'Messina Modern Book', 
+                                            #'font-family':'Messina Modern Book', 
                                               'font-size':p_font_size-4
                                             })], href = 'https://en.wikipedia.org/wiki/Rodney_Brooks', target="_blank"),
                                   
@@ -1226,7 +1246,7 @@ def serve_layout():
                                           html.P('Yllä olevassa kuvaajassa on esitetty sirontakuviolla työttömyysaste ja inflaatio eri aikoina. Lisäksi siinä on nimetty viimeisin ajankohta, jolta on saatavissa sekä inflaatio että työttömyyslukema. Viemällä hiiren pisteiden päälle, näkee arvot sekä ajan. Logaritminen trendiviiva esittää aikoinaan Phillipsin tekemää empiiristä havaintoa, jossa inflaation ja työttömyysasteen välillä vallitsee negatiivinen korrelaatio. Kuvaajassa inflaation trendikäyrästä laskee työttömyyden kasvaessa.' ,
                                                 style = {
                                                     'text-align':'center', 
-                                                    'font-family':'Messina Modern Book', 
+                                                    #'font-family':'Messina Modern Book', 
                                                       'font-size':p_font_size-2
                                                     }),
                                           html.P('Kyseessä on tunnettu taloustieteen teoria, jota on tosin vaikea soveltaa, koska ei ole olemassa sääntöjä, joilla voitaisiin helposti ennustaa työttömyyttä saatavilla olevien inflaatiota kuvaavien indikaattorien avulla. Mikäli sääntöjä on vaikea formuloida, niin niitä voi yrittää koneoppimisen avulla oppia historiadataa havainnoimalla. Voisiko siis olla olemassa tilastollisen oppimisen menetelmä, joka pystyisi oppimaan Phillipsin käyrän historiadatasta? Mikäli tämänlainen menetelmä olisi olemassa, pystyisimme ennustamaan lyhyen aikavälin työttömyyttä, kun oletamme hyödykkeiden hintatason muuttuvan skenaariomme mukaisesti.',
@@ -1236,7 +1256,7 @@ def serve_layout():
                                           html.Br(),
                                                                             
                                           html.H3('Taloustieteen kymmenes perusperiaate:',style = {'text-align':'center', 
-                                                                                                   'font-family':'Messina Modern Semibold',
+                                                                                                   #'font-family':'Messina Modern Semibold',
                                                                                                    'font-style': 'italic', 
                                                                                                    'font-weight': 'bold', 
                                                                                                    'font-size':'34px'}),
@@ -1245,13 +1265,13 @@ def serve_layout():
                                                 style = {
                                                     'text-align':'center',
                                                     'font-style': 'italic', 
-                                                    'font-family':'Messina Modern Book', 
+                                                    #'font-family':'Messina Modern Book', 
                                                       'font-size':p_font_size
                                                     }),
                                           html.P('(Matti Pohjola, 2019, Taloustieteen oppikirja, s. 250, ISBN:978-952-63-5298-5)', 
                                                 style={
                                                     'textAlign':'center',
-                                                    'font-family':'Messina Modern Book', 
+                                                    #'font-family':'Messina Modern Book', 
                                                       'font-size':p_font_size-4
                                                     }),
         
@@ -1460,7 +1480,8 @@ def serve_layout():
                     tab_id ='feature_tab',
                      tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'34px',
-                                 'font-family':'Cadiz Semibold'},
+                                 #'font-family':'Cadiz Semibold'
+                                 },
                     style = {
                         #"position": "fixed",
                         "maxHeight": "800px",
@@ -1497,34 +1518,54 @@ def serve_layout():
                                                  
                                                   dbc.DropdownMenuItem("Aakkosjärjestyksessä", id = 'alphabet',style={
                                                       'font-size':p_font_size, 
-                                                      'font-family':'Cadiz Book'}),
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
                                                   dbc.DropdownMenuItem("Korrelaatio (laskeva)", id = 'corr_desc',style={
                                                       'font-size':p_font_size, 
-                                                      'font-family':'Cadiz Book'}),
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
                                                   dbc.DropdownMenuItem("Korrelaatio (nouseva)", id = 'corr_asc',style={
                                                       'font-size':p_font_size, 
-                                                      'font-family':'Cadiz Book'}),
+                                                      #'font-family':'Cadiz Book'
+                                                      })
+                                                      ,
                                                   dbc.DropdownMenuItem("Absoluuttinen korrelaatio (laskeva)", id = 'corr_abs_desc',style={
                                                       'font-size':p_font_size, 
-                                                      'font-family':'Cadiz Book'}),
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
                                                   dbc.DropdownMenuItem("Absoluuttinen korrelaatio (nouseva)", id = 'corr_abs_asc',style={
                                                       'font-size':p_font_size, 
-                                                      'font-family':'Cadiz Book'}),
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
                                                   dbc.DropdownMenuItem("Pääluokittain", id = 'main_class',style={
                                                       'font-size':p_font_size, 
-                                                      'font-family':'Cadiz Book'}),
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
                                                   dbc.DropdownMenuItem("2. luokka", id = 'second_class',style={
                                                       'font-size':p_font_size, 
-                                                      'font-family':'Cadiz Book'}),
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
                                                   dbc.DropdownMenuItem("3. luokka", id = 'third_class',style={
                                                       'font-size':p_font_size, 
-                                                      'font-family':'Cadiz Book'}),
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
                                                   dbc.DropdownMenuItem("4. luokka", id = 'fourth_class',style={
                                                       'font-size':p_font_size, 
-                                                      'font-family':'Cadiz Book'}),
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
                                                   dbc.DropdownMenuItem("5. luokka", id = 'fifth_class',style={
                                                       'font-size':p_font_size, 
-                                                      'font-family':'Cadiz Book'})
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      )
                                                  
                                                  
                                                   ],
@@ -1534,7 +1575,8 @@ def serve_layout():
                                             size="lg",
                                             style={
                                                 'font-size':28, 
-                                                'font-family':'Cadiz Book'}
+                                                #'font-family':'Cadiz Book'
+                                                }
                                             ),
                             
                             html.Br(),
@@ -1542,17 +1584,20 @@ def serve_layout():
                                           options = initial_options,
                                           multi = True,
                                           value = list(initial_features),
-                                          style = {'font-size':25, 'font-family':'Cadiz Book'},
+                                          style = {'font-size':25, #'font-family':'Cadiz Book'
+                                                   },
                                           placeholder = 'Valitse hyödykkeitä'),
                             html.Br(),
                             
                             dbc.Alert("Valitse ainakin yksi hyödykeryhmä valikosta!", color="danger",
                                       dismissable=True, fade = True, is_open=False, id = 'alert', 
-                                      style = {'text-align':'center', 'font-size':p_font_size, 'font-family':'Cadiz Semibold'}),
+                                      style = {'text-align':'center', 'font-size':p_font_size, #'font-family':'Cadiz Semibold'
+                                               }),
                             dash_daq.BooleanSwitch(id = 'select_all', 
                                                     label = dict(label = 'Valitse kaikki',
                                                                  style = {'font-size':p_font_size, 
-                                                                          'fontFamily':'Cadiz Semibold'}), 
+                                                                          # #'fontFamily':'Cadiz Semibold'
+                                                                          }), 
                                                     on = False, 
                                                     color = 'blue'),
                             html.Br(),
@@ -1572,7 +1617,9 @@ def serve_layout():
                                                         style = h3_style),
                                 
                                 dash_daq.BooleanSwitch(id = 'averaging', 
-                                                        label = dict(label = 'Käytä toteutumien keskiarvoja',style = {'font-size':p_font_size, 'fontFamily':'Cadiz Semibold'}), 
+                                                        label = dict(label = 'Käytä toteutumien keskiarvoja',style = {'font-size':p_font_size, 
+                                                                                                                      'font-family':'Cadiz Semibold'
+                                                                                                                      }), 
                                                         on = True, 
                                                         color = 'blue')
                                 
@@ -1605,7 +1652,8 @@ def serve_layout():
                     tab_id = 'eda_tab',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'34px',
-                                 'font-family':'Cadiz Semibold'},
+                                 #'font-family':'Cadiz Semibold'
+                                 },
                     style = {
                             
                             "maxHeight": "800px",
@@ -1778,7 +1826,8 @@ def serve_layout():
                     tab_id ='hyperparam_tab',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'34px',
-                                 'font-family':'Cadiz Semibold'},
+                                 #'font-family':'Cadiz Semibold'
+                                 },
                     style = {
                             
                             "maxHeight": "800px",
@@ -1817,7 +1866,8 @@ def serve_layout():
                                               value = 'Satunnaismetsä',
                                               multi = False,
                                               placeholder = 'Valitse algoritmi',
-                                              style = {'font-size':p_font_size, 'font-family':'Cadiz Book','color': 'black'},
+                                              style = {'font-size':p_font_size, #'font-family':'Cadiz Book'
+                                                       },
                                               options = [{'label': c, 'value': c} for c in MODELS.keys()]),
                                 
                                 html.Br(),
@@ -1829,7 +1879,9 @@ def serve_layout():
                             dbc.Col(id = 'pca_selections', children = [
                                 html.Br(),
                                 dash_daq.BooleanSwitch(id = 'pca_switch', 
-                                                                  label = dict(label = 'Käytä pääkomponenttianalyysia',style = {'font-size':30, 'fontFamily':'Cadiz Semibold','textAlign':'center'}), 
+                                                                  label = dict(label = 'Käytä pääkomponenttianalyysia',style = {'font-size':30, 
+                                                                                                                                # 'font-family':'Cadiz Semibold',
+                                                                                                                                'textAlign':'center'}), 
                                                                   on = False, 
                                                                   color = 'blue'),
                                 html.Br(),
@@ -1845,9 +1897,15 @@ def serve_layout():
                                         step = .01,
                                         tooltip={"placement": "top", "always_visible": True},
                                         marks = {
-                                                  .7: {'label':'70%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
-                                            .85: {'label':'85%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
-                                                  .99: {'label':'99%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}}
+                                                  .7: {'label':'70%', 'style':{'font-size':20, 
+                                                                               # 'font-family':'Cadiz Semibold'
+                                                                               }},
+                                            .85: {'label':'85%', 'style':{'font-size':20, 
+                                                                          # 'font-family':'Cadiz Semibold'
+                                                                          }},
+                                                  .99: {'label':'99%', 'style':{'font-size':20, 
+                                                                                # #'fontFamily':'Cadiz Semibold'
+                                                                                }}
 
                                                 }
                                       ),
@@ -1876,7 +1934,8 @@ def serve_layout():
                     tab_id ='test_tab',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'34px',
-                                 'font-family':'Cadiz Semibold'},
+                                 #'font-family':'Cadiz Semibold'
+                                 },
                     style = {
                             
                             "maxHeight": "800px",
@@ -1919,13 +1978,19 @@ def serve_layout():
                                                   step = 1,
                                                   tooltip={"placement": "top", "always_visible": True},
                                                  
-                                                  marks = {1: {'label':'kuukausi', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
-                                                          # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
+                                                  marks = {1: {'label':'kuukausi', 'style':{'font-size':20, 
+                                                                                            # 'font-family':'Cadiz Semibold'
+                                                                                            }},
+                                                          # 3:{'label':'3 kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
                                                         
-                                                            6:{'label':'puoli vuotta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
-                                                          #  9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
+                                                            6:{'label':'puoli vuotta', 'style':{'font-size':20, 
+                                                                                                # 'font-family':'Cadiz Semibold'
+                                                                                                }},
+                                                          #  9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
                                                          
-                                                          12:{'label':'vuosi', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
+                                                          12:{'label':'vuosi', 'style':{'font-size':20, 
+                                                                                        # 'font-family':'Cadiz Semibold'
+                                                                                        }},
                                                           
 
                                                             }
@@ -1935,7 +2000,7 @@ def serve_layout():
                                       html.Br(),
                                       html.Div(id = 'test_button_div',children = [html.P('Valitse ensin hyödykkeitä.',style = {
                                           'text-align':'center', 
-                                          'font-family':'Cadiz Semibold', 
+                                          #'font-family':'Cadiz Semibold', 
                                             'font-size':p_font_size
                                           })], style = {'textAlign':'center'}),
                                       html.Br(),
@@ -1957,7 +2022,8 @@ def serve_layout():
                     tab_id = 'forecast_tab',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'34px',
-                                 'font-family':'Cadiz Semibold'},
+                                 #'font-family':'Cadiz Semibold'
+                                 },
                     style = {
                             
                             "maxHeight": "800px",
@@ -1997,12 +2063,18 @@ def serve_layout():
                                                   value = 3,
                                                   step = 1,
                                                   tooltip={"placement": "top", "always_visible": True},
-                                                  marks = {2: {'label':'2 kuukautta', 'style':{'font-size':16, 'fontFamily':'Cadiz Semibold'}},
-                                                          # 3: {'label':'kolme kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
-                                                          6:{'label':'puoli vuotta', 'style':{'font-size':16, 'fontFamily':'Cadiz Semibold'}},
-                                                          # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
-                                                          12:{'label':'vuosi', 'style':{'font-size':16, 'fontFamily':'Cadiz Semibold'}},
-                                                        #  24:{'label':'kaksi vuotta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}}
+                                                  marks = {2: {'label':'2 kuukautta', 'style':{'font-size':16, 
+                                                                                               # #'fontFamily':'Cadiz Semibold'
+                                                                                               }},
+                                                          # 3: {'label':'kolme kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
+                                                          6:{'label':'puoli vuotta', 'style':{'font-size':16, 
+                                                                                              # #'fontFamily':'Cadiz Semibold'
+                                                                                              }},
+                                                          # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
+                                                          12:{'label':'vuosi', 'style':{'font-size':16, 
+                                                                                        # 'font-family':'Cadiz Semibold'
+                                                                                        }},
+                                                        #  24:{'label':'kaksi vuotta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}}
                                                         
                                                      
 
@@ -2062,12 +2134,12 @@ def add_value_adjustments(slider_value, features, averaging):
         features_values = {feature:mean_df.loc[feature] for feature in features}
         
         row_children =[dbc.Col([html.Br(), 
-                                html.P(feature,style={'font-family':'Messina Modern Semibold',
+                                html.P(feature,style={#'font-family':'Messina Modern Semibold',
                                             'font-size':22}),
                                 dcc.Input(id = {'type':'value_adjust', 'index':feature}, 
                                                value = round(mean_df.loc[feature],1), 
                                                type = 'number', 
-                                               style={'font-family':'Messina Modern Semibold',
+                                               style={#'font-family':'Messina Modern Semibold',
                                                            'font-size':22},
                                                step = .1)],xs =12, sm=12, md=4, lg=2, xl=2) for feature in features]
     else:
@@ -2075,12 +2147,12 @@ def add_value_adjustments(slider_value, features, averaging):
         features_values = {feature:slider_value for feature in features}
         
         row_children =[dbc.Col([html.Br(), 
-                                html.P(feature,style={'font-family':'Messina Modern Semibold',
+                                html.P(feature,style={#'font-family':'Messina Modern Semibold',
                                             'font-size':22}),
                                 dcc.Input(id = {'type':'value_adjust', 'index':feature}, 
                                                value = slider_value, 
                                                type = 'number', 
-                                               style ={'font-family':'Messina Modern Semibold',
+                                               style ={#'font-family':'Messina Modern Semibold',
                                                            'font-size':22},
                                                step = .1)],xs =12, sm=12, md=4, lg=2, xl=2) for feature in features]
     return row_children, features_values
@@ -2123,11 +2195,17 @@ def update_slider_div(averaging):
                       value = 4,
                       step = 1,
                       tooltip={"placement": "top", "always_visible": True},
-                       marks = {1:{'label':'kuukausi', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
-                                # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
-                                6:{'label':'puoli vuotta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
-                                # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
-                                12:{'label':'vuosi', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}}   
+                       marks = {1:{'label':'kuukausi', 'style':{'font-size':20, 
+                                                                # #'fontFamily':'Cadiz Semibold'
+                                                                }},
+                                # 3:{'label':'3 kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
+                                6:{'label':'puoli vuotta', 'style':{'font-size':20, 
+                                                                    # #'fontFamily':'Cadiz Semibold'
+                                                                    }},
+                                # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
+                                12:{'label':'vuosi', 'style':{'font-size':20, 
+                                                              # #'fontFamily':'Cadiz Semibold'
+                                                              }}   
                              }
                       
                     )]
@@ -2143,11 +2221,14 @@ def update_slider_div(averaging):
                           value = 0,
                           step = 0.1,
                           tooltip={"placement": "top", "always_visible": True},
-                           marks = {-10:{'label':'-10%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
-                                    # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
-                                    0:{'label':'0%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
-                                    # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
-                                    10:{'label':'10%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}}   
+                           marks = {-10:{'label':'-10%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
+                                                                  }},
+                                    # 3:{'label':'3 kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
+                                    0:{'label':'0%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
+                                                              }},
+                                    # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
+                                    10:{'label':'10%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
+                                                                }}   
                                  }
                           
                         )
@@ -2231,7 +2312,9 @@ def update_hyperparameter_selections(model_name):
                                                        min = 0,
                                                        max=0.99,
                                                        type = 'number',
-                                                       style = {'font-family':'Cadiz Book','font-size':p_font_size},
+                                                       style = {
+                                                           #'font-family':'Cadiz Book',
+                                                           'font-size':p_font_size},
                                                        value = value,
                                                        className="mb-3",
                                                        step=0.01),
@@ -2248,7 +2331,9 @@ def update_hyperparameter_selections(model_name):
                                                            type = 'number',
                                                            value = value,
                                                            className="mb-3",
-                                                           style = {'font-family':'Cadiz Book','font-size':p_font_size},
+                                                           style = {
+                                                               #'font-family':'Cadiz Book',
+                                                               'font-size':p_font_size},
                                                            step=0.01),
                                                           html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
                                         )
@@ -2262,7 +2347,9 @@ def update_hyperparameter_selections(model_name):
                                                        type = 'number',
                                                        value = value,
                                                        className="mb-3",
-                                                       style = {'font-family':'Cadiz Book','font-size':p_font_size},
+                                                       style = {
+                                                           #'font-family':'Cadiz Book',
+                                                           'font-size':p_font_size},
                                                        step=0.01),
                                                       html.Br()
                                              ],xs =12, sm=12, md=12, lg=2, xl=2)
@@ -2276,7 +2363,9 @@ def update_hyperparameter_selections(model_name):
                                                  style=p_bold_style)],xs =12, sm=12, md=12, lg=2, xl=2)),
                 children.append(html.Br())
                 children.append(dbc.Col([dbc.Switch(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'}, 
-                                          style= {'font-family':'Cadiz Book','font-size':p_font_size},
+                                          style= {
+                                              #'font-family':'Cadiz Book',
+                                              'font-size':p_font_size},
                                           value=value,
                                           ),
                                          html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
@@ -2294,7 +2383,9 @@ def update_hyperparameter_selections(model_name):
                         children.append(dbc.Col([dcc.Dropdown(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'}, 
                                                   multi = False,
                                                   #label = hyperparameter,
-                                                  style = {'font-family':'Cadiz Book','font-size':p_font_size},
+                                                  style = {
+                                                      #'font-family':'Cadiz Book',
+                                                      'font-size':p_font_size},
                                                   options = [{'label':c, 'value': c} for c in param_options[hyperparameter] if c not in ['precomputed','poisson']],
                                                   value = value),
                                                  html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
@@ -2412,7 +2503,9 @@ def update_test_results(n_clicks,
                                           options = [{'label':'pylväät','value':'bars'},
                                                     {'label':'viivat','value':'lines'},
                                                     {'label':'viivat ja pylväät','value':'lines+bars'}],
-                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':25,'font-family':'Cadiz Book'},
+                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':25,
+                                                      #'font-family':'Cadiz Book'
+                                                      },
                                           className="btn-group",
                                           inputClassName="btn-check",
                                           labelClassName="btn btn-outline-warning",
@@ -2555,7 +2648,9 @@ def update_forecast_results(n_clicks,
                       dbc.RadioItems(id = 'chart_type', 
                         options = [{'label':'pylväät','value':'bars'},
                                   {'label':'viivat','value':'lines'}],
-                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':25,'font-family':'Cadiz Book'},
+                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':25,
+                                    #'font-family':'Cadiz Book'
+                                    },
                         className="btn-group",
                         inputClassName="btn-check",
                         labelClassName="btn btn-outline-warning",
@@ -2869,7 +2964,9 @@ def update_switch(on):
     
     if on:
         return {'label':'Kaikki hyödykkeet on valittu. Voit poistaa hyödykkeitä listasta klikkaamalla rasteista.',
-                       'style':{'text-align':'center', 'font-size':p_font_size, 'font-family':'Cadiz Semibold'}
+                       'style':{'text-align':'center', 'font-size':p_font_size,
+                                #'font-family':'Cadiz Semibold'
+                                }
                       },True
     
     # used_selection = selection_options[label]
@@ -2879,10 +2976,12 @@ def update_switch(on):
     # if sorted(features) == selection_values:
         
     #     return True, {'label':'Kaikki hyödykkeet on valittu. Voit poistaa hyödykkeitä listasta klikkaamalla rasteista.',
-    #                    'style':{'text-align':'center', 'font-size':20, 'font-family':'Cadiz Semibold'}
+    #                    'style':{'text-align':'center', 'font-size':20, #'font-family':'Cadiz Semibold'}
     #                   },True
     else:
-        return dict(label = 'Valitse kaikki',style = {'font-size':p_font_size, 'fontFamily':'Cadiz Semibold'}),False
+        return dict(label = 'Valitse kaikki',style = {'font-size':p_font_size, 
+                                                      # #'fontFamily':'Cadiz Semibold'
+                                                      }),False
 
 
 
@@ -2966,7 +3065,7 @@ def update_timeseries_selections(features_values):
                         value = [features[0]],
                         style = {
                             'font-size':p_font_size, 
-                            'font-family':'Cadiz Book',
+                            #'font-family':'Cadiz Book',
                             'color': 'black'},
                         multi = True)
             ]
@@ -3128,7 +3227,9 @@ def update_corr_selection(features_values):
                         # clearable=False,
                         options = [{'value':feature, 'label':feature} for feature in features],
                         value = [features[0]],
-                        style = {'font-size':20, 'font-family':'Cadiz Book'},
+                        style = {'font-size':20, 
+                                 #'font-family':'Cadiz Book'
+                                 },
                         placeholder = 'Valitse hyödyke')
         ]
         )
@@ -3161,7 +3262,9 @@ def update_feature_corr_selection(features_values):
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[0],
-                                style = {'font-size':20, 'font-family':'Cadiz Book'},
+                                style = {'font-size':20, 
+                                         #'font-family':'Cadiz Book'
+                                         },
                                 placeholder = 'Valitse hyödyke')
         ],xs =12, sm=12, md=12, lg=6, xl=6),
         html.Br(),
@@ -3173,7 +3276,9 @@ def update_feature_corr_selection(features_values):
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[-1],
-                                style = {'font-size':20, 'font-family':'Cadiz Book'},
+                                style = {'font-size':20, 
+                                         #'font-family':'Cadiz Book'
+                                         },
                                 placeholder = 'Valitse hyödyke')
             ],xs =12, sm=12, md=12, lg=6, xl=6)
         ])
