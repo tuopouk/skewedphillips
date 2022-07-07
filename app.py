@@ -112,8 +112,35 @@ config_plots = {'locale':'fi',
 
 spinners = ['graph', 'cube', 'circle', 'dot' ,'default']
 
-p_font_size = 18
+p_font_size = 28
 graph_height = 800
+
+p_style = {'font-family':'Messina Modern Book',
+            'font-size':p_font_size,
+           'text-align':'center'}
+
+p_bold_style = {'font-family':'Cadiz Semibold',
+            'font-size':p_font_size-5,
+           'text-align':'left'}
+
+h4_style = {'font-family':'Messina Modern Semibold',
+            'font-size':'18px',
+           'text-align':'center',
+           'margin-bottom': '20px'}
+h3_style = {'font-family':'Messina Modern Semibold',
+            'font-size':'34px',
+           'text-align':'center',
+           'margin-bottom': '30px'}
+h2_style = {'font-family':'Messina Modern Semibold',
+            'font-size':'52px',
+           'text-align':'center',
+           'margin-bottom': '30px'}
+h1_style = {'font-family':'Messina Modern Semibold',
+            'font-size':'80px',
+           'text-align':'center',
+           'margin-bottom': '50px'}
+
+
 
 dbc_css = ("https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates@V1.0.2/dbc.min.css")
 
@@ -299,13 +326,13 @@ def draw_phillips_curve():
                             mode = 'markers+text', 
                             text = [None if i != max_date else '<b>'+max_date_str+'</b>' for i in df.index],
                             textposition='top left',
-                            textfont=dict(family='Arial',
-                                          # size = 16
+                            textfont=dict(family='Cadiz Book',
+                                          size = 18
                                           ),
                             showlegend=False,
                             hovertemplate=hovertemplate,
                             marker = dict(color = 'red', symbol='diamond', 
-                                          # size = 10
+                                           size = 10
                                           )
                             ),
                 go.Scatter(x = df.Työttömyysaste, 
@@ -319,21 +346,21 @@ def draw_phillips_curve():
                   ],
             layout = go.Layout(
                                xaxis=dict(showspikes=True,
-                                          title = dict(text='Työttömyysaste (%)', font=dict(size=16, family = 'Arial Black')), 
+                                          title = dict(text='Työttömyysaste (%)', font=dict(size=22, family = 'Cadiz Semibold')), 
                                           tickformat = ' ',
                                           automargin=True,
                                           
                                           tickfont = dict(
-                                                           size=16, 
-                                                          family = 'Arial Black')
+                                                           size=18, 
+                                                          family = 'Cadiz Semibold')
                                           ), 
                                yaxis=dict(showspikes=True,
-                                          title = dict(text='Inflaatio (%)', font=dict(size=16, family = 'Arial Black')),
+                                          title = dict(text='Inflaatio (%)', font=dict(size=22, family = 'Cadiz Semibold')),
                                           tickformat = ' ', 
                                           automargin=True,
                                           tickfont = dict(
-                                               size=14,
-                                              family = 'Arial Black')
+                                               size=18,
+                                              family = 'Cadiz Semibold')
                                           ),
                                 margin=dict(
                                     l=10,
@@ -345,10 +372,10 @@ def draw_phillips_curve():
                                height= graph_height,
                                template='seaborn',  
                                # autosize=True,
-                                hoverlabel = dict(font=dict(size=16,family='Arial')),
+                                hoverlabel = dict(font=dict(size=20,family='Cadiz Book')),
                                 legend = dict(font=dict(
-                                                        size=14,
-                                                        family = 'Arial'
+                                                        size=18,
+                                                        family = 'Cadiz Book'
                                                         ),
                                                orientation='h',
                                                # xanchor='center',
@@ -360,8 +387,8 @@ def draw_phillips_curve():
                                title = dict(text = 'Työttömyysaste vs.<br>Inflaatio<br>{} - {}<br>'.format(df.index.min().strftime('%B %Y'),df.index.max().strftime('%B %Y')),
                                             x=.5,
                                             font=dict(
-                                                size=20,
-                                                family = 'Arial Black'))
+                                                size=22,
+                                                family = 'Cadiz Semibold'))
                               )
             )
 
@@ -421,7 +448,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                text=[str(round(c,2))+' %' for c in df.Työttömyysaste], 
                                textposition='top center',
                                hovertemplate = hovertemplate,
-                               textfont = dict(family='Arial Black', size = 14,color='green'), 
+                               textfont = dict(family='Cadiz Semibold', size = 18,color='green'), 
                                marker = dict(color='#008000',size=12),
                                line = dict(width=5)),
                     
@@ -433,17 +460,17 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                            text=[str(round(c,2))+' %' for c in df.Ennuste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
-                           textfont = dict(family='Arial Black', size = 14)
+                           textfont = dict(family='Cadiz Semibold', size = 18)
                            )
-                    ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=14, family = 'Arial Black')),
-                                                    tickfont = dict(family = 'Arial Black', size = 16),
+                    ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, family = 'Cadiz Semibold')),
+                                                    tickfont = dict(family = 'Cadiz Semibold', size = 18),
                                                     automargin=True
                                                     ),
-                                       yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Arial Black',size=18)),
-                                                    tickfont = dict(family = 'Arial Black', size = 16),
+                                       yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Cadiz Semibold',size=20)),
+                                                    tickfont = dict(family = 'Cadiz Semibold', size = 18),
                                                     automargin=True
                                                     ),
-                                       height = graph_height-300,
+                                       height = graph_height-200,
                                        margin=dict(
                                             l=10,
                                            r=10,
@@ -451,19 +478,19 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                             # t=120,
                                             # pad=4
                                        ),
-                                       legend = dict(font=dict(size=12,family='Arial'),
+                                       legend = dict(font=dict(size=16,family='Cadiz Book'),
                                                       orientation='h',
                                                       xanchor='center',
                                                       yanchor='top',
-                                                       x=.5,
-                                                       y=1.06
+                                                       x=.47,
+                                                       y=1.04
                                                      ),
-                                       hoverlabel = dict(font_size = 14, font_family = 'Arial'),
+                                       hoverlabel = dict(font_size = 20, font_family = 'Cadiz Book'),
                                        template = 'seaborn',
                                       # margin=dict(autoexpand=True),
                                        title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
                                                     x=.5,
-                                                    font=dict(family='Arial Black',size=20)
+                                                    font=dict(family='Cadiz Semibold',size=22)
                                                     )
                                        )
                                                     )
@@ -477,7 +504,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                 text=[str(round(c,2))+' %' for c in df.Työttömyysaste], 
                                 textposition='top center',
                                 hovertemplate = hovertemplate,
-                                textfont = dict(family='Arial Black', size = 14,color='green'), 
+                                textfont = dict(family='Cadiz Semibold', size = 18,color='green'), 
                                 marker = dict(color='#008000',size=10),
                                 line = dict(width=2)),
                     
@@ -491,22 +518,22 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                             # textposition='inside',
                             hovertemplate = hovertemplate,
                             line = dict(width=2),
-                            textfont = dict(family='Arial Black', size = 14,color='red'))
-                    ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=14, family = 'Arial Black')),
-                                                    tickfont = dict(family = 'Arial Black', size = 16),
+                            textfont = dict(family='Cadiz Semibold', size = 18,color='red'))
+                    ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, family = 'Cadiz Semibold')),
+                                                    tickfont = dict(family = 'Cadiz Semibold', size = 18),
                                                     automargin=True,
                                                     ),
-                                        yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Arial Black',size=18)),
-                                                    tickfont = dict(family = 'Arial Black', size = 16),
+                                        yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Cadiz Semibold',size=20)),
+                                                    tickfont = dict(family = 'Cadiz Semibold', size = 18),
                                                     automargin=True
                                                     ),
-                                        height = graph_height-300,
-                                        legend = dict(font=dict(size=12,family='Arial'),
+                                        height = graph_height-200,
+                                        legend = dict(font=dict(size=16,family='Cadiz Book'),
                                                        orientation='h',
                                                        xanchor='center',
                                                        yanchor='top',
-                                                        x=.5,
-                                                        y=1.06
+                                                        x=.47,
+                                                        y=1.04
                                                       ),
                                         margin=dict(
                                              l=10,
@@ -515,11 +542,11 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                              # t=120,
                                              # pad=4
                                         ),
-                                        hoverlabel = dict(font_size = 14, font_family = 'Arial'),
+                                        hoverlabel = dict(font_size = 20, font_family = 'Cadiz Book'),
                                         template = 'seaborn',
                                         title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
                                                     x=.5,
-                                                    font=dict(family='Arial Black',size=20)
+                                                    font=dict(family='Cadiz Semibold',size=22)
                                                     )
                                         )
                                                     )
@@ -533,7 +560,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                            text=[str(round(c,2))+' %' for c in df.Työttömyysaste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
-                           textfont = dict(family='Arial Black', size = 14)
+                           textfont = dict(family='Cadiz Semibold', size = 18)
                                     ),
                         
                         go.Bar(x=df.index.strftime('%B %Y'), 
@@ -544,17 +571,17 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                            text=[str(round(c,2))+' %' for c in df.Ennuste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
-                           textfont = dict(family='Arial Black', size = 14)
+                           textfont = dict(family='Cadiz Semibold', size = 18)
                                 )
-                        ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=14, family = 'Arial Black')),
-                                                        tickfont = dict(family = 'Arial Black', size = 16),
+                        ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, family = 'Cadiz Semibold')),
+                                                        tickfont = dict(family = 'Cadiz Semibold', size = 18),
                                                         automargin=True
                                                         ),
-                                            yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Arial Black',size=18)),
-                                                        tickfont = dict(family = 'Arial Black', size = 16),
+                                            yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Cadiz Semibold',size=20)),
+                                                        tickfont = dict(family = 'Cadiz Semibold', size = 18),
                                                         automargin=True
                                                         ),
-                                            height = graph_height-300,
+                                            height = graph_height-200,
                                             margin=dict(
                                                  l=10,
                                                 r=10,
@@ -562,18 +589,18 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                  # t=120,
                                                  # pad=4
                                             ),
-                                            legend = dict(font=dict(size=12,family='Arial'),
+                                            legend = dict(font=dict(size=16,family='Cadiz Book'),
                                                            orientation='h',
                                                            xanchor='center',
                                                            yanchor='top',
-                                                            x=.5,
-                                                            y=1.06
+                                                            x=.47,
+                                                            y=1.04
                                                           ),
-                                            hoverlabel = dict(font_size = 14, font_family = 'Arial'),
+                                            hoverlabel = dict(font_size = 20, font_family = 'Cadiz Book'),
                                             template = 'seaborn',
                                             title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
                                                         x=.5,
-                                                        font=dict(family='Arial Black',size=20)
+                                                        font=dict(family='Cadiz Semibold',size=22)
                                                         )
                                             )
                                                         )                                                   
@@ -606,12 +633,12 @@ def plot_forecast_data(df, chart_type):
                                hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
                                marker = dict(color='red'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',font=dict(
-                         size=18, 
-                        family = 'Arial Black')),
+                         size=20, 
+                        family = 'Cadiz Semibold')),
                         automargin=True,
                 
-                                                    tickfont = dict(family = 'Arial Black', 
-                                                                     size = 16
+                                                    tickfont = dict(family = 'Cadiz Semibold', 
+                                                                     size = 18
                                                                     ),
                                                     rangeslider=dict(visible=True),
                                                     rangeselector=dict(
@@ -655,29 +682,29 @@ def plot_forecast_data(df, chart_type):
                                             # pad=4
                                        ),
                                       hoverlabel = dict(
-                                            font_size = 16, 
-                                                         font_family = 'Arial'),
+                                            font_size = 20, 
+                                                         font_family = 'Cadiz Book'),
                                        legend = dict(orientation='h',
                                                      x=.5,
                                                      y=.01,
                                                      xanchor='center',
                                                       yanchor='bottom',
                                                      font=dict(
-                                                    size=12,
-                                                   family = 'Arial Black')),
+                                                    size=14,
+                                                   family = 'Cadiz Semibold')),
                                        template = 'seaborn',
                                        yaxis = dict(title=dict(text = 'Työttömyysaste (%)',
                                                      font=dict(
-                                                          size=16, 
-                                                         family = 'Arial Black')),
+                                                          size=20, 
+                                                         family = 'Cadiz Semibold')),
                                                     automargin=True,
-                                                     tickfont = dict(family = 'Arial', 
-                                                                      size = 16
+                                                     tickfont = dict(family = 'Cadiz Book', 
+                                                                      size = 18
                                                                      )),
                                        title = dict(text = 'Työttömyysaste ja ennuste kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
-                                                    font=dict(family='Arial Black',
-                                                               size=16
+                                                    font=dict(family='Cadiz Semibold',
+                                                               size=22
                                                               )),
     
                                        ))
@@ -703,11 +730,11 @@ def plot_forecast_data(df, chart_type):
                                marker = dict(color='red'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',
                                                                  font=dict(
-                                                                     size=16, 
-                                                                     family = 'Arial Black')),
+                                                                     size=20, 
+                                                                     family = 'Cadiz Semibold')),
                                                                  automargin=True,
-                                                    tickfont = dict(family = 'Arial Black', 
-                                                                    size = 16
+                                                    tickfont = dict(family = 'Cadiz Semibold', 
+                                                                    size = 18
                                                                     ),
                                                     rangeslider=dict(visible=True),
                                                     rangeselector=dict(
@@ -752,29 +779,29 @@ def plot_forecast_data(df, chart_type):
                                        ),
                                        template='seaborn',
                                        hoverlabel = dict(
-                                           font_size = 16, 
-                                           font_family = 'Arial'),
+                                           font_size = 20, 
+                                           font_family = 'Cadiz Book'),
                                        legend = dict(orientation='h',
                                                      x=.5,
                                                      y=.01,
                                                      xanchor='center',
                                                       yanchor='bottom',
                                                      font=dict(
-                                                    size=12,
-                                                   family = 'Arial Black')),
+                                                    size=14,
+                                                   family = 'Cadiz Semibold')),
                                        yaxis = dict(title=dict(text = 'Työttömyysaste (%)',
                                                      font=dict(
-                                                          size=16, 
-                                                         family = 'Arial Black')),
+                                                          size=20, 
+                                                         family = 'Cadiz Semibold')),
                                                     automargin=True,
-                                                     tickfont = dict(family = 'Arial', 
-                                                                      size = 16
+                                                     tickfont = dict(family = 'Cadiz Book', 
+                                                                      size = 18
                                                                      )
                                                      ),
                                        title = dict(text = 'Työttömyysaste ja ennuste kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
-                                                    font=dict(family='Arial Black',
-                                                               size=16
+                                                    font=dict(family='Cadiz Semibold',
+                                                               size=22
                                                               )),
     
                                        )) 
@@ -904,32 +931,45 @@ def serve_layout():
         dbc.Row(
             [
                 dbc.Col(
+                    [
                     ThemeChangerAIO(aio_id="theme", 
-                                        button_props={'title':'Vaihda teemaa.'},
-                                        radio_props={"value":dbc.themes.SUPERHERO})
-                        ),
-   
-            ]
-        ),
-        html.Br(),
-        dbc.Row(
-            
-            [
-                  dbc.Col([
-                      
-                      dbc.Button("Avaa pikaohje", 
+                                        button_props={'title':'Vaihda teemaa',
+                                                      'size':'lg',
+                                                      'children' : 'Vaihda teemaa',
+                                                      'color':'warning'},
+                                        offcanvas_props={'title':"Valitse jokin alla olevista teemoista",
+                                                         'scrollable':True},
+                                        radio_props={"value":dbc.themes.SUPERHERO}),
+                    html.Br(),
+     
+                
+                    dbc.Button("Avaa pikaohje", 
                                  id="open-offcanvas", 
                                  n_clicks=0, 
                                  outline=True,
-                                 color="primary", 
+                                 size = 'lg',
+                                 color = 'danger',
                                  className="me-1",
-                                 style = {'font-style':'Arial Black'}),
-                      dbc.Offcanvas(
+                                 style = {'font-style':'Cadiz Semibold'}),
+                    dbc.Offcanvas(
                           [
                               
-                          html.H6('1. Valitse hyödykkeitä Hyödykkeiden valinta -välilehdellä.', 
-                                  style = {'font-style':'Arial Black'}),
-                          html.Br(),
+                          html.H3('Tässä on lyhyt ohjeistus sovelluksen käyttöön. Yksityiskohtaisempaa informaatiota löytyy Ohje ja esittely -välilehdeltä sekä jokaisen toiminnon omalta välilehdeltään.', 
+                                  style = {'font-family':'Cadiz Semibold',
+                                            'text-align':'left',
+                                            'font-size':22,
+                                            'margin-bottom':'30px'
+                                            }
+                                  ),
+                              
+                          html.H3('1. Valitse hyödykkeitä Hyödykkeiden valinta -välilehdellä', 
+                                  style = {'font-family':'Cadiz Semibold',
+                                            'text-align':'left',
+                                            'font-size':20,
+                                            'margin-bottom':'30px'
+                                            }
+                                  ),
+                          
                           html.P(
                               "Valitse haluamasi hyödykkeet alasvetovalikosta. "
                               "Voit lajitella hyödykkeet haluamallasi tavalla. "
@@ -937,51 +977,81 @@ def serve_layout():
                               "tai vakiomuutosta kaikille valitsinta klikkaamalla. "
                               "Säädä olettu muutos liutin -valinnalla. "
                               "Hienosäädä yksittäisten hyödykkeiden muutoksia muokkaamalla laatikoiden arvoja.",
-                              style = {'font-style':'Arial'}
+                               style = {'font-family':'Cadiz Book',
+                                        'font-size':16,
+                                         'text-align':'left'}
                           ),
                           html.Br(),
-                          html.H6('1. Tutki valitsemiasi hyödykkeitä Tutkiva analyysi -välilehdellä.', 
-                                  style = {'font-style':'Arial Black'}),
-                          html.Br(),
+                          html.H3('2. Tutki valitsemiasi hyödykkeitä Tutkiva analyysi -välilehdellä', 
+                                   style = {'font-family':'Cadiz Semibold',
+                                            'margin-bottom':'30px',
+                                            'font-size':20,
+                                              'text-align':'left',
+                                              
+                                              }
+                                  ),
+                          
                           html.P(
                               "Tarkastele kuvaajien avulla valittujen hyödykkeiden suhdetta työttömyysasteeseen "
                               "tai hyödykkeiden suhteita toisiinsa. "
                               "Voit myös tarkastella indeksien, työttömyysasteen ja inflaation aikasarjoja.",
-                              style = {'font-style':'Arial'}
+                               style = {'font-family':'Cadiz Book',
+                                        'font-size':16,
+                                          'text-align':'left'}
                           ),
                           html.Br(),
-                          html.H6('3. Valitse menetelmä Menetelmän valinta -välilehdellä.', 
-                                  style = {'font-style':'Arial Black'}),
-                          html.Br(),
+                          html.H3('3. Valitse menetelmä Menetelmän valinta -välilehdellä', 
+                                   style = {'font-family':'Cadiz Semibold',
+                                            'margin-bottom':'30px',
+                                            'font-size':20,
+                                              'text-align':'left'}
+                                  ),
                           html.P(
                               "Valitse haluamasi koneoppimisalgoritmi alasvetovalikosta. "
                               "Säädä algoritmin hyperparametrit. "
                               "Valitse painikkeesta käytetäänkö pääkomponenttianalyysiä "
                               "ja niin tehtäessä valitse säilötyn variaation määrä liutin-valinnalla.",
-                              style = {'font-style':'Arial'}
+                               style = {'font-family':'Cadiz Book',
+                                        'font-size':16,
+                                          'text-align':'left'}
                           ),
                           html.Br(),
-                          html.H6('4. Testaa menetelmää Testaaminen-välilehdellä.', 
-                                  style = {'font-style':'Arial Black'}),
-                          html.Br(),
+                          html.H3('4. Testaa menetelmää Testaaminen-välilehdellä', 
+                                   style = {'font-family':'Cadiz Semibold',
+                                             'text-align':'left',
+                                             'font-size':20,
+                                             'margin-bottom':'30px'
+                                             }
+                                  ),
+                          
                           html.P(
                               "Valitse testin pituus ja klikkaa testaa nappia. "
                               "Tarkastele testin kuvaajaa tai viedä tulokset Exceliin "
                               "klikkaamalla 'Lataa testitulokset koneelle -nappia'. "
                               "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä.",
-                              style = {'font-style':'Arial'}
+                              style = {'font-family':'Cadiz Book',
+                                       'font-size':16,
+                                        'text-align':'left'}
                           ),
                           html.Br(),
-                          html.H6('5. Tee ennuste Ennustaminen-välilehdellä.', 
-                                  style = {'font-style':'Arial Black'}),
-                          html.Br(),
+                          html.H3('5. Tee ennuste Ennustaminen-välilehdellä', 
+                                   style = {'font-family':'Cadiz Semibold',
+                                             'text-align':'left',
+                                             'font-size':20,
+                                             'margin-bottom':'30px'
+                                             
+                                             }
+                                  ),
+                          
                           html.P(
                               "Valitse ennusteen pituus ja klikkaa ennusta nappia. "
                               "Tarkastele ennusteen kuvaajaa tai viedä tulokset Exceliin "
                               "klikkaamalla 'Lataa ennustedata koneelle -nappia'. "
                               "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä. "
                               "Voit myös säätää hyödykeindeksien oletettuja kuukausimuutoksia ja kokeilla uudestaan.",
-                              style = {'font-style':'Arial'}
+                              style = {'font-family':'Cadiz Book',   
+                                       'font-size':16,
+                                         'text-align':'left'}
                           ),
                           
                           
@@ -991,36 +1061,28 @@ def serve_layout():
                           title="Pikaohje",
                           scrollable=True,
                           is_open=False,
-                          style = {'font-style':'Arial'}
-                    )
-                      
-                      
-                      ], width=1)  
+                          style = {'font-style':'Cadiz Book',
+                                   'font-size':'30px'}
+                    )  
                 
-                ]
-            
-            ),
-        html.Br(),
-        html.H1('Phillipsin vinouma',
-                style={'textAlign':'center', 
-                       'font-family':'Arial',
-                       'font-style': 'bold',
-                       'font-size':60}),
-        html.Br(),
-        html.H6('Työttömyyden ennustaminen hintatason muutoksilla',
-                style={'textAlign':'center',
-                       'font-style': 'italic', 
-                       'font-family':'Arial',
-                       'font-size':20}),
-        html.Br(),
-        html.P('Valitse haluamasi välilehti alla olevia otsikoita klikkaamalla. ' 
-               'Vasemmam yläkulman painikkeista saat näkyviin pikaohjeen '
-               'ja voit myös vaihtaa sivun väriteemaa.',
-               style = {
-                   'text-align':'center', 
-                   'font-family':'Arial', 
-                    'font-size':p_font_size
-                   }),
+                ], xs =12, sm=12, md=12, lg=1, xl=1),
+                
+                dbc.Col([
+                    
+                      
+                    html.H1('Phillipsin vinouma',
+                             style=h1_style
+                            ),
+                  
+                    html.H2('Työttömyyden ennustaminen hintatason muutoksilla',
+                            style=h2_style),
+                    
+                    html.P('Valitse haluamasi välilehti alla olevia otsikoita klikkaamalla. ' 
+                           'Vasemman yläkulman painikkeista saat näkyviin pikaohjeen '
+                           'ja voit myös vaihtaa sivun väriteemaa.',
+                           style = p_style)
+                    ],xs =12, sm=12, md=12, lg=11, xl=11)
+        ], justify='left'),
         html.Br(),
         
         html.Div(id = 'hidden_store_div',
@@ -1042,8 +1104,8 @@ def serve_layout():
             dbc.Tab(label='Ohje ja esittely',
                     tab_id = 'ohje',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':22,
-                                 'font-family':'Arial Black'},
+                    tab_style = {'font-size':'34px',
+                                 'font-family':'Cadiz Semibold'},
                     style = {
                             
                               "maxHeight": "1024px",
@@ -1065,44 +1127,38 @@ def serve_layout():
                                         style = {
                                             'text-align':'center',
                                             'font-style': 'italic', 
-                                            'font-family':'Arial', 
+                                            'font-family':'Messina Modern Book', 
                                               'font-size':p_font_size
                                             }),
                                   html.A([html.P('(Rodney Brooks)', 
                                         
                                         style={
                                             'textAlign':'center',
-                                            'font-family':'Arial', 
+                                            'font-family':'Messina Modern Book', 
                                               'font-size':p_font_size-4
                                             })], href = 'https://en.wikipedia.org/wiki/Rodney_Brooks', target="_blank"),
                                   
 
                                   html.Br(),
-                                  html.H4('Esittely',style={'textAlign':'center','font-family':'Arial Black'}),
-                                  html.Br(),
+                                  html.H3('Esittely',style=h3_style
+                                          ),
                                   html.P('Tällä työkalulla voi vapaasti kehitellä koneoppimismenetelmän, joka pyrkii ennustamaan tulevien kuukausien työttömyysastetta ottaen huomioon aiemmat toteutuneet työttömyysasteet, kuukausittaiset työttömyyden kausivaihtelut sekä käyttäjän itse valitsemien hyödykkeiden kuluttajahintaindeksit. Näin on mahdollista tuottaa skenaariopohjaisia ennustemalleja kun tiettyjen hyödykkeiden tai yleisindeksin oletetaan muuttuvan tietyllä tavalla. Ennuste tehdään sillä oletuksella, että valittujen hyödykkeiden hintataso muuttuu käyttäjän syöttämän oletetun keskimääräisen kuukausimuutoksen mukaan. Lisäksi koneoppimismenetelmän voi valita ja algoritmien hyperparametrit voi säätää itse. Menetelmää voi testata valitulle aikavälille ennen ennusteen tekemistä. Hintaindeksien valintaa helpottaakseen, voi niiden keskinäisiä suhteita ja suhdetta työttömyysasteeseen tutkia sille varatulla välilehdellä. ', 
-                                        style={
-                                            'textAlign':'center',
-                                            'font-family':'Arial', 
-                                              'font-size':p_font_size
-                                            }),
+                                        style=p_style),
                                   html.P('Sovellus hyödyntää Tilastokeskuksen Statfin-rajapinnasta saatavaa työttömyys, -ja kuluttajahintaindeksidataa. Sovellus on avoimen lähdekoodin kehitysprojekti, joka on saatavissa kokonaisuudessaan tekijän Github-sivun kautta. Sovellus on kehitetty harrasteprojektina tutkivaan ja kokeelliseen käyttöön, ja siitä saataviin tuloksiin on suhtauduttava varauksella (ks. Vastuunvapautuslauseke alla).', 
-                                        style={
-                                            'textAlign':'center',
-                                            'font-family':'Arial', 
-                                              'font-size':p_font_size
-                                            }),
-                                  html.H4('Teoria',style={'textAlign':'center','font-family':'Arial Black'}),
+                                        style=p_style),
                                   html.Br(),
+                                  html.H3('Teoria',
+                                          style=h3_style
+                                          ),
+                                  
                                   html.P('Inflaatio, eli yleisen hintatason nousu on vaikuttanut viimeisen vuoden aikana monen kotitalouden kulutustottumuksiin. Hintavakauden saavuttamiseksi, keskuspankkien on pyrittävä kiristämään rahapolitiikkaa ohjauskorkoa nostamalla, mikä tullee nostamaan asuntovelallisten korkokuluja. Vähemmän varallisuutta ohjautuu osakemarkkinoille, mikä ajaa pörssikursseja alaspäin. Samalla työmarkkinoilla on painetta palkankorotuksille, mikä voi pahimmillaan eskaloitua lakkoiluun. Vaikuttaisi siis siltä, että inflaatiolla on vain negatiivisia vaikutuksia, mutta näin ei aina ole. Nimittäin historian aika on havaittu makrotaloustieteellinen ilmiö, jonka mukaan lyhyellä aikavälillä inflaation ja työttömyyden välillä vallitsee ristiriita. Toisin sanoen korkean inflaation koetaan lyhyellä aikavälillä matalaa työttömyyttä. Selittäviä teorioita tälle ilmiölle on useita. Lyhyellä aikavälillä hintojen noustessa tuotanto nousee, koska tuottajat nostavat hyödykkeiden tuotantoa suurempien katteiden saavuttamiseksi. Tämä johtaa matalampaan työttömyyteen, koska tuotannon kasvattaminen johtaa uusiin rekrytointeihin, jolloin työttömien osuus työvoimasta pienenee. Toisin päin katsottuna, kun työttömyys on matala, markkinoilla on työn kysyntäpainetta, mikä nostaa palkkoja. Palkkojen nousu taas johtaa yleisen hintatason nousuun, koska hyödykkeiden tarjoajat voivat pyytää korkeampaa hintaa tuotteistaan ja palveluistaan. Elämme nyt sellaista hetkeä, jossa inflaatio viimeisen noin kymmenen vuoden huipussaan. Samalla työttömyys on paljon matalampi kuin se oli esimerkiksi vuonna 2015, jolloin inflaatio oli välillä jopa negatiivinen. Ajoittain voivat molemmat olla samaan aikaan matalia tai korkeita, mutta yleisesti ottaen lyhyellä ajalla toisen noustessa toisen trendikäyrä laskee. Tämä tunnetaan makrotaloustieteessä ns. Phillipsin käyränä, joka on sen vuonna 1958 kehittäneen taloustieteilijä Alban William Phillipsin mukaan.',
-                                        style={
-                                            'text-align':'center',
-                                            'font-family':'Arial', 
-                                              'font-size':p_font_size
-                                            }),
-                                  html.Br(),
-                                  html.H3('Phillipsin käyrä Suomen taloudessa kuukausittain (Lähde: Tilastokeskus)', style={'textAlign':'center','font-family':'Arial Black'}),
-                                  html.Br()
+                                        style=p_style),
+                                  
+                                  html.H3('Phillipsin käyrä Suomen taloudessa kuukausittain', 
+                                          style=h3_style),
+                                  html.H4('(Lähde: Tilastokeskus)', 
+                                          style=h4_style),
+                                  
                                   ])
                                   ]
                                 ),
@@ -1131,179 +1187,142 @@ def serve_layout():
                                           html.P('Yllä olevassa kuvaajassa on esitetty sirontakuviolla työttömyysaste ja inflaatio eri aikoina. Lisäksi siinä on nimetty viimeisin ajankohta, jolta on saatavissa sekä inflaatio että työttömyyslukema. Viemällä hiiren pisteiden päälle, näkee arvot sekä ajan. Logaritminen trendiviiva esittää aikoinaan Phillipsin tekemää empiiristä havaintoa, jossa inflaation ja työttömyysasteen välillä vallitsee negatiivinen korrelaatio. Kuvaajassa inflaation trendikäyrästä laskee työttömyyden kasvaessa.' ,
                                                 style = {
                                                     'text-align':'center', 
-                                                    'font-family':'Arial', 
+                                                    'font-family':'Messina Modern Book', 
                                                       'font-size':p_font_size-2
                                                     }),
                                           html.P('Kyseessä on tunnettu taloustieteen teoria, jota on tosin vaikea soveltaa, koska ei ole olemassa sääntöjä, joilla voitaisiin helposti ennustaa työttömyyttä saatavilla olevien inflaatiota kuvaavien indikaattorien avulla. Mikäli sääntöjä on vaikea formuloida, niin niitä voi yrittää koneoppimisen avulla oppia historiadataa havainnoimalla. Voisiko siis olla olemassa tilastollisen oppimisen menetelmä, joka pystyisi oppimaan Phillipsin käyrän historiadatasta? Mikäli tämänlainen menetelmä olisi olemassa, pystyisimme ennustamaan lyhyen aikavälin työttömyyttä, kun oletamme hyödykkeiden hintatason muuttuvan skenaariomme mukaisesti.',
-                                                style={
-                                                    'textAlign':'center',
-                                                    'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                    }), 
+                                                style=p_style), 
                                           html.P('Phillipsin käyrälle on omistettu oma lukunsa kauppatieteellisen yliopistotutkinnon kansantaloustieteen pääsykoekirjassa, ja siitä seuraa yksi kymmenestä taloustieteen perusperiaatteesta.',
-                                                style={
-                                                    'textAlign':'center',
-                                                    'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                    }),
+                                                style=p_style),
                                           html.Br(),
                                                                             
-                                          html.H6('Taloustieteen kymmenes perusperiaate:',style = {'text-align':'center', 
-                                                                                                   'font-family':'Arial Black',
+                                          html.H3('Taloustieteen kymmenes perusperiaate:',style = {'text-align':'center', 
+                                                                                                   'font-family':'Messina Modern Semibold',
                                                                                                    'font-style': 'italic', 
                                                                                                    'font-weight': 'bold', 
-                                                                                                   'font-size':20}),
+                                                                                                   'font-size':'34px'}),
+                                          
                                           html.P('Työttömyyden ja inflaation kesken vallitsee lyhyellä ajalla ristiriita. Täystyöllisyyttä ja vakaata hintatasoa on vaikea saavuttaa yhtä aikaa.', 
                                                 style = {
                                                     'text-align':'center',
                                                     'font-style': 'italic', 
-                                                    'font-family':'Arial', 
+                                                    'font-family':'Messina Modern Book', 
                                                       'font-size':p_font_size
                                                     }),
                                           html.P('(Matti Pohjola, 2019, Taloustieteen oppikirja, s. 250, ISBN:978-952-63-5298-5)', 
                                                 style={
                                                     'textAlign':'center',
-                                                    'font-family':'Arial', 
+                                                    'font-family':'Messina Modern Book', 
                                                       'font-size':p_font_size-4
                                                     }),
         
                                           html.Br(),
                                           html.P('Tämä sovellus perustuu inflaation ja työttömyyden välisen suhteen hyödyntämiseen. Sen esittäminen matemaattisesti olisi vaikeaa ja olisi altis poikkeustapauksille. Siksi lieneekin, kuten AI-pioneeri Rodney Brooks on ilmaissut, havinnoida ilmiötä ja ja pyrkiä oppimaan siitä. Tässä on sopiva paikka hyödyntää koneoppimista, vaikkakin soveltaminen ei olekaan yksiselitteistä. Siksi tällä työkalulla on mahdollista rakentaa kokeellisesti koneoppimisen ratkaisu, joka, perustuen Phillipsin teoriaan, pyrkii ennustamaan työttömyyttä valittujen hyödykkeiden hintatason olettamien avulla. Sovellus jakaantuu ennustajapiirteiden valintaan, tutkivaan analyysiin, menetelmän suunnitteluun, toteutuksen testaamiseen sekä lyhyen aikavälin ennusteen tekemiseen.',
-                                                style={
-                                                    'textAlign':'center',
-                                                    'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                    }), 
+                                                style=p_style), 
                                           html.P('Inflaatiota mitataan kuluttajahintaindeksin vuosimuutoksen avulla. Kuluttajahintaindeksi on Tilastokeskuksen koostama indikaattori, joka mittaa satoja hyödykkeitä sisältävän hyödykekorin hinnan muutosta johonkin perusvuoden (tässä tapauksessa vuoden 2010) hintatasoon nähden. Tässä sovelluksessa voi valita kuluttajahintaindeksin komponentteja eli hyödykeryhmien indeksien pistelukuja työttömyyden ennustamiseen. Ennuste perustuu siten käyttäjän itse koostamaan hyödykekoriin.',
-                                                style={
-                                                    'textAlign':'center',
-                                                    'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                    }), 
+                                                style=p_style), 
                                           html.P('Tutkivan analyysin avulla voi arvioida mitkä hyödykkeet sopisivat parhaiten ennusteen selittäjiksi. Tutkivassa analyysissa tarkastellaan muuttujien välisiä korrelaatiota. Tässä sovelluksessa voi tehdä korrelaatioperusteisen ennusteen. Pääsääntönä on valita ennustajiksi niitä hyödykeryhmiä, jotka korreloivat eniten työttömyyden kanssa sekä vähiten keskenään. Myös koneoppimisalgoritmin valinta ja sen uniikkien hyperparametrien säätäminen vaikutta tulokseen. Testin avulla saa informaatiota siitä, miten valittu menetelmä olisi onnistunut ennustamaan työttömyyttä aikaisempina ajankohtina.',
-                                                style={
-                                                    'textAlign':'center',
-                                                    'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                    }),
+                                                style=p_style),
                                           html.Br(),
                                           
                                           
-                                           html.H4('Sovelluksen käyttöhje',style={'textAlign':'center','font-family':'Arial Black'}),
-                                           html.Br(),
+                                           html.H3('Sovelluksen käyttöhje',
+                                                   style=h3_style
+                                                   ),
+                                           
                                            html.P('Seuraavaksi hieman ohjeistusta sovelluksen käyttöön. Jokainen osio olisi tehtävä vastaavassa järjestyksessä. Välilehteä valitsemalla pääset suorittamaan jokaisen vaiheen. Välilehdillä on vielä yksityiskohtaisemmat ohjeet.', 
-                                                    style = {
-                                                        'text-align':'center', 
-                                                        'font-family':'Arial', 
-                                                          'font-size':p_font_size
-                                                        }),
+                                                    style = p_style),
                                            html.Br(),
                                            html.P('1. Hyödykkeiden valinta. Valitse haluamasi hyödykeryhmät alasvetovalikosta. Näiden avulla ennustetaan työttömyyttä Phillipsin teorian mukaisesti.', 
-                                                    style = {
-                                                        'text-align':'center', 
-                                                        'font-family':'Arial', 
-                                                          'font-size':p_font_size
-                                                        }),
+                                                    style = p_style),
                                           html.P('2. Tutkiva analyysi. Voit tarkastella ja analysoida valitsemiasi hyödykkeitä. Voit tarvittaessa palata edelliseen vaiheeseen ja poistaa tai lisätä hyödykkeitä.',
-                                                    style = {
-                                                        'text-align':'center', 
-                                                        'font-family':'Arial', 
-                                                          'font-size':p_font_size
-                                                        }),
+                                                    style = p_style),
                                           html.P('3. Menetelmän valinta. Tässä osiossa valitsen koneoppimisalgoritmin sekä säädät hyperparametrit. Lisäksi voi valita hyödynnetäänkö pääkomponenttianalyysiä ja kuinka paljon variaatiota säilötään.',
-                                                    style = {
-                                                        'text-align':'center', 
-                                                        'font-family':'Arial', 
-                                                          'font-size':p_font_size
-                                                        }),
+                                                    style = p_style),
                                          html.P('4. Testaaminen. Voit valita menneen ajanjakson, jota malli pyrkii ennustamaan. Näin pystyt arvioimaan kuinka ennustemalli olisi toiminut jo toteutuneelle datalle.',
-                                                    style = {
-                                                        'text-align':'center', 
-                                                        'font-family':'Arial', 
-                                                          'font-size':p_font_size
-                                                        }),
-                                        html.P('5. Ennusteen tekeminen. Voit nyt hyödyntää valitsemaasi menetelmää tehdäksesi ennusteen tulevaisuuteen. Valitse ennusteen pituus ja klikkaa ennusta. Ennusteen voi sitten viedä myös Exceliin. Ennustetta tehdessä hyödynnetään asettamiasi hyödykkeiden muutosarvoja.',
-                                                    style = {
-                                                        'text-align':'center', 
-                                                        'font-family':'Arial', 
-                                                        'font-size':p_font_size
-                                                        }),
+                                                    style = p_style),
+                                         html.P('5. Ennusteen tekeminen. Voit nyt hyödyntää valitsemaasi menetelmää tehdäksesi ennusteen tulevaisuuteen. Valitse ennusteen pituus ja klikkaa ennusta. Ennusteen voi sitten viedä myös Exceliin. Ennustetta tehdessä hyödynnetään asettamiasi hyödykkeiden muutosarvoja.',
+                                                    style = p_style),
                                           
                                           html.Br(),
-                                          # html.P('6. Valitse se osuus alkuperäisen datan variaatiosta, joka vähintään säilytetään PCA:ssa.',style = {'text-align':'center', 'font-family':'Arial Black', 'font-size':20}),
-                                          # html.P('7. Klusteroi klikkaamalla "Klusteroi" -painiketta.',style = {'text-align':'center', 'font-family':'Arial Black', 'font-size':20}),
-                                          html.H4('Pääkomponenttianalyysistä',style={'textAlign':'center','font-family':'Arial Black'}),
-                                          html.Br(),
+                                          
+                                          html.H3('Pääkomponenttianalyysistä',
+                                                  style=h3_style
+                                                  ),
+                                          
                                           html.P('Pääkomponenttianalyysilla (englanniksi Principal Component Analysis, PCA) pyritään minimoimaan käytettyjen muuttujien määrää pakkaamalla ne sellaisiin kokonaisuuksiin, jotta hyödynnetty informaatio säilyy. Informaation säilyvyyttä mitataan selitetyllä varianssilla (eng. explained variance), joka tarkoittaa uusista pääkomponenteista luodun datan hajonnan säilyvyyttä alkuperäiseen dataan verrattuna. Tässä sovelluksessa selitetyn varianssin (tai säilytetyn variaation) osuuden voi valita itse, mikäli hyödyntää PCA:ta. Näin saatu pääkomponenttijoukko on siten pienin sellainen joukko, joka säilyttää vähintään valitun osuuden alkuperäisen datan hajonnasta. Näin PCA-algoritmi muodostaa juuri niin monta pääkomponenttia, jotta selitetyn varianssin osuus pysyy haluttuna.',
-                                                  style={'textAlign':'center','font-family':'Arial', 'font-size':p_font_size}),
+                                                  style=p_style),
                                           html.P('PCA on yleisesti hyödyllinen toimenpide silloin, kun valittuja muuttujia on paljon, milloin on myös mahdollista, että osa valituista muuttujista aiheuttaa datassa kohinaa, mikä taas johtaa heikompaan ennusteeseen.  Pienellä määrällä tarkasti harkittuja muuttujia PCA ei ole välttämätön.',
-                                                  style={'textAlign':'center','font-family':'Arial', 'font-size':p_font_size}),
+                                                  style=p_style),
                                           html.Br(),
                                        
                                           html.Br(),
-                                          html.H4('Vastuuvapauslauseke',style={'textAlign':'center','font-family':'Arial Black'}),
+                                          
+                                          html.H3('Vastuuvapauslauseke',
+                                                  style=h3_style),
+                                          
+                                          html.P("Sivun ja sen sisältö tarjotaan ilmaiseksi sekä sellaisena kuin se on saatavilla. Kyseessä on yksityishenkilön tarjoama palvelu eikä viranomaispalvelu tai kaupalliseen tarkoitukseen tehty sovellus. Sivulta saatavan informaation hyödyntäminen on päätöksiä tekevien tahojen omalla vastuulla. Palvelun tarjoaja ei ole vastuussa menetyksistä, oikeudenkäynneistä, vaateista, kanteista, vaatimuksista, tai kustannuksista taikka vahingosta, olivat ne mitä tahansa tai aiheutuivat ne sitten miten tahansa, jotka johtuvat joko suoraan tai välillisesti yhteydestä palvelun käytöstä. Huomioi, että tämä sivu on yhä kehityksen alla.",
+                                                  style=p_style),
                                           html.Br(),
-                                          html.P("Sivun ja sen sisältö tarjotaan ilmaiseksi sekä sellaisena kuin se on saatavilla. Kyseessä on yksityishenkilön tarjoama palvelu eikä viranomaispalvelu. Sivulta saatavan informaation hyödyntäminen on päätöksiä tekevien tahojen omalla vastuulla. Palvelun tarjoaja ei ole vastuussa menetyksistä, oikeudenkäynneistä, vaateista, kanteista, vaatimuksista, tai kustannuksista taikka vahingosta, olivat ne mitä tahansa tai aiheutuivat ne sitten miten tahansa, jotka johtuvat joko suoraan tai välillisesti yhteydestä palvelun käytöstä. Huomioi, että tämä sivu on yhä kehityksen alla.",
-                                                  style={
-                                                      'textAlign':'center',
-                                                      'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                      }),
-                                          html.Br(),
-                                          html.H4('Tuetut selaimet ja tekniset rajoitukset',style={'textAlign':'center','font-family':'Arial Black'}),
-                                          html.Br(),
+                                          html.H3('Tuetut selaimet ja tekniset rajoitukset',
+                                                  style=h3_style),
+                                          
                                           html.P("Sovellus on testattu toimivaksi Google Chromella ja Mozilla Firefoxilla. Edge- ja Internet Explorer -selaimissa sovellus ei toimi. Opera, Safari -ja muita selaimia ei ole testattu.",
-                                                  style={
-                                                      'textAlign':'center',
-                                                      'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                      }),
+                                                  style=p_style),
                                           html.Br(),
                                           html.Div(style={'text-align':'center'},children = [
-                                              html.H4('Lähteet', style = {'text-align':'center','font-family':'Arial Black'}),
-                                              html.Br(),
+                                              html.H3('Lähteet', 
+                                                      style = h3_style),
+                                              
                                               html.Label(['Tilastokeskus: ', 
                                                         html.A('Työvoimatutkimuksen tärkeimmät tunnusluvut, niiden kausitasoitetut aikasarjat sekä kausi- ja satunnaisvaihtelusta tasoitetut trendit', href = "https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__tyti/statfin_tyti_pxt_135z.px/",target="_blank")
-                                                      ],style={'textAlign':'center','font-family':'Arial', 'font-size':20}),
+                                                      ],style=p_style),
                                               html.Br(),
                                               html.Label(['Tilastokeskus: ', 
                                                         html.A('Kuluttajahintaindeksi (2010=100)', href = "https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__khi/statfin_khi_pxt_11xd.px/",target="_blank")
-                                                      ],style={'textAlign':'center','font-family':'Arial', 'font-size':20}),
+                                                      ],style=p_style),
                                               html.Br(),
-
+                                              html.Label(['Tilastokeskus: ', 
+                                                       html.A('Käsitteet ja määritelmät', href = "https://www.stat.fi/meta/kas/index.html",target="_blank")
+                                                      ],style=p_style),
+                                              html.Br(),
                                               html.Label(['Wikipedia: ', 
                                                         html.A('Phillipsin käyrä', href = "https://fi.wikipedia.org/wiki/Phillipsin_k%C3%A4yr%C3%A4",target="_blank")
-                                                      ],style={'textAlign':'center','font-family':'Arial', 'font-size':20}),
+                                                      ],style=p_style),
                                               html.Br(),
                                               html.Label(['Wikipedia: ', 
                                                         html.A('Pääkomponenttianalyysi', href = "https://fi.wikipedia.org/wiki/P%C3%A4%C3%A4komponenttianalyysi",target="_blank")
-                                                      ],style={'textAlign':'center','font-family':'Arial', 'font-size':20}),
+                                                      ],style=p_style),
                                               html.Br(),
                                               html.Label(['Wikipedia: ', 
                                                         html.A('Pearsonin korrelaatiokerroin (englanniksi)', href = "https://en.wikipedia.org/wiki/Pearson_correlation_coefficient",target="_blank")
-                                                      ],style={'textAlign':'center','font-family':'Arial', 'font-size':20}),
+                                                      ],style=p_style),
                                               html.Br(),
                                                 html.Label(['Scikit-learn: ', 
                                                         html.A('Regressiotekniikat', href = "https://scikit-learn.org/stable/supervised_learning.html#supervised-learning",target="_blank")
-                                                        ],style={'textAlign':'center','font-family':'Arial', 'font-size':20}),
+                                                        ],style=p_style),
                                                 html.Br(),
     
                                           ]),
                                           html.Br(),
                                           html.Br(),
-                                          html.H4('Tekijä', style = {'text-align':'center','font-family':'Arial Black'}),
-                                          html.Br(),
+                                          html.H3('Tekijä', style = h3_style),
+                                          
                                           html.Div(style = {'textAlign':'center'},children = [
-                                              html.I('Tuomas Poukkula', style = {'textAlign':'center','font-family':'Arial', 'font-size':20}),
+                                              html.I('Tuomas Poukkula', style = p_style),
                                          
-                                              html.Br()
+                                              html.Br(),
+                                              html.P("Data Scientist",
+                                                     style = p_style)
                                               ]),
+                                                     
                   
                                    
                                           ],xs =12, sm=12, md=12, lg=8, xl=8)
                                       ],justify ='center',
                                       # style={'margin': '10px 10px 10px 10px'}
                                       ),
+                                  html.Br(),
                                   dbc.Row([
                                      
 
@@ -1314,8 +1333,8 @@ def serve_layout():
                                                       src=app.get_asset_url('256px-Linkedin_icon.png'),
                                                     
                                                       style={
-                                                            'height' : '50px',
-                                                            'width' : '50px',
+                                                            'height' : '70px',
+                                                            'width' : '70px',
                                                             'text-align':'right',
                                                             'float' : 'right',
                                                             'position' : 'center',
@@ -1323,7 +1342,8 @@ def serve_layout():
                                                             'padding-right' : 0
                                                       }
                                                       )
-                                          ], href='https://www.linkedin.com/in/tuomaspoukkula/',target = '_blank', style = {'textAlign':'center'})
+                                          ], href='https://www.linkedin.com/in/tuomaspoukkula/',target = '_blank', 
+                                                  style = {'textAlign':'center'})
                                           ],style={'textAlign':'center'})],xs =6, sm=6, md=6, lg=6, xl=6),
                                       dbc.Col([
                                           html.Div([
@@ -1331,8 +1351,8 @@ def serve_layout():
                                                   html.Img(
                                                       src=app.get_asset_url('Twitter-logo.png'),
                                                       style={
-                                                          'height' : '50px',
-                                                          'width' : '50px',
+                                                          'height' : '70px',
+                                                          'width' : '70px',
                                                             'text-align':'left',
                                                             'float' : 'left',
                                                             'position' : 'center',
@@ -1343,22 +1363,43 @@ def serve_layout():
                                           ], href='https://twitter.com/TuomasPoukkula',target = '_blank', style = {'textAlign':'center'})
                                           ],style={'textAlign':'center'})],xs =6, sm=6, md=6, lg=6, xl=6),
                                       ],justify ='center',
-                                      # style={'margin': '5px 5px 5px 5px'}
+                                      
                                       ),
+                                  dbc.Row([
+                                      dbc.Col([
+                                      html.Div([
+                                          html.A([
+                                              html.Img(
+                                                  src=app.get_asset_url('gofore_logo_orange.svg'),
+                                                  style={
+                                                     
+                                                        'text-align':'center',
+                                                        'float' : 'center',
+                                                        'position' : 'center',
+                                                        'padding-top' : '20px',
+                                                         'padding-bottom' : '20px'
+                                                  }
+                                                  )
+                                      ], href='https://gofore.com/',target = '_blank', style = {'textAlign':'center'})
+                                      ],style={'textAlign':'center'})],xs =12, sm=12, md=12, lg=6, xl=6)
+                                      
+                                      ],
+                                  justify='center'),
                                   dbc.Row([
                                      
                                       dbc.Col([
                                           html.Div(style = {'text-align':'center'},children = [
-                                              html.Br(),
+                                              
                                               html.Label(['Sovellus ', 
                                                       html.A('GitHub:ssa', href='https://github.com/tuopouk/skewedphillips')
-                                                      ],style={'textAlign':'center','font-family':'Arial', 'font-size':20})
+                                                      ],style=p_style)
                                       ])
                                           ],xs =12, sm=12, md=12, lg=6, xl=6)
                                       ],
                                       justify ='center',
-                                      # style={'margin': '10px 10px 10px 10px'}
-                                      )
+                                      
+                                      ),
+                                  html.Br()
                                   ])
                  
                         
@@ -1371,8 +1412,8 @@ def serve_layout():
             dbc.Tab(label ='Hyödykkeiden valinta',
                     tab_id ='feature_tab',
                      tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':22,
-                                 'font-family':'Arial Black'},
+                    tab_style = {'font-size':'34px',
+                                 'font-family':'Cadiz Semibold'},
                     style = {
                         #"position": "fixed",
                         "maxHeight": "1024px",
@@ -1391,50 +1432,62 @@ def serve_layout():
                            
                             html.Br(),
                             html.P('Tässä osiossa valitaan hyödykkeitä, joita käytetään työttömyyden ennustamisessa.',
-                                    style = {'text-align':'center',
-                                            'font-family':'Arial',
-                                            'font-size':p_font_size}),
+                                    style = p_style),
                             html.P('Voit valita alla olevasta valikosta hyödykkeitä, minkä jälkeen voit säätää niiden oletettavaa kuukausimuutosta syöttämällä lukeman alle ilmestyviin laatikkoihin.',
-                                    style = {'text-align':'center',
-                                            'font-family':'Arial',
-                                            'font-size':p_font_size}),
+                                    style = p_style),
                             html.P('Voit myös säätää kaikille hyödykkeille saman kuukausimuutoksen tai hyödyntää toteutuneiden kuukausimuutosten keskiarvoja.',
-                                    style = {'text-align':'center',
-                                            'font-family':'Arial',
-                                            'font-size':p_font_size}),
+                                    style = p_style),
                             html.P('Hyödykevalikon voi rajata tai lajitella sen yllä olevasta alasvetovalikosta. Valittavanasi on joko aakkosjärjestys, korrelaatiojärjestykset (Pearsonin korrelaatiokertoimen mukaan) tai rajaus Tilastokeskuksen hyödykehierarkian mukaan. Korrelaatiojärjestyksellä tässä viitataan jokaisen hyödykkeen hintaindeksin arvojen ja saman ajankohdan työtömyysasteiden välistä korrelaatiokerrointa, joka on laskettu Pearsonin metodilla. Nämä voi lajitella laskevaan tai nousevaan järjestykseen joko todellisen arvon mukaan (suurin positiivinen - pienin negatiivinen) tai itseisarvon (ilman etumerkkiä +/-) mukaan.',
-                                    style = {'text-align':'center',
-                                            'font-family':'Arial',
-                                            'font-size':p_font_size}),
+                                    style = p_style),
 
                             html.Br(),
                             html.H3('Valitse ennustepiirteiksi hyödykeryhmiä valikosta',
-                                    style={'textAlign':'center',
-                                            'font-family':'Arial Black'}),
-                            html.Br(),
+                                    style=h3_style),
+                            
                             dbc.DropdownMenu(id = 'sorting',
                                               #align_end=True,
                                               children = [
                                                  
-                                                  dbc.DropdownMenuItem("Aakkosjärjestyksessä", id = 'alphabet'),
-                                                  dbc.DropdownMenuItem("Korrelaatio (laskeva)", id = 'corr_desc'),
-                                                  dbc.DropdownMenuItem("Korrelaatio (nouseva)", id = 'corr_asc'),
-                                                  dbc.DropdownMenuItem("Absoluuttinen korrelaatio (laskeva)", id = 'corr_abs_desc'),
-                                                  dbc.DropdownMenuItem("Absoluuttinen korrelaatio (nouseva)", id = 'corr_abs_asc'),
-                                                  dbc.DropdownMenuItem("Pääluokittain", id = 'main_class'),
-                                                  dbc.DropdownMenuItem("2. luokka", id = 'second_class'),
-                                                  dbc.DropdownMenuItem("3. luokka", id = 'third_class'),
-                                                  dbc.DropdownMenuItem("4. luokka", id = 'fourth_class'),
-                                                  dbc.DropdownMenuItem("5. luokka", id = 'fifth_class')
+                                                  dbc.DropdownMenuItem("Aakkosjärjestyksessä", id = 'alphabet',style={
+                                                      'font-size':p_font_size, 
+                                                      'font-family':'Cadiz Book'}),
+                                                  dbc.DropdownMenuItem("Korrelaatio (laskeva)", id = 'corr_desc',style={
+                                                      'font-size':p_font_size, 
+                                                      'font-family':'Cadiz Book'}),
+                                                  dbc.DropdownMenuItem("Korrelaatio (nouseva)", id = 'corr_asc',style={
+                                                      'font-size':p_font_size, 
+                                                      'font-family':'Cadiz Book'}),
+                                                  dbc.DropdownMenuItem("Absoluuttinen korrelaatio (laskeva)", id = 'corr_abs_desc',style={
+                                                      'font-size':p_font_size, 
+                                                      'font-family':'Cadiz Book'}),
+                                                  dbc.DropdownMenuItem("Absoluuttinen korrelaatio (nouseva)", id = 'corr_abs_asc',style={
+                                                      'font-size':p_font_size, 
+                                                      'font-family':'Cadiz Book'}),
+                                                  dbc.DropdownMenuItem("Pääluokittain", id = 'main_class',style={
+                                                      'font-size':p_font_size, 
+                                                      'font-family':'Cadiz Book'}),
+                                                  dbc.DropdownMenuItem("2. luokka", id = 'second_class',style={
+                                                      'font-size':p_font_size, 
+                                                      'font-family':'Cadiz Book'}),
+                                                  dbc.DropdownMenuItem("3. luokka", id = 'third_class',style={
+                                                      'font-size':p_font_size, 
+                                                      'font-family':'Cadiz Book'}),
+                                                  dbc.DropdownMenuItem("4. luokka", id = 'fourth_class',style={
+                                                      'font-size':p_font_size, 
+                                                      'font-family':'Cadiz Book'}),
+                                                  dbc.DropdownMenuItem("5. luokka", id = 'fifth_class',style={
+                                                      'font-size':p_font_size, 
+                                                      'font-family':'Cadiz Book'})
                                                  
                                                  
                                                   ],
                                             label = "Absoluuttinen korrelaatio (laskeva)",
-                 
+                                            color="secondary", 
+                                            className="m-1",
+                                            size="lg",
                                             style={
-                                                'font-size':22, 
-                                                'font-family':'Arial',
-                                                'color': 'black'}
+                                                'font-size':28, 
+                                                'font-family':'Cadiz Book'}
                                             ),
                             
                             html.Br(),
@@ -1442,15 +1495,17 @@ def serve_layout():
                                           options = initial_options,
                                           multi = True,
                                           value = list(initial_features),
-                                          style = {'font-size':16, 'font-family':'Arial','color': 'black'},
-                                          placeholder = 'Valitse hyödykkeitä.'),
+                                          style = {'font-size':25, 'font-family':'Cadiz Book'},
+                                          placeholder = 'Valitse hyödykkeitä'),
                             html.Br(),
                             
                             dbc.Alert("Valitse ainakin yksi hyödykeryhmä valikosta!", color="danger",
                                       dismissable=True, fade = True, is_open=False, id = 'alert', 
-                                      style = {'text-align':'center', 'font-size':18, 'font-family':'Arial Black'}),
+                                      style = {'text-align':'center', 'font-size':p_font_size, 'font-family':'Cadiz Semibold'}),
                             dash_daq.BooleanSwitch(id = 'select_all', 
-                                                    label = dict(label = 'Valitse kaikki',style = {'font-size':20, 'fontFamily':'Arial Black'}), 
+                                                    label = dict(label = 'Valitse kaikki',
+                                                                 style = {'font-size':p_font_size, 
+                                                                          'fontFamily':'Cadiz Semibold'}), 
                                                     on = False, 
                                                     color = 'blue'),
                             html.Br(),
@@ -1460,36 +1515,24 @@ def serve_layout():
                             ],xs =12, sm=12, md=12, lg=12, xl=12
                         )
                         ],justify='center', 
-                    style = {'margin' : '10px 10px 10px 10px'}
+                    # style = {'margin' : '10px 10px 10px 10px'}
                     ),
                     dbc.Row(id = 'selections_div', children = [
                         
                             dbc.Col([
                                 
-                                html.H3('Aseta arvioitu hyödykkeiden hintaindeksien keskimääräinen kuukausimuutos prosenteissa.',
-                                                        style = {'text-align':'center',
-                                                                  'font-family':'Arial Black'}),
-                                html.Br(),
+                                html.H3('Aseta arvioitu hyödykkeiden hintaindeksien keskimääräinen kuukausimuutos prosenteissa',
+                                                        style = h3_style),
+                                
                                 dash_daq.BooleanSwitch(id = 'averaging', 
-                                                        label = dict(label = 'Käytä toteutumien keskiarvoja',style = {'font-size':20, 'fontFamily':'Arial Black'}), 
+                                                        label = dict(label = 'Käytä toteutumien keskiarvoja',style = {'font-size':p_font_size, 'fontFamily':'Cadiz Semibold'}), 
                                                         on = True, 
                                                         color = 'blue')
                                 
                                 ],xs =12, sm=12, md=12, lg=6, xl=6),
-                        #     dbc.Col([
-                                
-                        #         html.H3('tai aseta kaille yhtä suuri prosenttimuutos.',
-                        #                                     style = {'text-align':'center',
-                        #                                             'font-family':'Arial Black'}),
-                        #         html.Br(),
-                        #         dash_daq.BooleanSwitch(id = 'common_change', 
-                        #                                label = dict(label = 'Käytä kaikille samaa muutosta',style = {'font-size':20, 'fontFamily':'Arial Black'}), 
-                        #                                on = False, 
-                        #                                color = 'blue')
-                        
-                        # ], xs =12, sm=12, md=12, lg=6, xl=6)
+      
                 ],justify = 'center', 
-                        # style = {'margin' : '10px 10px 10px 10px'}
+                    
                 ),
                     html.Br(),
                 dbc.Row([
@@ -1501,11 +1544,11 @@ def serve_layout():
                             ], xs =12, sm=12, md=12, lg=9, xl=9)
                         
                         ],justify = 'center', 
-                    # style = {'margin' : '10px 10px 10px 10px'}
+                  
                     ),
                 dbc.Row(id = 'adjustments_div',
                         justify = 'left', 
-                        style = {'margin' : '10px 10px 10px 10px'}
+                     
                         )
             ]
             ),
@@ -1514,8 +1557,8 @@ def serve_layout():
             dbc.Tab(label = 'Tutkiva analyysi',
                     tab_id = 'eda_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':22,
-                                 'font-family':'Arial Black'},
+                    tab_style = {'font-size':'34px',
+                                 'font-family':'Cadiz Semibold'},
                     style = {
                             
                             "maxHeight": "1024px",
@@ -1530,9 +1573,7 @@ def serve_layout():
                              html.Br(),
                               html.Br(),
                               html.P('Tässä osiossa työttömyysastetta sekä valittujen kuluttajahintaindeksin hyödykeryhmien keskinäistä suhdetta sekä muutosta ajassa. Alla voit nähdä kuinka eri hyödykeryhmien hintaindeksit korreloivat keskenään sekä työttömyysasteen kanssa. Voit myös havainnoida indeksien, inflaation sekä sekä työttömyysasteen aikasarjoja. Kuvattu korrelaatio perustuu Pearsonin korrelaatiokertoimeen.',
-                                     style = {'font-family':'Arial',
-                                               'font-size':p_font_size, 
-                                              'text-align':'center'}),
+                                     style = p_style),
                               html.Br()
                               ],xs =12, sm=12, md=12, lg=9, xl=9)
                          ],
@@ -1577,9 +1618,9 @@ def serve_layout():
                          dbc.Col(children = [
                              html.Div(style={'textAlign':'center'},children=[
                                  html.Br(),
-                                 html.H2('Alla olevassa kuvaajassa on esitetty inflaatio ja työttömyys Suomessa kuukausittain.',
-                                        style = {'font-family':'Arial', 'text-aling':'center'}),
-                                 html.Br(),
+                                 html.H3('Alla olevassa kuvaajassa on esitetty inflaatio ja työttömyys Suomessa kuukausittain.',
+                                        style = h3_style),
+                                 
                                  html.Div(id = 'employement_inflation_div',
                                           
                                           children=[dcc.Graph(id ='employement_inflation',
@@ -1596,7 +1637,7 @@ def serve_layout():
                                                               layout = go.Layout(title = dict(text = 'Työttömyysaste ja inflaatio kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],data.index.strftime('%B %Y').values[-1]),
                                                                                               x=.5,
                                                                                               font=dict(
-                                                                                                  family='Arial Black',
+                                                                                                  family='Cadiz Semibold',
                                                                                                    size=16
                                                                                                   )),
                                                                                  height=graph_height,
@@ -1608,7 +1649,7 @@ def serve_layout():
                                                                                       # t=120,
                                                                                       # pad=4
                                                                                  ),
-                                                                                 hoverlabel=dict(font=dict(family='Arial',size=14)),
+                                                                                 hoverlabel=dict(font=dict(family='Cadiz Book',size=14)),
                                                                                  legend = dict(orientation = 'h',
                                                                                                 xanchor='center',
                                                                                                 yanchor='top',
@@ -1616,13 +1657,13 @@ def serve_layout():
                                                                                                 y=1.04,
                                                                                                font=dict(
                                                                                       size=12,
-                                                                                     family='Arial')),
+                                                                                     family='Cadiz Book')),
                                                                                  xaxis = dict(title=dict(text = 'Aika',
                                                                                                          font=dict(
                                                                                                               size=18, 
-                                                                                                             family = 'Arial Black')), 
+                                                                                                             family = 'Cadiz Semibold')), 
                                                                                               tickfont = dict(
-                                                                                                  family = 'Arial Black', 
+                                                                                                  family = 'Cadiz Semibold', 
                                                                                                    size = 16
                                                                                                   ),
                                                                                               rangeslider=dict(
@@ -1661,11 +1702,11 @@ def serve_layout():
                                                                                  yaxis = dict(title=dict(text = 'Arvo (%)',
                                                                                                         font=dict(
                                                                                                              size=18, 
-                                                                                                            family = 'Arial Black')),
+                                                                                                            family = 'Cadiz Semibold')),
                                                                                              tickformat = ' ',
                                                                                              automargin=True,
                                                                                              tickfont = dict(
-                                                                                                 family = 'Arial Black', 
+                                                                                                 family = 'Cadiz Semibold', 
                                                                                                   size = 16
                                                                                                  )
                                                                                              )
@@ -1689,8 +1730,8 @@ def serve_layout():
             dbc.Tab(label='Menetelmän valinta',
                     tab_id ='hyperparam_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':22,
-                                 'font-family':'Arial Black'},
+                    tab_style = {'font-size':'34px',
+                                 'font-family':'Cadiz Semibold'},
                     style = {
                             
                             "maxHeight": "1024px",
@@ -1705,59 +1746,51 @@ def serve_layout():
                             
                                 html.Br(),
                                 html.P('Tässä osiossa voit valita koneoppimisalgoritmin, säätää sen hyperparametrit sekä halutessasi hyödyntää pääkomponenttianalyysia valitsemallasi tavalla.',
-                                        style = {'text-align':'center',
-                                                'font-family':'Arial',
-                                                'font-size':p_font_size}),
+                                        style = p_style),
                                 html.P('Valitse ensin algoritmi, minkä jälkeen alle ilmestyy sille ominaiset hyperparametrit, joita voit säätää sopiviksi. Hyperparametrit luetaan dynaamisesti suoraan Scikit-learn -kirjaston dokumentaatiosta, eikä niille siksi ole suomenkielistä käännöstä. Säätövalikoiden alta löytyy linkki valitun algoritmin dokumentaatiosivulle, jossa aiheesta voi lukea enemmän. Hyperparametrien säädölle ei ole yhtä ainutta tapaa, vaan eri arvoja on testattava iteratiivisesti.',
-                                        style = {'text-align':'center',
-                                                'font-family':'Arial',
-                                                'font-size':p_font_size}),
+                                        style = p_style),
                                 html.Br(),
                                 html.P('Lisäksi voit valita hyödynnetäänkö pääkomponenttianalyysiä piirteiden karsimiseksi. Pääkompomponenttianalyysi on tilastollis-tekninen kohinanpoistomenetelmä, jolla pyritään parantamaan ennusteen laatua. Siinä valituista piirteistä muodostetaan lineaarikombinaatioita siten, että alkuperäisessä datassa oleva variaatio säilyy tietyn suhdeluvun verran muunnetussa aineistossa. Variaatio voi säätää haluamakseen. Kuten hyperparametrien tapauksessa, on tämäkin määrittely puhtaasti empiirinen.',
-                                        style = {'text-align':'center',
-                                                'font-family':'Arial',
-                                                'font-size':p_font_size}),
+                                        style = p_style),
                                 html.P('Mikäli hyperparametrin laatikon reunat ovat punaisena, niin arvo ei ole sopiva. Testaaminen ja ennustaminen epäonnistuvat, jos hyperparametreihin sovelleta sallittuja arvoja. Voit tarkastaa sallitut arvot mallin dokumentaatiosta.',
-                                        style = {'text-align':'center',
-                                                'font-family':'Arial',
-                                                'font-size':p_font_size})
+                                        style = p_style)
                             ],xs =12, sm=12, md=12, lg=9, xl=9)
                         ], justify = 'center', 
                             style = {'textAlign':'center',
-                                      'margin':'10px 10px 10px 10px'
+                                      # 'margin':'10px 10px 10px 10px'
                                      }
                             ),
                         html.Br(),
                         dbc.Row([
                             dbc.Col(id = 'model_selection', children = [
                                 
-                                html.H3('Valitse algoritmi.',style={'textAlign':'center'}),
-                                html.Br(),
+                                html.H3('Valitse algoritmi',style=h3_style),
+                                
                                 dcc.Dropdown(id = 'model_selector',
                                               value = 'Satunnaismetsä',
                                               multi = False,
                                               placeholder = 'Valitse algoritmi',
-                                              style = {'font-size':16, 'font-family':'Arial','color': 'black'},
+                                              style = {'font-size':p_font_size, 'font-family':'Cadiz Book','color': 'black'},
                                               options = [{'label': c, 'value': c} for c in MODELS.keys()]),
                                 
                                 html.Br(),
-                                html.H3('Säädä hyperparametrit.', style = {'textAlign':'center'}),
-                                html.Br(),
+                                html.H3('Säädä hyperparametrit', style = h3_style),
+                                
                                 html.Div(id = 'hyperparameters_div')
                                 
-                                ], xs =12, sm=12, md=12, lg=8, xl=8),
+                                ], xs =12, sm=12, md=12, lg=9, xl=9),
                             dbc.Col(id = 'pca_selections', children = [
                                 html.Br(),
                                 dash_daq.BooleanSwitch(id = 'pca_switch', 
-                                                                  label = dict(label = 'Käytä pääkomponenttianalyysia',style = {'font-size':20, 'fontFamily':'Arial Black','textAlign':'center'}), 
+                                                                  label = dict(label = 'Käytä pääkomponenttianalyysia',style = {'font-size':30, 'fontFamily':'Cadiz Semibold','textAlign':'center'}), 
                                                                   on = False, 
                                                                   color = 'blue'),
                                 html.Br(),
                                 
                                 
                                 html.Div(id = 'ev_placeholder',children =[
-                                    html.H4('Valitse säilytettävä variaatio', style = {'textAlign':'center'}),
-                                    html.Br(),
+                                    html.H3('Valitse säilytettävä variaatio', style = h3_style),
+                                    
                                     dcc.Slider(id = 'ev_slider',
                                         min = .7, 
                                         max = .99, 
@@ -1765,9 +1798,9 @@ def serve_layout():
                                         step = .01,
                                         tooltip={"placement": "top", "always_visible": True},
                                         marks = {
-                                                  .7: {'label':'70%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
-                                            .85: {'label':'85%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
-                                                  .99: {'label':'99%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}}
+                                                  .7: {'label':'70%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
+                                            .85: {'label':'85%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
+                                                  .99: {'label':'99%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}}
 
                                                 }
                                       ),
@@ -1775,9 +1808,7 @@ def serve_layout():
                                   html.Div(id = 'ev_slider_update', 
                                           children = [
                                               html.Div([html.P('Valitsit {} % säilytetyn variaation.'.format(95),
-                                                                style = {'text-align':'center', 
-                                                                          'font-size':20, 
-                                                                        'font-family':'Arial Black'})
+                                                                style = p_style)
                                                         ], style = {'display':'none'}
                                                       )
                                           ]
@@ -1785,9 +1816,9 @@ def serve_layout():
                                   ]
                                     )
                                 
-                                ],xs =12, sm=12, md=12, lg=4, xl=4)
+                                ],xs =12, sm=12, md=12, lg=3, xl=3)
                         ],justify='left', 
-                             style = {'margin' : '10px 10px 10px 10px'}
+                              # style = {'margin' : '10px 10px 10px 10px'}
                             ),
                         html.Br(),
                         
@@ -1797,8 +1828,8 @@ def serve_layout():
             dbc.Tab(label='Testaaminen',
                     tab_id ='test_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':22,
-                                 'font-family':'Arial Black'},
+                    tab_style = {'font-size':'34px',
+                                 'font-family':'Cadiz Semibold'},
                     style = {
                             
                             "maxHeight": "1024px",
@@ -1809,21 +1840,14 @@ def serve_layout():
                         html.Br(),
                         dbc.Row([
                             dbc.Col([   
-                                        html.H4('Menetelmän testaaminen', style = {'textAlign':'center',
-                                                                                      'font-family':'Arial Black'}),
-                                        html.Br(),
-                                        html.P('Tässä osiossa voit testata kuinka hyvin valittu menetelmä olisi onnistunut ennustamaan menneiden kuukausien työttömyysasteen hyödyntäen valittuja piirteitä. Testattaessa valittu määrä kuukausia jätetään testidataksi, jota menetelmä pyrkii ennustamaan.',style = {
-                                            'font-size':p_font_size, 
-                                            'font-family':'Arial',
-                                            'text-align':'center'}),
-                                        html.P('Tässä kohtaa hyödykeindeksien oletetaan toteutuvan sellaisinaan.',style = {
-                                            'font-size':p_font_size, 
-                                            'font-family':'Arial',
-                                            'text-align':'center'}),
+                                        html.H3('Menetelmän testaaminen', style = h3_style),
+                                        
+                                        html.P('Tässä osiossa voit testata kuinka hyvin valittu menetelmä olisi onnistunut ennustamaan menneiden kuukausien työttömyysasteen hyödyntäen valittuja piirteitä. Testattaessa valittu määrä kuukausia jätetään testidataksi, jota menetelmä pyrkii ennustamaan.',
+                                               style = p_style),
+                                        html.P('Tässä kohtaa hyödykeindeksien oletetaan toteutuvan sellaisinaan.',
+                                               style = p_style),
                                         html.P('Tehtyäsi testin voit tarkastella viereistä tuloskuvaajaa tai viedä testidatan alle ilmestyvästä painikeesta Exceliin.',
-                                              style={'text-align':'center',
-                                                      'font-family':'Arial',
-                                                      'font-size':p_font_size})
+                                              style=p_style)
                             
                             
                             ],xs =12, sm=12, md=12, lg=9, xl=9)
@@ -1839,9 +1863,8 @@ def serve_layout():
                                         html.Br(),
 
                                         html.Br(),
-                                        html.H3('Valitse testidatan pituus.',style = {'textAlign':'center',
-                                                                                      'font-family':'Arial Black'}),
-                                        html.Br(),
+                                        html.H3('Valitse testidatan pituus',style = h3_style),
+                                        
                                         dcc.Slider(id = 'test_slider',
                                                   min = 1,
                                                   max = 12,
@@ -1849,13 +1872,13 @@ def serve_layout():
                                                   step = 1,
                                                   tooltip={"placement": "top", "always_visible": True},
                                                  
-                                                  marks = {1: {'label':'kuukausi', 'style':{'font-size':18, 'fontFamily':'Arial Black'}},
-                                                          # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
+                                                  marks = {1: {'label':'kuukausi', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
+                                                          # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
                                                         
-                                                            6:{'label':'puoli vuotta', 'style':{'font-size':18, 'fontFamily':'Arial Black'}},
-                                                          #  9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
+                                                            6:{'label':'puoli vuotta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
+                                                          #  9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
                                                          
-                                                          12:{'label':'vuosi', 'style':{'font-size':18, 'fontFamily':'Arial Black'}},
+                                                          12:{'label':'vuosi', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
                                                           
 
                                                             }
@@ -1865,7 +1888,7 @@ def serve_layout():
                                       html.Br(),
                                       html.Div(id = 'test_button_div',children = [html.P('Valitse ensin hyödykkeitä.',style = {
                                           'text-align':'center', 
-                                          'font-family':'Arial Black', 
+                                          'font-family':'Cadiz Semibold', 
                                             'font-size':p_font_size
                                           })], style = {'textAlign':'center'}),
                                       html.Br(),
@@ -1886,8 +1909,8 @@ def serve_layout():
             dbc.Tab(label='Ennustaminen',
                     tab_id = 'forecast_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':22,
-                                 'font-family':'Arial Black'},
+                    tab_style = {'font-size':'34px',
+                                 'font-family':'Cadiz Semibold'},
                     style = {
                             
                             "maxHeight": "1024px",
@@ -1899,17 +1922,12 @@ def serve_layout():
                         dbc.Row([
                             
                             dbc.Col([
-                                        html.H4('Ennusteen tekeminen',style={'textAlign':'center',
-                                                                            'font-family':'Arial Black'}),
-                                        html.Br(),
+                                        html.H3('Ennusteen tekeminen',style=h3_style),
+                                        
                                         html.P('Tässä osiossa voit tehdä ennusteen valitulle ajalle. Ennustettaessa on käytössä Menetelmän valinta -välilehdellä tehdyt asetukset. Ennusteen tekemisessä hyödynnetään Hyödykkeiden valinta -välilehdellä tehtyjä oletuksia hyödykkeiden suhteellisesta hintakehityksestä.',
-                                              style={'text-align':'center',
-                                                      'font-family':'Arial',
-                                                      'font-size':p_font_size}),
+                                              style=p_style),
                                         html.P('Tehtyäsi ennusteen voit tarkastella viereistä ennusteen kuvaajaa tai viedä tulosdatan alle ilmestyvästä painikeesta Exceliin.',
-                                              style={'text-align':'center',
-                                                      'font-family':'Arial',
-                                                      'font-size':p_font_size}),
+                                              style=p_style),
                                         html.Br()
                                     ],xs =12, sm=12, md=12, lg=9, xl=9)
                             
@@ -1924,19 +1942,20 @@ def serve_layout():
                                     dbc.Col(children = [
                                         html.Br(),
 
-                                        html.H3('Valitse ennusteen pituus.',style={'textAlign':'center', 'font-family':'Arial Black'}),
+                                        html.H3('Valitse ennusteen pituus',
+                                                style=h3_style),
                                         dcc.Slider(id = 'forecast_slider',
                                                   min = 2,
                                                   max = 12,
                                                   value = 3,
                                                   step = 1,
                                                   tooltip={"placement": "top", "always_visible": True},
-                                                  marks = {2: {'label':'2 kuukautta', 'style':{'font-size':16, 'fontFamily':'Arial Black'}},
-                                                          # 3: {'label':'kolme kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                                          6:{'label':'puoli vuotta', 'style':{'font-size':16, 'fontFamily':'Arial Black'}},
-                                                          # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                                          12:{'label':'vuosi', 'style':{'font-size':16, 'fontFamily':'Arial Black'}},
-                                                        #  24:{'label':'kaksi vuotta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}}
+                                                  marks = {2: {'label':'2 kuukautta', 'style':{'font-size':16, 'fontFamily':'Cadiz Semibold'}},
+                                                          # 3: {'label':'kolme kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
+                                                          6:{'label':'puoli vuotta', 'style':{'font-size':16, 'fontFamily':'Cadiz Semibold'}},
+                                                          # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
+                                                          12:{'label':'vuosi', 'style':{'font-size':16, 'fontFamily':'Cadiz Semibold'}},
+                                                        #  24:{'label':'kaksi vuotta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}}
                                                         
                                                      
 
@@ -1945,11 +1964,7 @@ def serve_layout():
                                         html.Br(),
                                         html.Div(id = 'forecast_slider_indicator',style = {'textAlign':'center'}),
                                         html.Div(id = 'forecast_button_div',children = [html.P('Valitse ensin hyödykkeitä.',
-                                                                                              style = {
-                                                                                                  'text-align':'center',
-                                                                                                    'font-family':'Arial Black', 
-                                                                                                    'font-size':p_font_size
-                                                                                                    }
+                                                                                              style = p_style
                                                                                               )],style = {'textAlign':'center'})],
                                         xs =12, sm=12, md=12, lg=4, xl=4
                                         ),
@@ -2000,28 +2015,26 @@ def add_value_adjustments(slider_value, features, averaging):
         features_values = {feature:mean_df.loc[feature] for feature in features}
         
         row_children =[dbc.Col([html.Br(), 
-                                html.P(feature,style={
-                                        'font-family':'Arial',
-                                        'font-size':p_font_size,
-                                        
-                                    }),
+                                html.P(feature,style={'font-family':'Messina Modern Semibold',
+                                            'font-size':22}),
                                 dcc.Input(id = {'type':'value_adjust', 'index':feature}, 
                                                value = round(mean_df.loc[feature],1), 
                                                type = 'number', 
+                                               style={'font-family':'Messina Modern Semibold',
+                                                           'font-size':22},
                                                step = .1)],xs =12, sm=12, md=4, lg=2, xl=2) for feature in features]
     else:
         
         features_values = {feature:slider_value for feature in features}
         
         row_children =[dbc.Col([html.Br(), 
-                                html.P(feature,style={
-                                        'font-family':'Arial',
-                                        'font-size':p_font_size,
-                                        
-                                    }),
+                                html.P(feature,style={'font-family':'Messina Modern Semibold',
+                                            'font-size':22}),
                                 dcc.Input(id = {'type':'value_adjust', 'index':feature}, 
                                                value = slider_value, 
                                                type = 'number', 
+                                               style ={'font-family':'Messina Modern Semibold',
+                                                           'font-size':22},
                                                step = .1)],xs =12, sm=12, md=4, lg=2, xl=2) for feature in features]
     return row_children, features_values
 
@@ -2054,7 +2067,8 @@ def update_slider_div(averaging):
     
     if averaging:
         
-        return [html.H5('Valitse kuinka monen edeltävän kuukauden keskiarvoa käytetään.', style = {'text-align':'center', 'font-family':'Arial Black'}),
+        return [html.H3('Valitse kuinka monen edeltävän kuukauden keskiarvoa käytetään', 
+                        style = h3_style),
         html.Br(),
         dcc.Slider(id = 'slider',
                       min = 1,
@@ -2062,30 +2076,31 @@ def update_slider_div(averaging):
                       value = 4,
                       step = 1,
                       tooltip={"placement": "top", "always_visible": True},
-                       marks = {1:{'label':'kuukausi', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
-                                # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                6:{'label':'puoli vuotta', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
-                                # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                12:{'label':'vuosi', 'style':{'font-size':20, 'fontFamily':'Arial Black'}}   
+                       marks = {1:{'label':'kuukausi', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
+                                # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
+                                6:{'label':'puoli vuotta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
+                                # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
+                                12:{'label':'vuosi', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}}   
                              }
                       
                     )]
         
     else:
         return [
-            html.H5('Valitse kuinka iso suhteellista muutosta sovelletaan.', style = {'text-align':'center', 'font-family':'Arial Black'}),
-            html.Br(),
+            html.H3('Valitse kuinka iso suhteellista muutosta sovelletaan', 
+                    style = h3_style),
+            
             dcc.Slider(id = 'slider',
                           min = -10,
                           max = 10,
                           value = 0,
                           step = 0.1,
                           tooltip={"placement": "top", "always_visible": True},
-                           marks = {-10:{'label':'-10%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
-                                    # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                    0:{'label':'0%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}},
-                                    # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Arial Black','color':'white'}},
-                                    10:{'label':'10%', 'style':{'font-size':20, 'fontFamily':'Arial Black'}}   
+                           marks = {-10:{'label':'-10%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
+                                    # 3:{'label':'3 kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
+                                    0:{'label':'0%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}},
+                                    # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold','color':'white'}},
+                                    10:{'label':'10%', 'style':{'font-size':20, 'fontFamily':'Cadiz Semibold'}}   
                                  }
                           
                         )
@@ -2144,13 +2159,14 @@ def update_hyperparameter_selections(model_name):
             
             
             if type(value) == int:
-                children.append(dbc.Col([html.H6(hyperparameter+':', style={'text-align':'left','font-size':15,'font-family':'Arial'})],xs =12, sm=12, md=12, lg=12, xl=12))
+                children.append(dbc.Col([html.P(hyperparameter+':', 
+                                                 style=p_bold_style)],xs =12, sm=12, md=12, lg=12, xl=12))
                 children.append(html.Br())
                 children.append(dbc.Col([dcc.Slider(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
                                    value = value,
-                                   max = 4*(value+1),
+                                   max = 4*(value+5),
                                    min = value,
-                                   marks=None,
+                                   marks=None,                                
                                    tooltip={"placement": "bottom", "always_visible": True},
                                    step = 1),
                                   html.Br()
@@ -2161,36 +2177,45 @@ def update_hyperparameter_selections(model_name):
                 
                 if hyperparameter in LESS_THAN_ONE:
                     
-                    children.append(dbc.Col([html.H6(hyperparameter+':', style={'text-align':'left','font-size':15,'font-family':'Arial'})],xs =12, sm=12, md=12, lg=2, xl=2)),
+                    children.append(dbc.Col([html.P(hyperparameter+':', 
+                                                     style=p_bold_style)],xs =12, sm=12, md=12, lg=2, xl=2)),
                     children.append(html.Br())
                     children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
                                                        min = 0,
                                                        max=0.99,
                                                        type = 'number',
+                                                       style = {'font-family':'Cadiz Book','font-size':p_font_size},
                                                        value = value,
+                                                       className="mb-3",
                                                        step=0.01),
                                                       html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
                                     )
                 elif hyperparameter in LESS_THAN_HALF:
                         
-                        children.append(dbc.Col([html.H6(hyperparameter+':', style={'text-align':'left','font-size':15,'font-family':'Arial'})],xs =12, sm=12, md=12, lg=2, xl=2)),
+                        children.append(dbc.Col([html.P(hyperparameter+':', 
+                                                         style=p_bold_style)],xs =12, sm=12, md=12, lg=2, xl=2)),
                         children.append(html.Br())
                         children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
                                                            min = 0,
                                                            max=0.49,
                                                            type = 'number',
                                                            value = value,
+                                                           className="mb-3",
+                                                           style = {'font-family':'Cadiz Book','font-size':p_font_size},
                                                            step=0.01),
                                                           html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
                                         )
                     
                 else:
-                    children.append(dbc.Col([html.H6(hyperparameter+':', style={'text-align':'left','font-size':15,'font-family':'Arial'})],xs =12, sm=12, md=12, lg=2, xl=2)),
+                    children.append(dbc.Col([html.P(hyperparameter+':', 
+                                                     style=p_bold_style)],xs =12, sm=12, md=12, lg=2, xl=2)),
                     children.append(html.Br())
                     children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
                                                        min = 0,
                                                        type = 'number',
                                                        value = value,
+                                                       className="mb-3",
+                                                       style = {'font-family':'Cadiz Book','font-size':p_font_size},
                                                        step=0.01),
                                                       html.Br()
                                              ],xs =12, sm=12, md=12, lg=2, xl=2)
@@ -2200,10 +2225,11 @@ def update_hyperparameter_selections(model_name):
                 
             
             elif type(value) == bool:
-                children.append(dbc.Col([html.H6(hyperparameter+':', style={'text-align':'left','font-size':15,'font-family':'Arial'})],xs =12, sm=12, md=12, lg=2, xl=2)),
+                children.append(dbc.Col([html.P(hyperparameter+':', 
+                                                 style=p_bold_style)],xs =12, sm=12, md=12, lg=2, xl=2)),
                 children.append(html.Br())
                 children.append(dbc.Col([dbc.Switch(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'}, 
-                                          style={'font-size':30},
+                                          style= {'font-family':'Cadiz Book','font-size':p_font_size},
                                           value=value,
                                           ),
                                          html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
@@ -2215,12 +2241,13 @@ def update_hyperparameter_selections(model_name):
                     if type(param_options[hyperparameter]) == list:
                         
                         
-                        children.append(dbc.Col([html.H6(hyperparameter+':', style={'text-align':'left','font-size':15,'font-family':'Arial'})],xs =12, sm=12, md=12, lg=2, xl=2)),
+                        children.append(dbc.Col([html.P(hyperparameter+':', 
+                                                         style=p_bold_style)],xs =12, sm=12, md=12, lg=2, xl=2)),
                         children.append(html.Br())
                         children.append(dbc.Col([dcc.Dropdown(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'}, 
                                                   multi = False,
                                                   #label = hyperparameter,
-                                                  style = {'font-family':'Arial','color': 'black'},
+                                                  style = {'font-family':'Cadiz Book','font-size':p_font_size},
                                                   options = [{'label':c, 'value': c} for c in param_options[hyperparameter] if c not in ['precomputed','poisson']],
                                                   value = value),
                                                  html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
@@ -2231,7 +2258,7 @@ def update_hyperparameter_selections(model_name):
      
     children.append(html.Br()) 
     children.append(html.Div(style = {'textAlign':'center'},
-             children = [html.A('Katso dokumentaatio.', href = MODELS[model_name]['doc'], target="_blank",style = {'textAlign':'center','font-family':'Arial', 'font-size':20})]))
+             children = [html.A('Katso dokumentaatio.', href = MODELS[model_name]['doc'], target="_blank",style = p_style)]))
     return dbc.Row(children, justify ='start')
 
 
@@ -2329,19 +2356,16 @@ def update_test_results(n_clicks,
                         
                         # dbc.Col([
                             html.Br(),
-                             html.H2('Testin tulokset', style = {'textAlign':'center', 'family':'Arial Black'}),
-                             html.Br(),
+                             html.H3('Testin tulokset',
+                                     style = h3_style),
+                             
                              html.P('Alla olevassa kuvaajassa nähdään kuinka hyvin ennustemalli olisi ennustanut työttömyysasteen ajalle {} - {}.'.format(test_result.index.strftime('%B %Y').values[0],test_result.index.strftime('%B %Y').values[-1]),
-                                    style = {
-                                        'text-align':'center', 
-                                        'font-family':'Arial', 
-                                         'font-size':p_font_size
-                                        }),
+                                    style = p_style),
                               html.Div([html.Br(),dbc.RadioItems(id = 'test_chart_type', 
                                           options = [{'label':'pylväät','value':'bars'},
                                                     {'label':'viivat','value':'lines'},
                                                     {'label':'viivat ja pylväät','value':'lines+bars'}],
-                                          labelStyle={'display':'inline-block', 'padding':'10px','font-size':18},
+                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':25,'font-family':'Cadiz Book'},
                                           className="btn-group",
                                           inputClassName="btn-check",
                                           labelClassName="btn btn-outline-warning",
@@ -2361,9 +2385,10 @@ def update_test_results(n_clicks,
                     dbc.Row(
                         
                         [
-                            dbc.Col([html.H4('MAPE (%)', style = {'textAlign':'center'}),
+                            dbc.Col([html.Br(),
+                                    html.H3('MAPE (%)', style = h3_style),
                                      dash_daq.LEDDisplay(backgroundColor='black',
-                                                         size =50,
+                                                         size =70,
                                                          color = led_color,
                                                          style = {'textAlign':'center'},
                                                          value = round(100*mape,1))
@@ -2371,9 +2396,10 @@ def update_test_results(n_clicks,
                                     xs =12, sm=12, md=12, lg=6, xl=6
                                     ),
                             
-                            dbc.Col([html.H4('Tarkkuus (%)', style = {'textAlign':'center'}),
+                            dbc.Col([html.Br(),
+                                     html.H3('Tarkkuus (%)', style = h3_style),
                                      dash_daq.LEDDisplay(backgroundColor='black',
-                                                         size =50,
+                                                         size =70,
                                                          color = led_color,
                                                          style = {'textAlign':'center'},
                                                          value = round(100*(1-mape),1))
@@ -2386,10 +2412,7 @@ def update_test_results(n_clicks,
                         ),
                     html.Br(),
                     html.P('Keskimääräinen suhteellinen virhe (MAPE) on kaikkien ennustearvojen suhteellisten virheiden keskiarvo. Tarkkuus on tässä tapauksessa laskettu kaavalla 1 - MAPE.', 
-                           style = {'text-align':'center',
-                                    'font-family':'Arial',
-                                    'font-size':20
-                                    },
+                           style = p_style,
                            className="card-text"),
                     html.Br(),
 
@@ -2400,10 +2423,10 @@ def update_test_results(n_clicks,
         feat = features.copy()
         feat = ['Työttömyysaste','Ennuste','month','change','mape','n_feat']+feat
         
-        button_children = dbc.Button(children=[html.I(className="fa fa-download mr-1"), 'Lataa testitulokset koneelle'],
+        button_children = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Lataa testitulokset koneelle'],
                                        id='test_download_button',
                                        n_clicks=0,
-                                       style = dict(fontSize=20,fontFamily='Arial Black',textAlign='center'),
+                                       style = dict(fontSize=30,fontFamily='Cadiz Semibold',textAlign='center'),
                                        outline=True,
                                        size = 'lg',
                                        color = 'info'
@@ -2474,34 +2497,22 @@ def update_forecast_results(n_clicks,
         
         forecast_div =  html.Div([html.Br(),
                       html.H3('Ennustetulokset', 
-                              style = {'text-align':'center',
-                                       'font-family':'Arial Black',
-                                       }),
-                      html.Br(),
+                              style = h3_style),
+                      
                       html.P('Alla olevassa kuvaajassa on esitetty toteuteet arvot sekä ennuste ajalle {} - {}.'.format(forecast_df.index.strftime('%B %Y').values[0],forecast_df.index.strftime('%B %Y').values[-1]),
-                             style = {
-                                 'text-align':'center', 
-                                 'font-family':'Arial', 
-                                  'font-size':p_font_size
-                                 }),
+                             style = p_style),
                       html.P('Voit valita alla olevista painikkeista joko pylväs, -tai viivadiagramin. Kuvaajan pituutta voi säätä alla olevasta liukuvaliskosta. Pituutta voi rajat myös vasemman yläkulman painikkeista.',
-                             style = {
-                                 'text-align':'center', 
-                                 'font-family':'Arial', 
-                                  'font-size':p_font_size
-                                 }),
-                      html.Br(),
+                             style = p_style),
+                      
                       html.Div([
                       dbc.RadioItems(id = 'chart_type', 
                         options = [{'label':'pylväät','value':'bars'},
                                   {'label':'viivat','value':'lines'}],
-                        labelStyle={'display':'inline-block','font-size':18},
+                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':25,'font-family':'Cadiz Book'},
                         className="btn-group",
                         inputClassName="btn-check",
                         labelClassName="btn btn-outline-warning",
-                        labelCheckedClassName="active",
-                        
-                       
+                        labelCheckedClassName="active",                        
                         value = 'lines'
                       )
                       ],style={'textAlign':'right'}),
@@ -2514,10 +2525,10 @@ def update_forecast_results(n_clicks,
 
           
           # ], justify='center')        
-        forecast_download_button = dbc.Button(children=[html.I(className="fa fa-download mr-1"), 'Lataa ennustedata koneelle'],
+        forecast_download_button = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Lataa ennustedata koneelle'],
                                  id='forecast_download_button',
                                  n_clicks=0,
-                                 style=dict(fontSize=20,fontFamily='Arial Black',textlign='center'),
+                                 style=dict(fontSize=30,fontFamily='Cadiz Semibold',textlign='center'),
                                  outline=True,
                                  size = 'lg',
                                  color = 'info'
@@ -2765,17 +2776,11 @@ def add_ev_slider(pca):
 def update_ev_indicator(pca, explained_variance):
     
     return {False: [html.Div([html.P('Valitsit {} % säilytetyn variaation.'.format(int(100*explained_variance)),
-                                                               style = {
-                                                                   'text-align':'center',
-                                                                    'font-size':p_font_size, 
-                                                                   'font-family':'Arial Black'})
+                                                               style = p_style)
                                                        ], style = {'display':'none'}
                                                       )],
             True: [html.Div([html.P('Valitsit {} % säilytetyn variaation.'.format(int(100*explained_variance)),
-                                                               style = {
-                                                                   'text-align':'center', 
-                                                                    'font-size':p_font_size, 
-                                                                   'font-family':'Arial Black'})
+                                                               style = p_style)
                                                        ]
                                                       )]}[pca]
 
@@ -2817,7 +2822,7 @@ def update_switch(on):
     
     if on:
         return {'label':'Kaikki hyödykkeet on valittu. Voit poistaa hyödykkeitä listasta klikkaamalla rasteista.',
-                       'style':{'text-align':'center', 'font-size':20, 'font-family':'Arial Black'}
+                       'style':{'text-align':'center', 'font-size':p_font_size, 'font-family':'Cadiz Semibold'}
                       },True
     
     # used_selection = selection_options[label]
@@ -2827,10 +2832,10 @@ def update_switch(on):
     # if sorted(features) == selection_values:
         
     #     return True, {'label':'Kaikki hyödykkeet on valittu. Voit poistaa hyödykkeitä listasta klikkaamalla rasteista.',
-    #                    'style':{'text-align':'center', 'font-size':20, 'font-family':'Arial Black'}
+    #                    'style':{'text-align':'center', 'font-size':20, 'font-family':'Cadiz Semibold'}
     #                   },True
     else:
-        return dict(label = 'Valitse kaikki',style = {'font-size':20, 'fontFamily':'Arial Black'}),False
+        return dict(label = 'Valitse kaikki',style = {'font-size':p_font_size, 'fontFamily':'Cadiz Semibold'}),False
 
 
 
@@ -2851,12 +2856,8 @@ def add_test_button(features_values):
         
     
     elif len(features_values) == 0:
-        return [html.P('Valitse ensin hyödykkeitä.',
-                       style = {
-                           'text-align':'center', 
-                           'font-family':'Arial Black', 
-                            'font-size':p_font_size
-                           })]
+        return [html.P('Valitse ensin hyödykkeitä',
+                       style = p_style)]
     
     else:
                
@@ -2865,8 +2866,10 @@ def add_test_button(features_values):
                            id='test_button',
                            n_clicks=0,
                            outline=False,
-                           
-                           style = dict(fontSize=28,fontFamily='Arial Black')
+                           className="me-1",
+                           size='lg',
+                           color='success',
+                           style = dict(fontSize=30,fontFamily='Cadiz Semibold')
                           )
 
 @app.callback(
@@ -2876,12 +2879,7 @@ def add_test_button(features_values):
 def update_test_size_indicator(value):
     
     return [html.Br(),html.P('Valitsit {} kuukautta testidataksi.'.format(value),
-                             style = {
-                                 'text-align':'center', 
-                                  'font-size':p_font_size, 
-                                 'font-family':'Arial Black', 
-                                 
-                                 })]
+                             style = p_style)]
 
 @app.callback(
     Output('forecast_slider_indicator','children'),
@@ -2890,12 +2888,7 @@ def update_test_size_indicator(value):
 def update_forecast_size_indicator(value):
     
     return [html.Br(),html.P('Valitsit {} kuukauden ennusteen.'.format(value),
-                             style = {
-                                 'text-align':'center', 
-                                  'font-size':p_font_size, 
-                                 'font-family':'Arial Black', 
-                                
-                                 })]
+                             style = p_style)]
 
 
 
@@ -2915,22 +2908,18 @@ def update_timeseries_selections(features_values):
     
     return [
             html.Br(),
-            html.H2('Tarkastele hyödykkeiden indeksin aikasarjoja.',style = {'textAlign':'center', 'fontFamily':'Arial'}),
-            html.Br(),
+            html.H3('Tarkastele hyödykkeiden indeksin aikasarjoja',
+                    style =h3_style),
+            
             html.P('Tällä kuvaajalla voit tarkastella hyödykkeiden indeksikehitystä kuukausittain.',
-                   style = {
-                       'text-align':'center', 
-                        'font-size':p_font_size, 
-                       'font-family':'Arial', 
-                       #'color':'white'
-                       }),
-            html.H4('Valitse hyödyke'),
+                   style = p_style),
+            html.H3('Valitse hyödyke',style = h3_style),
             dcc.Dropdown(id = 'timeseries_selection_dd',
                         options = [{'value':feature, 'label':feature} for feature in features],
                         value = [features[0]],
                         style = {
                             'font-size':p_font_size, 
-                            'font-family':'Arial',
+                            'font-family':'Cadiz Book',
                             'color': 'black'},
                         multi = True)
             ]
@@ -2953,7 +2942,7 @@ def update_time_series(values):
                                       layout = go.Layout(title = dict(text = 'Valittujen arvojen<br>indeksikehitys',
                                                                       x=.5,
                                                                       font=dict(
-                                                                          family='Arial Black',
+                                                                          family='Cadiz Semibold',
                                                                            size=20
                                                                           )),
                                                          
@@ -2974,24 +2963,24 @@ def update_time_series(values):
                                                                       yanchor='top',
                                                                      font=dict(
                                                               size=12,
-                                                             family='Arial')),
+                                                             family='Cadiz Book')),
                                                          xaxis = dict(title=dict(text = 'Aika',
                                                                                  font=dict(
                                                                                      size=18, 
-                                                                                     family = 'Arial Black')),
+                                                                                     family = 'Cadiz Semibold')),
                                                                       automargin=True,
                                                                       tickfont = dict(
-                                                                          family = 'Arial Black', 
+                                                                          family = 'Cadiz Semibold', 
                                                                            size = 16
                                                                           )),
                                                          yaxis = dict(title=dict(text = 'Pisteluku (perusvuosi = 2010)',
                                                                                 font=dict(
                                                                                      size=18, 
-                                                                                    family = 'Arial Black')),
+                                                                                    family = 'Cadiz Semibold')),
                                                                      tickformat = ' ',
                                                                      automargin=True,
                                                                      tickfont = dict(
-                                                                         family = 'Arial Black', 
+                                                                         family = 'Cadiz Semibold', 
                                                                           size = 16
                                                                          ))
                                                          )
@@ -3017,12 +3006,8 @@ def add_predict_button(features_values):
         raise PreventUpdate 
     
     elif len(features_values) == 0:
-        return [html.P('Valitse ensin hyödykkeitä.',
-                       style = {
-                           'text-align':'center',
-                           'font-family':'Arial', 
-                            'font-size':p_font_size
-                           })]
+        return [html.P('Valitse ensin hyödykkeitä',
+                       style = p_style)]
     
     
         
@@ -3034,7 +3019,7 @@ def add_predict_button(features_values):
                    className="me-1",
                    size='lg',
                    color='success',
-                   style = dict(fontSize=28,fontFamily='Arial Black')
+                   style = dict(fontSize=30,fontFamily='Cadiz Semibold')
                    
                    ),
                 html.Br(),
@@ -3057,20 +3042,16 @@ def update_slider_prompt(value, averaging):
     if averaging:
     
         return [html.Br(),html.P('Valitsit {} viimeisen kuukauden keskiarvot.'.format(value),
-                      style = {
-                          'text-align':'center', 
-                          'font-size':p_font_size, 
-                          'font-family':'Arial'}),
+                      style = p_style),
                 html.Br(),
-                html.P('Voit vielä säätä yksittäisiä muutosarvoja laatikoihin kirjoittamalla tai oikealla olevista nuolista.',style = {'text-align':'center','font-size':p_font_size, 'font-family':'Arial Black'})]
+                html.P('Voit vielä säätä yksittäisiä muutosarvoja laatikoihin kirjoittamalla tai tietokoneella työskenneltäessä laatioiden oikealla olevista nuolista.',
+                       style = p_style)]
     else:
         return [html.Br(),html.P('Valitsit {} % keskimääräisen kuukausimuutoksen.'.format(value),
-                      style = {
-                          'text-align':'center', 
-                          'font-size':p_font_size, 
-                          'font-family':'Arial'}),
+                      style = p_style),
                 html.Br(),
-                html.P('Voit vielä säätä yksittäisiä muutosarvoja laatikoihin kirjoittamalla tai oikealla olevista nuolista.',style = {'text-align':'center','font-size':p_font_size, 'font-family':'Arial Black'})]
+                html.P('Voit vielä säätä yksittäisiä muutosarvoja laatikoihin kirjoittamalla tai oikealla olevista nuolista.',
+                       style = p_style)]
         
  
 
@@ -3089,20 +3070,19 @@ def update_corr_selection(features_values):
 
     return html.Div([
             html.Br(),
-            html.H2('Tarkastele valitun hyödykkeen hintaindeksin suhdetta työttömyysasteeseen.',
-                    style={'textAlign':'center',
-                           'font-size':28}),
-            html.Br(),
+            html.H3('Tarkastele valitun hyödykkeen hintaindeksin suhdetta työttömyysasteeseen',
+                    style=h3_style),
+            
             html.P('Tällä kuvaajalla voit tarkastella valitun hyödykkeen hintaindeksin ja työttömyysasteen välistä korrelaatiota. Ennusteita tehtäessä on syytä valita piirteitä, jotka korreloivat vahvasti työttömyysasteen kanssa.',
-                   style = {'font-family':'Arial','font-size':20,'text-align':'center'}),
-        html.H4('Valitse hyödyke'),
+                   style = p_style),
+        html.H3('Valitse hyödyke', style = h3_style),
         dcc.Dropdown(id = 'corr_feature',
                         multi = True,
                         # clearable=False,
                         options = [{'value':feature, 'label':feature} for feature in features],
                         value = [features[0]],
-                        style = {'font-size':16, 'font-family':'Arial','color': 'black'},
-                        placeholder = 'Valitse hyödyke.')
+                        style = {'font-size':20, 'font-family':'Cadiz Book'},
+                        placeholder = 'Valitse hyödyke')
         ]
         )
 
@@ -3121,32 +3101,33 @@ def update_feature_corr_selection(features_values):
     
     return html.Div([
                 html.Br(),
-                html.H2('Tarkastele hyödykkeiden suhteita.',
-                        style={'textAlign':'center',
-                                'font-size':28}),
+                html.H3('Tarkastele hyödykkeiden suhteita',
+                        style=h3_style),
                 html.Br(),
                 html.P('Tällä kuvaajalla voit tarkastella hyödykkeiden välisiä korrelaatioita. Ennusteita tehtäessä on syytä valita piirteitä, jotka korreloivat heikosti keskenään.',
-                       style = {'font-family':'Arial','font-size':p_font_size,'text-align':'center'}),
+                       style = p_style),
         
         dbc.Row(justify = 'center',children=[
             dbc.Col([
-                html.H4('Valitse hyödyke'),
+                html.H3('Valitse hyödyke',style=h3_style),
                 dcc.Dropdown(id = 'f_corr1',
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[0],
-                                style = {'font-size':16, 'font-family':'Arial','color': 'black'},
-                                placeholder = 'Valitse hyödyke.')
+                                style = {'font-size':20, 'font-family':'Cadiz Book'},
+                                placeholder = 'Valitse hyödyke')
         ],xs =12, sm=12, md=12, lg=6, xl=6),
         html.Br(),
             dbc.Col([
-                html.H4('Valitse toinen hyödyke'),
+                html.H3('Valitse toinen hyödyke',
+                        style=h3_style
+                        ),
                 dcc.Dropdown(id = 'f_corr2',
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[-1],
-                                style = {'font-size':16, 'font-family':'Arial','color': 'black'},
-                                placeholder = 'Valitse hyödyke.')
+                                style = {'font-size':20, 'font-family':'Cadiz Book'},
+                                placeholder = 'Valitse hyödyke')
             ],xs =12, sm=12, md=12, lg=6, xl=6)
         ])
         ])
@@ -3202,8 +3183,8 @@ def update_feature_correlation_plot(value1, value2):
           layout = go.Layout(title = dict(text = '<b>{}</b> vs.<br><b>{}</b><br>(Kokonaiskorrelaatio: {})'.format(' '.join(value1.split()[1:]), ' '.join(value2.split()[1:]), corr_factor), 
                                           x=.5, 
                                           font=dict(
-                                              family='Arial',
-                                               size=18
+                                              family='Cadiz Semibold',
+                                               size=22
                                               )),
                              margin=dict(
                                   l=10,
@@ -3214,32 +3195,32 @@ def update_feature_correlation_plot(value1, value2):
                              ),
                             xaxis= dict(title = dict(text='{} (pisteluku)'.format(' '.join(value1.split()[1:])), 
                                                      font=dict(
-                                                         family='Arial Black',
-                                                          size=16
+                                                         family='Cadiz Semibold',
+                                                          size=20
                                                          )),
                                         automargin=True,
                                         tickfont = dict(
-                                            family = 'Arial Black', 
-                                             size = 16
+                                            family = 'Cadiz Semibold', 
+                                             size = 18
                                             )),
                             height = graph_height,
                             legend = dict(font=dict(
-                                 size=12,
-                                family='Arial'),
+                                 size=16,
+                                family='Cadiz Book'),
                                           orientation='h'),
                             hoverlabel = dict(
-                                 font_size = 16, 
-                                font_family = 'Arial'),
+                                 font_size = 20, 
+                                font_family = 'Cadiz Book'),
                             template = 'seaborn',
                             yaxis = dict(title = dict(text='{} (pisteluku)'.format(' '.join(value2.split()[1:])), 
                                                       font=dict(
-                                                          family='Arial Black',
-                                                          size=16
+                                                          family='Cadiz Semibold',
+                                                          size=20
                                                           )),
                                          automargin=True,
                                          tickfont = dict(
-                                             family = 'Arial Black', 
-                                             size = 16
+                                             family = 'Cadiz Semibold', 
+                                             size = 18
                                              ))
                              )
           ),
@@ -3271,7 +3252,9 @@ def update_eda_plot(values):
                  'bowtie',
                  'asterisk',
                  'hash']
-                
+    
+    
+            
     traces = [go.Scatter(x = data[value], 
                          y = data['Työttömyysaste'], 
                          mode = 'markers',
@@ -3289,19 +3272,19 @@ def update_eda_plot(values):
           layout = go.Layout(title = dict(text = 'Valitut hyödykkeet vs.<br>Työttömyysaste', 
                                           x=.5, 
                                           font=dict(
-                                              family='Arial Black',
-                                               size=18
+                                              family='Cadiz Semibold',
+                                               size=22
                                               )
                                           ),
                             xaxis= dict(title = dict(text='Hyödykkeiden pisteluku', 
                                                      font=dict(
-                                                         family='Arial Black',
-                                                          size=18
+                                                         family='Cadiz Semibold',
+                                                          size=20
                                                          )),
                                         automargin=True,
                                         tickfont = dict(
-                                            family = 'Arial Black', 
-                                             size = 16
+                                            family = 'Cadiz Semibold', 
+                                             size = 18
                                             )
                                         ),
                             margin=dict(
@@ -3319,22 +3302,22 @@ def update_eda_plot(values):
                                          xanchor='center',
                                          yanchor='top',
                                         font=dict(
-                                 size=12,
-                                family='Arial')),
+                                 size=16,
+                                family='Cadiz Book')),
                             hoverlabel = dict(
-                                 font_size = 16, 
-                                font_family = 'Arial'),
+                                 font_size = 20, 
+                                font_family = 'Cadiz Book'),
                             template = 'seaborn',                            
                             yaxis = dict(title = dict(text='Työttömyysaste (%)', 
                                                       font=dict(
-                                                          family='Arial Black',
-                                                           size=18
+                                                          family='Cadiz Semibold',
+                                                           size=20
                                                           )
                                                       ),
                                          automargin=True,
                                          tickfont = dict(
-                                             family = 'Arial Black', 
-                                              size = 16
+                                             family = 'Cadiz Semibold', 
+                                              size = 18
                                              )
                                          )
                              )
