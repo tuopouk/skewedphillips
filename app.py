@@ -1257,12 +1257,6 @@ def serve_layout():
                                                       'font-family':'Arial', 
                                                       'font-size':p_font_size
                                                       }),
-                                          html.P("Mobiililaitteella sovellus toimii parhaiten valitessa sivun esitystavaksi tietokonesivusto.",
-                                                  style={
-                                                      'textAlign':'center',
-                                                      'font-family':'Arial', 
-                                                      'font-size':p_font_size
-                                                      }),
                                           html.Br(),
                                           html.Div(style={'text-align':'center'},children = [
                                               html.H4('Lähteet', style = {'text-align':'center','font-family':'Arial Black'}),
