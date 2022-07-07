@@ -1147,7 +1147,7 @@ def serve_layout():
                                  'font-family':'Cadiz Semibold'},
                     style = {
                             
-                              "maxHeight": "1024px",
+                              "maxHeight": "800px",
 
                             "overflow": "auto"
                         },
@@ -1457,7 +1457,7 @@ def serve_layout():
                                  'font-family':'Cadiz Semibold'},
                     style = {
                         #"position": "fixed",
-                        "maxHeight": "1024px",
+                        "maxHeight": "800px",
                        
                           # "height":"1024px",
                     
@@ -1602,7 +1602,7 @@ def serve_layout():
                                  'font-family':'Cadiz Semibold'},
                     style = {
                             
-                            "maxHeight": "1024px",
+                            "maxHeight": "800px",
 
                             "overflow": "auto"
                         },
@@ -1775,7 +1775,7 @@ def serve_layout():
                                  'font-family':'Cadiz Semibold'},
                     style = {
                             
-                            "maxHeight": "1024px",
+                            "maxHeight": "800px",
 
                             "overflow": "auto"
                         },
@@ -1873,7 +1873,7 @@ def serve_layout():
                                  'font-family':'Cadiz Semibold'},
                     style = {
                             
-                            "maxHeight": "1024px",
+                            "maxHeight": "800px",
 
                             "overflow": "auto"
                         },
@@ -1954,7 +1954,7 @@ def serve_layout():
                                  'font-family':'Cadiz Semibold'},
                     style = {
                             
-                            "maxHeight": "1024px",
+                            "maxHeight": "800px",
 
                             "overflow": "auto"
                         },
