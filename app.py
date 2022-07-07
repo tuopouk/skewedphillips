@@ -1308,6 +1308,8 @@ def serve_layout():
                                           
                                           html.P("Sovellus on testattu toimivaksi Google Chromella ja Mozilla Firefoxilla. Edge- ja Internet Explorer -selaimissa sovellus ei toimi. Opera, Safari -ja muita selaimia ei ole testattu.",
                                                   style=p_style),
+                                          html.P("Sovelluksesta voi myös ladata ns. standalone-version, joten sen voi käynnistää ilman selainta esim. Windowsilla tai Androidilla. Esimerkiksi Google Chromessa selaimen osoiterivin oikealla puolella pitäisi olla ikoni, josta klikkaamalla sovelluksen voi ladata. Lataamisen jälkeen sovellus löytyy omalta laitteelta.",
+                                                  style=p_style),
                                           html.Br(),
                                           html.Div(style={'text-align':'center'},children = [
                                               html.H3('Lähteet', 
