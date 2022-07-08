@@ -40,7 +40,7 @@ MODELS = {
     
         'Satunnaismetsä': {'model':RandomForestRegressor,
                            'doc': 'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html',
-
+                           'video':'https://www.youtube.com/embed/cIbj0WuK41w',
                            'constant_hyperparameters': {
                                                         'n_jobs':-1,
                                                         'random_state':42}
@@ -633,8 +633,8 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                              # t=120,
                                              # pad=4
                                         ),
-                                        hoverlabel = dict(size = 20, 
-                                                           family = 'Cadiz Book'
+                                        hoverlabel = dict(font_size = 20, 
+                                                           font_family = 'Cadiz Book'
                                                           ),
                                         template = 'seaborn',
                                         title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
@@ -705,8 +705,8 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                             x=.47,
                                                             y=1.04
                                                           ),
-                                            hoverlabel = dict(size = 20,
-                                                              family = 'Cadiz Book'
+                                            hoverlabel = dict(font_size = 20,
+                                                              font_family = 'Cadiz Book'
                                                               ),
                                             template = 'seaborn',
                                             title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
