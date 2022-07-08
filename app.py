@@ -371,7 +371,8 @@ def draw_phillips_curve():
                             mode = 'markers+text', 
                             text = [None if i != max_date else '<b>'+max_date_str+'</b>' for i in df.index],
                             textposition='top left',
-                            textfont=dict(family='Cadiz Book',
+                            textfont=dict(
+                                # family='Cadiz Book',
                                           size = 18
                                           ),
                             showlegend=False,
@@ -391,22 +392,26 @@ def draw_phillips_curve():
                   ],
             layout = go.Layout(
                                xaxis=dict(showspikes=True,
-                                          title = dict(text='Työttömyysaste (%)', font=dict(size=22, family = 'Cadiz Semibold')), 
+                                          title = dict(text='Työttömyysaste (%)', font=dict(size=22, #family = 'Cadiz Semibold'
+                                                                                            )), 
                                           tickformat = ' ',
                                           automargin=True,
                                           
                                           tickfont = dict(
                                                            size=18, 
-                                                          family = 'Cadiz Semibold')
+                                                          #family = 'Cadiz Semibold'
+                                                          )
                                           ), 
                                yaxis=dict(showspikes=True,
-                                          title = dict(text='Inflaatio (%)', font=dict(size=22, family = 'Cadiz Semibold')),
+                                          title = dict(text='Inflaatio (%)', font=dict(size=22, #family = 'Cadiz Semibold'
+                                                                                       )
+                                                       ),
                                           tickformat = ' ', 
                                           automargin=True,
                                           tickfont = dict(
                                                size=18,
-                                              family = 'Cadiz Semibold')
-                                          ),
+                                              #family = 'Cadiz Semibold')
+                                          )),
                                 margin=dict(
                                     l=10,
                                     r=10,
@@ -417,10 +422,12 @@ def draw_phillips_curve():
                                height= graph_height,
                                template='seaborn',  
                                # autosize=True,
-                                hoverlabel = dict(font=dict(size=20,family='Cadiz Book')),
+                                hoverlabel = dict(font=dict(size=20,
+                                                            # family='Cadiz Book'
+                                                            )),
                                 legend = dict(font=dict(
                                                         size=18,
-                                                        family = 'Cadiz Book'
+                                                        #family = 'Cadiz Book'
                                                         ),
                                                orientation='h',
                                                # xanchor='center',
@@ -432,10 +439,12 @@ def draw_phillips_curve():
                                title = dict(text = 'Työttömyysaste vs.<br>Inflaatio<br>{} - {}<br>'.format(df.index.min().strftime('%B %Y'),df.index.max().strftime('%B %Y')),
                                             x=.5,
                                             font=dict(
-                                                size=22,
-                                                family = 'Cadiz Semibold'))
+                                                size=22
+                                                #family = 'Cadiz Semibold'
+                                                ))
                               )
             )
+            
 
 
 def get_param_options(model_name):
@@ -493,7 +502,9 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                text=[str(round(c,2))+' %' for c in df.Työttömyysaste], 
                                textposition='top center',
                                hovertemplate = hovertemplate,
-                               textfont = dict(family='Cadiz Semibold', size = 18,color='green'), 
+                               textfont = dict(
+                                   # family='Cadiz Semibold', 
+                                   size = 18,color='green'), 
                                marker = dict(color='#008000',size=12),
                                line = dict(width=5)),
                     
@@ -505,14 +516,25 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                            text=[str(round(c,2))+' %' for c in df.Ennuste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
-                           textfont = dict(family='Cadiz Semibold', size = 18)
+                           textfont = dict(
+                               # family='Cadiz Semibold', 
+                               size = 18)
                            )
-                    ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, family = 'Cadiz Semibold')),
-                                                    tickfont = dict(family = 'Cadiz Semibold', size = 18),
+                    ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, 
+                                                                                       #family = 'Cadiz Semibold'
+                                                                                       )),
+                                                    tickfont = dict(
+                                                        #family = 'Cadiz Semibold', 
+                                                        size = 18),
                                                     automargin=True
                                                     ),
-                                       yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Cadiz Semibold',size=20)),
-                                                    tickfont = dict(family = 'Cadiz Semibold', size = 18),
+                                       yaxis = dict(title = dict(text='Työttömyysaste (%)',
+                                                                 font=dict(
+                                                                     # family='Cadiz Semibold',
+                                                                     size=20)),
+                                                    tickfont = dict(
+                                                        #family = 'Cadiz Semibold', 
+                                                        size = 18),
                                                     automargin=True
                                                     ),
                                        height = graph_height-200,
@@ -523,22 +545,30 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                             # t=120,
                                             # pad=4
                                        ),
-                                       legend = dict(font=dict(size=16,family='Cadiz Book'),
+                                       legend = dict(font=dict(size=16,
+                                                               # family='Cadiz Book'
+                                                               ),
                                                       orientation='h',
                                                       xanchor='center',
                                                       yanchor='top',
                                                        x=.47,
                                                        y=1.04
                                                      ),
-                                       hoverlabel = dict(font_size = 20, font_family = 'Cadiz Book'),
+                                       hoverlabel = dict(font_size = 20, 
+                                                         #font_#family = 'Cadiz Book'
+                                                         ),
                                        template = 'seaborn',
                                       # margin=dict(autoexpand=True),
                                        title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
                                                     x=.5,
-                                                    font=dict(family='Cadiz Semibold',size=22)
+                                                    font=dict(
+                                                        # family='Cadiz Semibold',
+                                                        size=22)
                                                     )
                                        )
-                                                    )
+                                                                                       )
+                                                                                       
+                                                    
     elif chart_type == 'lines':
     
         return go.Figure(data=[go.Scatter(x=df.index, 
@@ -549,7 +579,9 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                 text=[str(round(c,2))+' %' for c in df.Työttömyysaste], 
                                 textposition='top center',
                                 hovertemplate = hovertemplate,
-                                textfont = dict(family='Cadiz Semibold', size = 18,color='green'), 
+                                textfont = dict(
+                                    # family='Cadiz Semibold', 
+                                    size = 18,color='green'), 
                                 marker = dict(color='#008000',size=10),
                                 line = dict(width=2)),
                     
@@ -563,17 +595,29 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                             # textposition='inside',
                             hovertemplate = hovertemplate,
                             line = dict(width=2),
-                            textfont = dict(family='Cadiz Semibold', size = 18,color='red'))
-                    ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, family = 'Cadiz Semibold')),
-                                                    tickfont = dict(family = 'Cadiz Semibold', size = 18),
+                            textfont = dict(
+                                # family='Cadiz Semibold', 
+                                size = 18,color='red'))
+                    ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, 
+                                                                                       #family = 'Cadiz Semibold'
+                                                                                       )),
+                                                    tickfont = dict(
+                                                        #family = 'Cadiz Semibold', 
+                                                        size = 18),
                                                     automargin=True,
                                                     ),
-                                        yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Cadiz Semibold',size=20)),
-                                                    tickfont = dict(family = 'Cadiz Semibold', size = 18),
+                                        yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(
+                                            # family='Cadiz Semibold',
+                                            size=20)),
+                                                    tickfont = dict(
+                                                        #family = 'Cadiz Semibold',
+                                                        size = 18),
                                                     automargin=True
                                                     ),
                                         height = graph_height-200,
-                                        legend = dict(font=dict(size=16,family='Cadiz Book'),
+                                        legend = dict(font=dict(size=16,
+                                                                # family='Cadiz Book'
+                                                                ),
                                                        orientation='h',
                                                        xanchor='center',
                                                        yanchor='top',
@@ -587,14 +631,18 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                              # t=120,
                                              # pad=4
                                         ),
-                                        hoverlabel = dict(font_size = 20, font_family = 'Cadiz Book'),
+                                        hoverlabel = dict(font_size = 20, 
+                                                          # font_#family = 'Cadiz Book'
+                                                          ),
                                         template = 'seaborn',
                                         title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
                                                     x=.5,
-                                                    font=dict(family='Cadiz Semibold',size=22)
+                                                    font=dict(
+                                                        # family='Cadiz Semibold',
+                                                        size=22)
                                                     )
-                                        )
-                                                    )
+                                        ))
+                                                    
 
     else:
         return go.Figure(data=[go.Bar(x=df.index.strftime('%B %Y'), 
@@ -605,7 +653,9 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                            text=[str(round(c,2))+' %' for c in df.Työttömyysaste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
-                           textfont = dict(family='Cadiz Semibold', size = 18)
+                           textfont = dict(
+                               # family='Cadiz Semibold', 
+                               size = 18)
                                     ),
                         
                         go.Bar(x=df.index.strftime('%B %Y'), 
@@ -616,14 +666,24 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                            text=[str(round(c,2))+' %' for c in df.Ennuste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
-                           textfont = dict(family='Cadiz Semibold', size = 18)
+                           textfont = dict(
+                               # family='Cadiz Semibold', 
+                               size = 18)
                                 )
-                        ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, family = 'Cadiz Semibold')),
-                                                        tickfont = dict(family = 'Cadiz Semibold', size = 18),
+                        ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, 
+                                                                                           #family = 'Cadiz Semibold'
+                                                                                           )),
+                                                        tickfont = dict(
+                                                            #family = 'Cadiz Semibold', 
+                                                            size = 18),
                                                         automargin=True
                                                         ),
-                                            yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(family='Cadiz Semibold',size=20)),
-                                                        tickfont = dict(family = 'Cadiz Semibold', size = 18),
+                                            yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(
+                                                # family='Cadiz Semibold',
+                                                size=20)),
+                                                        tickfont = dict(
+                                                        # family = 'Cadiz Semibold', 
+                                                        size = 18),
                                                         automargin=True
                                                         ),
                                             height = graph_height-200,
@@ -634,18 +694,24 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                  # t=120,
                                                  # pad=4
                                             ),
-                                            legend = dict(font=dict(size=16,family='Cadiz Book'),
+                                            legend = dict(font=dict(size=16,
+                                                                    # family='Cadiz Book'
+                                                                    ),
                                                            orientation='h',
                                                            xanchor='center',
                                                            yanchor='top',
                                                             x=.47,
                                                             y=1.04
                                                           ),
-                                            hoverlabel = dict(font_size = 20, font_family = 'Cadiz Book'),
+                                            hoverlabel = dict(font_size = 20,
+                                                              # font_#family = 'Cadiz Book'
+                                                              ),
                                             template = 'seaborn',
                                             title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
                                                         x=.5,
-                                                        font=dict(family='Cadiz Semibold',size=22)
+                                                        font=dict(
+                                                            # family='Cadiz Semibold',
+                                                            size=22)
                                                         )
                                             )
                                                         )                                                   
@@ -679,10 +745,11 @@ def plot_forecast_data(df, chart_type):
                                marker = dict(color='red'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',font=dict(
                          size=20, 
-                        family = 'Cadiz Semibold')),
+                        #family = 'Cadiz Semibold'
+                        )),
                         automargin=True,
                 
-                                                    tickfont = dict(family = 'Cadiz Semibold', 
+                                                    tickfont = dict(#family = 'Cadiz Semibold', 
                                                                      size = 18
                                                                     ),
                                                     rangeslider=dict(visible=True),
@@ -728,7 +795,8 @@ def plot_forecast_data(df, chart_type):
                                        ),
                                       hoverlabel = dict(
                                             font_size = 20, 
-                                                         font_family = 'Cadiz Book'),
+                                                         # font_#family = 'Cadiz Book'
+                                                         ),
                                        legend = dict(orientation='h',
                                                      x=.5,
                                                      y=.01,
@@ -736,19 +804,23 @@ def plot_forecast_data(df, chart_type):
                                                       yanchor='bottom',
                                                      font=dict(
                                                     size=14,
-                                                   family = 'Cadiz Semibold')),
+                                                   #family = 'Cadiz Semibold'
+                                                   )),
                                        template = 'seaborn',
                                        yaxis = dict(title=dict(text = 'Työttömyysaste (%)',
                                                      font=dict(
                                                           size=20, 
-                                                         family = 'Cadiz Semibold')),
+                                                         #family = 'Cadiz Semibold'
+                                                         )),
                                                     automargin=True,
-                                                     tickfont = dict(family = 'Cadiz Book', 
+                                                     tickfont = dict(
+                                                         #family = 'Cadiz Book', 
                                                                       size = 18
                                                                      )),
                                        title = dict(text = 'Työttömyysaste ja ennuste kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
-                                                    font=dict(family='Cadiz Semibold',
+                                                    font=dict(
+                                                        # family='Cadiz Semibold',
                                                                size=22
                                                               )),
     
@@ -776,9 +848,10 @@ def plot_forecast_data(df, chart_type):
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',
                                                                  font=dict(
                                                                      size=20, 
-                                                                     family = 'Cadiz Semibold')),
+                                                                     #family = 'Cadiz Semibold'
+                                                                     )),
                                                                  automargin=True,
-                                                    tickfont = dict(family = 'Cadiz Semibold', 
+                                                    tickfont = dict(#family = 'Cadiz Semibold', 
                                                                     size = 18
                                                                     ),
                                                     rangeslider=dict(visible=True),
@@ -825,7 +898,8 @@ def plot_forecast_data(df, chart_type):
                                        template='seaborn',
                                        hoverlabel = dict(
                                            font_size = 20, 
-                                           font_family = 'Cadiz Book'),
+                                           # font_#family = 'Cadiz Book'
+                                           ),
                                        legend = dict(orientation='h',
                                                      x=.5,
                                                      y=.01,
@@ -833,19 +907,23 @@ def plot_forecast_data(df, chart_type):
                                                       yanchor='bottom',
                                                      font=dict(
                                                     size=14,
-                                                   family = 'Cadiz Semibold')),
+                                                   #family = 'Cadiz Semibold'
+                                                   )),
                                        yaxis = dict(title=dict(text = 'Työttömyysaste (%)',
                                                      font=dict(
                                                           size=20, 
-                                                         family = 'Cadiz Semibold')),
+                                                         #family = 'Cadiz Semibold'
+                                                         )),
                                                     automargin=True,
-                                                     tickfont = dict(family = 'Cadiz Book', 
+                                                     tickfont = dict(
+                                                         #family = 'Cadiz Book', 
                                                                       size = 18
                                                                      )
                                                      ),
                                        title = dict(text = 'Työttömyysaste ja ennuste kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
-                                                    font=dict(family='Cadiz Semibold',
+                                                    font=dict(
+                                                        # family='Cadiz Semibold',
                                                                size=22
                                                               )),
     
@@ -1189,10 +1267,11 @@ def serve_layout():
                                             #'font-family':'Messina Modern Book', 
                                               'font-size':p_font_size
                                             }),
-                                  html.A([html.P('(Rodney Brooks)', 
+                                  html.A([html.P('Rodney Brooks', 
                                         
                                         style={
                                             'textAlign':'center',
+                                            'font-style': 'italic',
                                             #'font-family':'Messina Modern Book', 
                                               'font-size':p_font_size-4
                                             })], href = 'https://en.wikipedia.org/wiki/Rodney_Brooks', target="_blank"),
@@ -1618,7 +1697,7 @@ def serve_layout():
                                 
                                 dash_daq.BooleanSwitch(id = 'averaging', 
                                                         label = dict(label = 'Käytä toteutumien keskiarvoja',style = {'font-size':p_font_size, 
-                                                                                                                      'font-family':'Cadiz Semibold'
+                                                                                                                      # 'font-family':'Cadiz Semibold'
                                                                                                                       }), 
                                                         on = True, 
                                                         color = 'blue')
@@ -1732,7 +1811,7 @@ def serve_layout():
                                                               layout = go.Layout(title = dict(text = 'Työttömyysaste ja inflaatio kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],data.index.strftime('%B %Y').values[-1]),
                                                                                               x=.5,
                                                                                               font=dict(
-                                                                                                  family='Cadiz Semibold',
+                                                                                                  # family='Cadiz Semibold',
                                                                                                    size=16
                                                                                                   )),
                                                                                  height=graph_height,
@@ -1744,7 +1823,9 @@ def serve_layout():
                                                                                       # t=120,
                                                                                       # pad=4
                                                                                  ),
-                                                                                 hoverlabel=dict(font=dict(family='Cadiz Book',size=14)),
+                                                                                 hoverlabel=dict(font=dict(
+                                                                                     # family='Cadiz Book',
+                                                                                     size=14)),
                                                                                  legend = dict(orientation = 'h',
                                                                                                 xanchor='center',
                                                                                                 yanchor='top',
@@ -1752,13 +1833,15 @@ def serve_layout():
                                                                                                 y=1.04,
                                                                                                font=dict(
                                                                                       size=12,
-                                                                                     family='Cadiz Book')),
+                                                                                     # family='Cadiz Book'
+                                                                                     )),
                                                                                  xaxis = dict(title=dict(text = 'Aika',
                                                                                                          font=dict(
                                                                                                               size=18, 
-                                                                                                             family = 'Cadiz Semibold')), 
+                                                                                                             #family = 'Cadiz Semibold'
+                                                                                                             )), 
                                                                                               tickfont = dict(
-                                                                                                  family = 'Cadiz Semibold', 
+                                                                                                  #family = 'Cadiz Semibold', 
                                                                                                    size = 16
                                                                                                   ),
                                                                                               rangeslider=dict(
@@ -1797,11 +1880,12 @@ def serve_layout():
                                                                                  yaxis = dict(title=dict(text = 'Arvo (%)',
                                                                                                         font=dict(
                                                                                                              size=18, 
-                                                                                                            family = 'Cadiz Semibold')),
+                                                                                                            #family = 'Cadiz Semibold'
+                                                                                                            )),
                                                                                              tickformat = ' ',
                                                                                              automargin=True,
                                                                                              tickfont = dict(
-                                                                                                 family = 'Cadiz Semibold', 
+                                                                                                 #family = 'Cadiz Semibold', 
                                                                                                   size = 16
                                                                                                  )
                                                                                              )
@@ -2566,7 +2650,9 @@ def update_test_results(n_clicks,
         button_children = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Lataa testitulokset koneelle'],
                                        id='test_download_button',
                                        n_clicks=0,
-                                       style = dict(fontSize=30,fontFamily='Cadiz Semibold',textAlign='center'),
+                                       style = dict(fontSize=30,
+                                                    # fontFamily='Cadiz Semibold',
+                                                    textAlign='center'),
                                        outline=True,
                                        size = 'lg',
                                        color = 'info'
@@ -2670,7 +2756,9 @@ def update_forecast_results(n_clicks,
         forecast_download_button = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Lataa ennustedata koneelle'],
                                  id='forecast_download_button',
                                  n_clicks=0,
-                                 style=dict(fontSize=30,fontFamily='Cadiz Semibold',textlign='center'),
+                                 style=dict(fontSize=30,
+                                            # fontFamily='Cadiz Semibold',
+                                            textlign='center'),
                                  outline=True,
                                  size = 'lg',
                                  color = 'info'
@@ -2954,7 +3042,7 @@ def update_select_all_on(features,options):
 
 @app.callback(
     [
-     # Output('select_all','on'),
+     
      Output('select_all','label'),
      Output('select_all','disabled')
      ],
@@ -2969,15 +3057,7 @@ def update_switch(on):
                                 }
                       },True
     
-    # used_selection = selection_options[label]
-    
-    # selection_values = sorted(list(pd.DataFrame(used_selection).sort_values(by='label').label.values))
-            
-    # if sorted(features) == selection_values:
-        
-    #     return True, {'label':'Kaikki hyödykkeet on valittu. Voit poistaa hyödykkeitä listasta klikkaamalla rasteista.',
-    #                    'style':{'text-align':'center', 'font-size':20, #'font-family':'Cadiz Semibold'}
-    #                   },True
+
     else:
         return dict(label = 'Valitse kaikki',style = {'font-size':p_font_size, 
                                                       # #'fontFamily':'Cadiz Semibold'
@@ -3015,7 +3095,9 @@ def add_test_button(features_values):
                            className="me-1",
                            size='lg',
                            color='success',
-                           style = dict(fontSize=30,fontFamily='Cadiz Semibold')
+                           style = dict(fontSize=30,
+                                        # fontFamily='Cadiz Semibold'
+                                        )
                           )
 
 @app.callback(
@@ -3088,7 +3170,7 @@ def update_time_series(values):
                                       layout = go.Layout(title = dict(text = 'Valittujen arvojen<br>indeksikehitys',
                                                                       x=.5,
                                                                       font=dict(
-                                                                          family='Cadiz Semibold',
+                                                                          # family='Cadiz Semibold',
                                                                            size=20
                                                                           )),
                                                          
@@ -3105,28 +3187,31 @@ def update_time_series(values):
                                                               orientation = 'h',
                                                                       # x=.1,
                                                                       # y=1,
-                                                                      xanchor='center',
-                                                                      yanchor='top',
+                                                                      # xanchor='center',
+                                                                      # yanchor='top',
                                                                      font=dict(
                                                               size=12,
-                                                             family='Cadiz Book')),
+                                                             # family='Cadiz Book'
+                                                             )),
                                                          xaxis = dict(title=dict(text = 'Aika',
                                                                                  font=dict(
                                                                                      size=18, 
-                                                                                     family = 'Cadiz Semibold')),
+                                                                                     # #family = 'Cadiz Semibold'
+                                                                                     )),
                                                                       automargin=True,
                                                                       tickfont = dict(
-                                                                          family = 'Cadiz Semibold', 
+                                                                          #family = 'Cadiz Semibold', 
                                                                            size = 16
                                                                           )),
                                                          yaxis = dict(title=dict(text = 'Pisteluku (perusvuosi = 2010)',
                                                                                 font=dict(
                                                                                      size=18, 
-                                                                                    family = 'Cadiz Semibold')),
+                                                                                    #family = 'Cadiz Semibold'
+                                                                                    )),
                                                                      tickformat = ' ',
                                                                      automargin=True,
                                                                      tickfont = dict(
-                                                                         family = 'Cadiz Semibold', 
+                                                                         #family = 'Cadiz Semibold', 
                                                                           size = 16
                                                                          ))
                                                          )
@@ -3165,7 +3250,9 @@ def add_predict_button(features_values):
                    className="me-1",
                    size='lg',
                    color='success',
-                   style = dict(fontSize=30,fontFamily='Cadiz Semibold')
+                   style = dict(fontSize=30,
+                                # fontFamily='Cadiz Semibold'
+                                )
                    
                    ),
                 html.Br(),
@@ -3335,8 +3422,9 @@ def update_feature_correlation_plot(value1, value2):
           layout = go.Layout(title = dict(text = '<b>{}</b> vs.<br><b>{}</b><br>(Kokonaiskorrelaatio: {})'.format(' '.join(value1.split()[1:]), ' '.join(value2.split()[1:]), corr_factor), 
                                           x=.5, 
                                           font=dict(
-                                              family='Cadiz Semibold',
-                                               size=22
+                                              # family='Cadiz Semibold',
+                                               margin_bottom='10px',
+                                               size=17
                                               )),
                              margin=dict(
                                   l=10,
@@ -3347,31 +3435,33 @@ def update_feature_correlation_plot(value1, value2):
                              ),
                             xaxis= dict(title = dict(text='{} (pisteluku)'.format(' '.join(value1.split()[1:])), 
                                                      font=dict(
-                                                         family='Cadiz Semibold',
+                                                         # family='Cadiz Semibold',
                                                           size=20
                                                          )),
                                         automargin=True,
                                         tickfont = dict(
-                                            family = 'Cadiz Semibold', 
+                                            #family = 'Cadiz Semibold', 
                                              size = 18
                                             )),
                             height = graph_height,
                             legend = dict(font=dict(
                                  size=16,
-                                family='Cadiz Book'),
+                                # family='Cadiz Book'
+                                ),
                                           orientation='h'),
                             hoverlabel = dict(
                                  font_size = 20, 
-                                font_family = 'Cadiz Book'),
+                                # font_#family = 'Cadiz Book'
+                                ),
                             template = 'seaborn',
                             yaxis = dict(title = dict(text='{} (pisteluku)'.format(' '.join(value2.split()[1:])), 
                                                       font=dict(
-                                                          family='Cadiz Semibold',
+                                                          # family='Cadiz Semibold',
                                                           size=20
                                                           )),
                                          automargin=True,
                                          tickfont = dict(
-                                             family = 'Cadiz Semibold', 
+                                             #family = 'Cadiz Semibold', 
                                              size = 18
                                              ))
                              )
@@ -3402,10 +3492,9 @@ def update_eda_plot(values):
                  'hexagram',
                  'hourglass',
                  'bowtie',
-                 'asterisk',
                  'hash']
     
-    
+        
             
     traces = [go.Scatter(x = data[value], 
                          y = data['Työttömyysaste'], 
@@ -3413,7 +3502,7 @@ def update_eda_plot(values):
                          name = ' '.join(value.split()[1:]).replace(',',',<br>')+' ({})'.format(round(sorted(data[['Työttömyysaste', value]].corr()[value].values)[0],1)),
                          showlegend=True,
                          marker = dict(size=10),
-                         marker_symbol = symbols[random.randint(0,len(symbols)-1)],
+                         marker_symbol = random.choice(symbols),
                          hovertemplate = "<b>{}</b>:".format(value)+" %{x}"+"<br><b>Työttömyysaste</b>: %{y}"+" %"+"<br>(Korrelaatio: {:.2f})".format(sorted(data[['Työttömyysaste', value]].corr()[value].values)[0])) for value in values]
 
         
@@ -3424,18 +3513,18 @@ def update_eda_plot(values):
           layout = go.Layout(title = dict(text = 'Valitut hyödykkeet vs.<br>Työttömyysaste', 
                                           x=.5, 
                                           font=dict(
-                                              family='Cadiz Semibold',
+                                              # family='Cadiz Semibold',
                                                size=22
                                               )
                                           ),
                             xaxis= dict(title = dict(text='Hyödykkeiden pisteluku', 
                                                      font=dict(
-                                                         family='Cadiz Semibold',
+                                                         # family='Cadiz Semibold',
                                                           size=20
                                                          )),
                                         automargin=True,
                                         tickfont = dict(
-                                            family = 'Cadiz Semibold', 
+                                            #family = 'Cadiz Semibold', 
                                              size = 18
                                             )
                                         ),
@@ -3451,24 +3540,26 @@ def update_eda_plot(values):
                                  orientation = 'h',
                                          # x=.1,
                                          # y=1,
-                                         xanchor='center',
-                                         yanchor='top',
+                                         # xanchor='center',
+                                         # yanchor='top',
                                         font=dict(
                                  size=16,
-                                family='Cadiz Book')),
+                                # family='Cadiz Book'
+                                )),
                             hoverlabel = dict(
                                  font_size = 20, 
-                                font_family = 'Cadiz Book'),
+                                # font_#family = 'Cadiz Book'
+                                ),
                             template = 'seaborn',                            
                             yaxis = dict(title = dict(text='Työttömyysaste (%)', 
                                                       font=dict(
-                                                          family='Cadiz Semibold',
+                                                          # family='Cadiz Semibold',
                                                            size=20
                                                           )
                                                       ),
                                          automargin=True,
                                          tickfont = dict(
-                                             family = 'Cadiz Semibold', 
+                                             #family = 'Cadiz Semibold', 
                                               size = 18
                                              )
                                          )
