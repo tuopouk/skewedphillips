@@ -12,13 +12,14 @@ import plotly.graph_objs as go
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_percentage_error
 from sklearn.svm import SVR
-from sklearn.ensemble import RandomForestRegressor,AdaBoostRegressor, GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.decomposition import PCA
 import dash_daq
 from flask import Flask
 import os
 import io
+import shap
 from dash_extensions.enrich import callback_context,Dash  ,ALL, Output,dcc,html, Input, State
 from dash.exceptions import PreventUpdate
 from dash_bootstrap_templates import ThemeChangerAIO
@@ -26,6 +27,8 @@ import random
 import dash_bootstrap_components as dbc
 from datetime import datetime
 import locale
+
+np.seterr(invalid='ignore')
 
 # riippu ollaanko Windows vai Linux -ympäristössä, mitä locale-koodausta käytetään.
 
@@ -41,33 +44,48 @@ MODELS = {
         'Satunnaismetsä': {'model':RandomForestRegressor,
                            'doc': 'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html',
                            'video':'https://www.youtube.com/embed/cIbj0WuK41w',
+                           'explainer':shap.TreeExplainer,
                            'constant_hyperparameters': {
                                                         'n_jobs':-1,
                                                         'random_state':42}
                            },
-        'Adaboost': {'model':AdaBoostRegressor,
-                     'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostRegressor.html',
-                     
-                     'constant_hyperparameters':{'random_state':42,
-                                                 }
-                     },
+        # SHAP-kirjasto ei tue AdaBoostia
+        # 'Adaboost': {'model':AdaBoostRegressor,
+        #              'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostRegressor.html',
+        #              'video':'',
+        #              'explainer':shap.TreeExplainer,
+        #              'constant_hyperparameters':{'random_state':42,
+        #                                          }
+        #              },
         'K lähimmät naapurit':{'model':KNeighborsRegressor,
                                'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html',
-
+                                'video':'https://www.youtube.com/embed/jw5LhTWUoG4?list=PLRZZr7RFUUmXfON6dvwtkaaqf9oV_C1LF',
+                                'explainer':shap.KernelExplainer,
                                'constant_hyperparameters': {
+                                                           'n_jobs':-1
                                                             }
                                },
         'Tukivektorikone':{'model':SVR,
                            'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html',
-
+                           'video':"https://www.youtube.com/embed/_YPScrckx28",
+                            'explainer':shap.KernelExplainer,
                                'constant_hyperparameters': {
                                                             }
                                },
         'Gradient Boost':{'model':GradientBoostingRegressor,
-                          'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html#sklearn.ensemble.GradientBoostingRegressor',
+                          'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html',
+                          'video':"https://www.youtube.com/embed/TyvYZ26alZs",
+                          'explainer':shap.TreeExplainer,
                           'constant_hyperparameters': {'random_state':42
                                                        }
-                          }
+                          },
+        # 'Stokastinen gradientin pudotus':{'model':SGDRegressor,
+        #                   'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDRegressor.html',
+        #                   'video':"https://www.youtube.com/embed/TyvYZ26alZs",
+        #                   'explainer':shap.LinearExplainer,
+        #                   'constant_hyperparameters': {'random_state':42
+        #                                                }
+        #                   }
         
     
     }
@@ -77,7 +95,9 @@ UNWANTED_PARAMS = ['verbose',
                    'warm_start',
                     'max_features',
                    'tol',
-                   'subsample'
+                   'subsample',
+                   # 'alpha',
+                   # 'l1_ratio'
                 
                    
                    ]
@@ -97,6 +117,8 @@ LESS_THAN_HALF = [
     
     ]
 
+
+
 config_plots = {'locale':'fi',
 #                 'editable':True,
                 "modeBarButtonsToRemove":["sendDataToCloud"],
@@ -112,7 +134,7 @@ config_plots = {'locale':'fi',
 
 spinners = ['graph', 'cube', 'circle', 'dot' ,'default']
 
-p_font_size = 28
+p_font_size = 22
 graph_height = 800
 
 p_style = {
@@ -392,25 +414,27 @@ def draw_phillips_curve():
                   ],
             layout = go.Layout(
                                xaxis=dict(showspikes=True,
-                                          title = dict(text='Työttömyysaste (%)', font=dict(size=22, family = 'Cadiz Semibold'
+                                          title = dict(text='Työttömyysaste (%)', font=dict(size=22, 
+                                                                                             family = 'Cadiz Semibold'
                                                                                             )), 
                                           tickformat = ' ',
                                           automargin=True,
                                           
                                           tickfont = dict(
                                                            size=18, 
-                                                          family = 'Cadiz Semibold'
+                                                           family = 'Cadiz Semibold'
                                                           )
                                           ), 
                                yaxis=dict(showspikes=True,
-                                          title = dict(text='Inflaatio (%)', font=dict(size=22, family = 'Cadiz Semibold'
+                                          title = dict(text='Inflaatio (%)', font=dict(size=22, 
+                                                                                        family = 'Cadiz Semibold'
                                                                                        )
                                                        ),
                                           tickformat = ' ', 
                                           automargin=True,
                                           tickfont = dict(
                                                size=18,
-                                              family = 'Cadiz Semibold'
+                                               family = 'Cadiz Semibold'
                                               )
                                           ),
                                 margin=dict(
@@ -424,11 +448,11 @@ def draw_phillips_curve():
                                template='seaborn',  
                                # autosize=True,
                                 hoverlabel = dict(font=dict(size=20,
-                                                            family='Cadiz Book'
+                                                             family='Cadiz Book'
                                                             )),
                                 legend = dict(font=dict(
                                                         size=18,
-                                                        family = 'Cadiz Book'
+                                                         family = 'Cadiz Book'
                                                         ),
                                                orientation='h',
                                                # xanchor='center',
@@ -441,13 +465,57 @@ def draw_phillips_curve():
                                             x=.5,
                                             font=dict(
                                                 size=22,
-                                                family = 'Cadiz Semibold'
+                                                 family = 'Cadiz Semibold'
                                                 ))
                               )
             )
             
-            
+def get_shap_values(model, explainer, X_train, X_test):
 
+
+    if explainer.__name__ == 'Kernel':
+        explainer = explainer(model.predict, X_train)
+        shap_values = explainer.shap_values(X_test,normalize=False, n_jobs=-1)
+        feature_names = X_test.columns
+        shap_df = pd.DataFrame(shap_values, columns=feature_names)
+        vals = np.abs(shap_df.values).mean(0)
+        shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
+        shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
+        shap_importance.columns = ['SHAP']
+        shap_importance.index = [' '.join(i.split()[1:]) if i not in ['prev','month'] else i for i in shap_importance.index]
+        shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
+        shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
+        return shap_importance
+    
+    elif explainer.__name__ == 'Tree':
+        explainer = explainer(model)
+        shap_values = explainer(X_test)
+        feature_names = shap_values.feature_names
+        shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
+        vals = np.abs(shap_df.values).mean(0)
+        shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
+        shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
+        shap_importance.columns = ['SHAP']
+        shap_importance.index = [' '.join(i.split()[1:]) if i not in ['prev','month'] else i for i in shap_importance.index]
+        shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
+        shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
+    
+        return shap_importance
+    else:
+        explainer = explainer(model,X_train)
+        shap_values = explainer(X_test)
+        feature_names = X_test.columns
+        feature_names = shap_values.feature_names
+        shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
+        vals = np.abs(shap_df.values).mean(0)
+        shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
+        shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
+        shap_importance.columns = ['SHAP']
+        shap_importance.index = [' '.join(i.split()[1:]) if i not in ['prev','month'] else i for i in shap_importance.index]
+        shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
+        shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
+        return shap_importance
+        
 
 def get_param_options(model_name):
 
@@ -473,20 +541,10 @@ def get_param_options(model_name):
         
     except:
       ''
+      
   return dict_list
 
-def test_results(test_df):
-    
-    past_df = data.loc[test_df.index,:].copy()
-    
-    past_df['Ennuste'] = np.round(test_df.Työttömyysaste,1)
-    
-    mape = mean_absolute_percentage_error(past_df.Työttömyysaste,past_df.Ennuste)
-    past_df['n_feat'] = test_df.n_feat.values[0]
-    
-    past_df['mape'] = mape
-    
-    return past_df
+
 
 def plot_test_results(df, chart_type = 'lines+bars'):
     
@@ -934,18 +992,103 @@ def plot_forecast_data(df, chart_type):
                                                     
 
 
-                                                       
+def test(model, features, test_size, explainer, use_pca = False, n_components=.99):
+
+  feat = features.copy()
+  feat.append('prev')
+  feat.append('month')
+  
+  cols = feat
+
+  train_df = data.iloc[:-test_size,:].copy()
+  test_df = data.iloc[-test_size:,:].copy()
+
+
+  scl = StandardScaler()
+  label = 'change'
+  x = train_df[feat]
+  y = train_df[label]
+
+  n_feat  = len(features) 
+  X = scl.fit_transform(x)
+  pca = PCA(n_components = n_components, random_state = 42, svd_solver = 'full')
+
+  if use_pca:
+    
+    X = pca.fit_transform(X)
+    n_feat = len(pd.DataFrame(X).columns)
+    cols = ['_ '+str(i+1)+'. pääkomponentti' for i in range(n_feat)]
+
+
+  model.fit(X,y)
+
+  results = []
+  scaled_features = []
+
+  df = pd.DataFrame(test_df.iloc[0,:]).T
+  
+  
+  X = scl.transform(df[feat])
+
+  if use_pca:
+    X = pca.transform(X)
+
+  df['Ennustettu muutos'] = model.predict(X)
+  df['Ennuste'] = np.maximum(0, df.prev + df['Ennustettu muutos'])
+
+  results.append(df[feat+['Työttömyysaste', 'Ennuste','change', 'Ennustettu muutos','change']])
+
+  scaled_features.append(pd.DataFrame(X, columns = cols))
+
+  for i in test_df.index[1:]:
+
+    df = pd.DataFrame(test_df.loc[i,feat]).T
+    df['Työttömyysaste'] = test_df.loc[i,'Työttömyysaste']
+    df['change'] = test_df.loc[i,'change']
+    df['month'] = test_df.loc[i,'month']
+    X = scl.transform(df[feat])
+
+    if use_pca:
+      X = pca.transform(X)
+
+    df['Ennustettu muutos'] = model.predict(X)
+    df['Ennuste'] = np.maximum(0, df.prev + df['Ennustettu muutos'])
+
+    results.append(df[feat+['Työttömyysaste', 'Ennuste','change', 'Ennustettu muutos','change']])
+
+    scaled_features.append(pd.DataFrame(X, columns = cols))
+  
+  
+
+  shap_df = get_shap_values(model, explainer, X_train = pd.DataFrame(X, columns = cols), X_test = pd.concat(scaled_features))
+
+  result = pd.concat(results)
+  result['n_feat'] = n_feat
+  result.Ennuste = np.round(result.Ennuste,1)
+  result['mape'] = mean_absolute_percentage_error(result.Työttömyysaste, result.Ennuste)
+  
+  # result.columns = result.columns.str.replace('change','Muutos')
+  # result.columns = result.columns.str.replace('prev','Edellisen kuukauden työttömyysaste')
+  # result.columns = result.columns.str.replace('month','Kuukausi')
+  
+  result.index.name ='Aika'
+    
+  result = result[['Työttömyysaste', 'Ennuste', 'change', 'Ennustettu muutos', 'prev','n_feat','mape','month']+features]
+  
+
+  return result, shap_df                                                      
 
                                                 
 
-def predict(df, model, features, feature_changes = None, length=6, use_pca = False, n_components=.99):
+def predict(model, features, feature_changes, length, use_pca = False, n_components=.99):
+  
+  df = data.copy()
   
   feat = features.copy()
   feat.append('prev')
   feat.append('month')
-
-  if feature_changes is None:
-    feature_changes = pd.Series({f:0 for f in features})
+  
+  # cols = feat
 
   scl = StandardScaler()
   label = 'change'
@@ -962,9 +1105,11 @@ def predict(df, model, features, feature_changes = None, length=6, use_pca = Fal
     
     X = pca.fit_transform(X)
     n_feat = len(pd.DataFrame(X).columns)
+    # cols = ['_ '+str(i+1)+'. pääkomponentti' for i in range(n_feat)]
     
     
   model.fit(X,y)
+  
 
   last_row = df.iloc[-1:,:].copy()
 
@@ -987,6 +1132,7 @@ def predict(df, model, features, feature_changes = None, length=6, use_pca = Fal
   results = []
 
   results.append(last_row)
+  
 
   for _ in range(length-1):
 
@@ -1011,8 +1157,7 @@ def predict(df, model, features, feature_changes = None, length=6, use_pca = Fal
 
   result = pd.concat(results)
   result['n_feat'] = n_feat
-  
- 
+
   return result
 
 
@@ -1162,7 +1307,9 @@ def serve_layout():
                               "Valitse testin pituus ja klikkaa testaa nappia. "
                               "Tarkastele testin kuvaajaa tai viedä tulokset Exceliin "
                               "klikkaamalla 'Lataa testitulokset koneelle -nappia'. "
-                              "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä.",
+                              "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä."
+                              " "
+                              " Voit myös tutkia ",
                               style = {
                                   # #'font-family':'Cadiz Book',
                                        'font-size':16,
@@ -1229,13 +1376,15 @@ def serve_layout():
                     dcc.Store(id = 'features_values',data={f:0.0 for f in initial_features}),
                     dcc.Store(id = 'change_weights'), 
                     dcc.Store(id = 'method_selection_results'),
+                    dcc.Store(id ='shap_data'),
                     dcc.Store(id = 'test_data'),
                     dcc.Store(id = 'forecast_data'),
                     dcc.Download(id='forecast_download'),
                     dcc.Download(id='test_download')
         ]),
         
-        dbc.Tabs(id ='tabs', children = [
+        dbc.Tabs(id ='tabs',
+                 children = [
             
             
             
@@ -1307,7 +1456,8 @@ def serve_layout():
                                       dbc.Col([
                                              
                                               html.Div(
-                                                  [dcc.Graph(figure= draw_phillips_curve(),
+                                                  [dcc.Graph(id = 'phillips',
+                                                             figure= draw_phillips_curve(),
                                                         config = config_plots
                                                         )
                                                   ],style={'textAlign':'center'}
@@ -1379,7 +1529,7 @@ def serve_layout():
                                                     style = p_style),
                                           html.P('3. Menetelmän valinta. Tässä osiossa valitsen koneoppimisalgoritmin sekä säädät hyperparametrit. Lisäksi voi valita hyödynnetäänkö pääkomponenttianalyysiä ja kuinka paljon variaatiota säilötään.',
                                                     style = p_style),
-                                         html.P('4. Testaaminen. Voit valita menneen ajanjakson, jota malli pyrkii ennustamaan. Näin pystyt arvioimaan kuinka ennustemalli olisi toiminut jo toteutuneelle datalle.',
+                                         html.P('4. Testaaminen. Voit valita menneen ajanjakson, jota malli pyrkii ennustamaan. Näin pystyt arvioimaan kuinka ennustemalli olisi toiminut jo toteutuneelle datalle. Tässä osiossa voi myös tarkastella kuinka paljon kukin ennustepiirre vaikutti ennusteen tekemiseen.',
                                                     style = p_style),
                                          html.P('5. Ennusteen tekeminen. Voit nyt hyödyntää valitsemaasi menetelmää tehdäksesi ennusteen tulevaisuuteen. Valitse ennusteen pituus ja klikkaa ennusta. Ennusteen voi sitten viedä myös Exceliin. Ennustetta tehdessä hyödynnetään asettamiasi hyödykkeiden muutosarvoja.',
                                                     style = p_style),
@@ -1395,6 +1545,7 @@ def serve_layout():
                                           html.P('PCA on yleisesti hyödyllinen toimenpide silloin, kun valittuja muuttujia on paljon, milloin on myös mahdollista, että osa valituista muuttujista aiheuttaa datassa kohinaa, mikä taas johtaa heikompaan ennusteeseen.  Pienellä määrällä tarkasti harkittuja muuttujia PCA ei ole välttämätön.',
                                                   style=p_style),
                                           html.Br(),
+                                                                                    
                                        
                                           html.Br(),
                                           
@@ -1655,7 +1806,7 @@ def serve_layout():
                                             className="m-1",
                                             size="lg",
                                             style={
-                                                'font-size':28, 
+                                                'font-size':25, 
                                                 #'font-family':'Cadiz Book'
                                                 }
                                             ),
@@ -1665,7 +1816,7 @@ def serve_layout():
                                           options = initial_options,
                                           multi = True,
                                           value = list(initial_features),
-                                          style = {'font-size':25, #'font-family':'Cadiz Book'
+                                          style = {'font-size':22, #'font-family':'Cadiz Book'
                                                    },
                                           placeholder = 'Valitse hyödykkeitä'),
                             html.Br(),
@@ -1971,6 +2122,12 @@ def serve_layout():
                                                                   on = False, 
                                                                   color = 'blue'),
                                 html.Br(),
+                                html.P('Pääkomponenttianalyysi on kohinanpoistomenetelmä, jolla saadaan tiivistettyä ennustepiirteiden informaatio pääkomponentteihin. Jokainen pääkomponentti säilöö alkuperäisen datan variaatiota ja kaikkien pääkomponettien säilötty variaatio summautuu sataan prosenttiin.',
+                                       style = p_style),
+                                html.A([html.P('Katso lyhyt esittelyvideo pääkomponenttianalyysistä.',
+                                               style = p_style)],
+                                       href = "https://www.youtube.com/embed/hJZHcmJBk1o",
+                                       target = '_blank'),
                                 
                                 
                                 html.Div(id = 'ev_placeholder',children =[
@@ -2039,24 +2196,9 @@ def serve_layout():
                                         html.P('Tässä kohtaa hyödykeindeksien oletetaan toteutuvan sellaisinaan.',
                                                style = p_style),
                                         html.P('Tehtyäsi testin voit tarkastella viereistä tuloskuvaajaa tai viedä testidatan alle ilmestyvästä painikeesta Exceliin.',
-                                              style=p_style)
-                            
-                            
-                            ],xs =12, sm=12, md=12, lg=9, xl=9)
-                            ], justify = 'center', 
-                            style = {'textAlign':'center', 
-                                      'margin':'10px 10px 10px 10p'
-                                     }
-                            ),
-                        html.Br(),
-                        dbc.Row(children = [
-                            
-                            dbc.Col(children = [
-                                        html.Br(),
-
+                                              style=p_style),
                                         html.Br(),
                                         html.H3('Valitse testidatan pituus',style = h3_style),
-                                        
                                         dcc.Slider(id = 'test_slider',
                                                   min = 1,
                                                   max = 12,
@@ -2081,22 +2223,33 @@ def serve_layout():
 
                                                             }
                                                   ),
-                                      html.Br(),  
-                                      html.Div(id = 'test_size_indicator', style = {'textAlign':'center'}),
-                                      html.Br(),
-                                      html.Div(id = 'test_button_div',children = [html.P('Valitse ensin hyödykkeitä.',style = {
-                                          'text-align':'center', 
-                                          #'font-family':'Cadiz Semibold', 
-                                            'font-size':p_font_size
-                                          })], style = {'textAlign':'center'}),
-                                      html.Br(),
-                                      html.Div(id='test_download_button_div', style={'textAlign':'center'})
-                                      
-                                      ],xs = 12, sm = 12, md = 12, lg = 4, xl = 4
-                                ),
-                            dbc.Col([html.Div(id = 'test_results_div')],xs = 12, sm = 12, md = 12, lg = 8, xl = 8)
+                                        html.Br(),  
+                                        html.Div(id = 'test_size_indicator', style = {'textAlign':'center'}),
+                                        html.Br(),
+                                        html.Div(id = 'test_button_div',children = [html.P('Valitse ensin hyödykkeitä.',style = {
+                                            'text-align':'center', 
+                                            #'font-family':'Cadiz Semibold', 
+                                              'font-size':p_font_size
+                                            })], style = {'textAlign':'center'}),
+                                        html.Br(),
+                                        html.Div(id='test_download_button_div', style={'textAlign':'center'})
+                                        
+                                        
+                            
+                            
+                            ],xs =12, sm=12, md=12, lg=9, xl=9)
                             ], justify = 'center', 
-                             # style = {'margin' : '10px 10px 10px 10px'}
+                            style = {'textAlign':'center', 
+                                      # 'margin':'10px 10px 10px 10p'
+                                     }
+                            ),
+                        html.Br(),
+                        dbc.Row(children = [
+                            dbc.Col([html.Div(id = 'test_results_div')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            dbc.Col([html.Div(id = 'shap_results_div'),],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            
+                            ], justify = 'center', 
+                            
                             ),
                  
                         
@@ -2199,6 +2352,31 @@ def serve_layout():
     
    ]
   )
+
+@app.callback(
+    
+    [Output('shap_features_switch', 'label'),
+     Output('shap_features_switch', 'disabled')],
+    Input('shap_data','data')
+    
+)
+def update_shap_switch(shap_data):
+    
+    shap_df = pd.DataFrame(shap_data)
+    shap_df = shap_df.set_index(shap_df.columns[0])
+    
+    if 'Kuukausi' not in shap_df.index:
+        return dict(label = 'Käytit pääkomponenttianalyysiä',
+                     style = {'font-size':p_font_size,
+                              'text-align':'center'
+                              # #'fontFamily':'Cadiz Semibold'
+                              }), True
+    else:
+        return dict(label = 'Näytä vain hyödykkeiden kontribuutio',
+                     style = {'font-size':p_font_size, 
+                              'text-align':'center'
+                              # #'fontFamily':'Cadiz Semibold'
+                              }), False
 
 @app.callback(
 
@@ -2423,6 +2601,7 @@ def update_hyperparameter_selections(model_name):
                                                            step=0.01),
                                                           html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
                                         )
+
                     
                 else:
                     children.append(dbc.Col([html.P(hyperparameter+':', 
@@ -2482,7 +2661,10 @@ def update_hyperparameter_selections(model_name):
      
     children.append(html.Br()) 
     children.append(html.Div(style = {'textAlign':'center'},
-             children = [html.A('Katso dokumentaatio.', href = MODELS[model_name]['doc'], target="_blank",style = p_style)]))
+             children = [html.A('Katso lyhyt esittelyvideo käytetystä algoritmista.', href = MODELS[model_name]['video'], target="_blank",style = p_style),
+                         html.Br(),
+                         html.A('Katso mallin tekninen dokumentaatio.', href = MODELS[model_name]['doc'], target="_blank",style = p_style),
+                         ]))
     return dbc.Row(children, justify ='start')
 
 
@@ -2519,7 +2701,8 @@ def store_method_selection_results(model_name, hyperparams, hyperparam_values,pc
     
       [Output('test_data','data'),
        Output('test_results_div','children'),
-       Output('test_download_button_div','children')],
+       Output('test_download_button_div','children'),
+       Output('shap_data','data')],
       [Input('test_button','n_clicks')],
       [State('test_slider', 'value'),
        State('features_values','data'),
@@ -2537,7 +2720,7 @@ def update_test_results(n_clicks,
     
     if n_clicks > 0:
     
-        df = data.iloc[:len(data)-test_size,:].copy()
+        
         
         features = sorted(list(features_values.keys()))
         
@@ -2559,12 +2742,11 @@ def update_test_results(n_clicks,
         
         model = model(**model_hyperparams)
         
+        explainer = MODELS[model_name]['explainer']
         
-        test_df = predict(df, model, features, feature_changes = None, length=test_size, use_pca=pca,n_components=explained_variance)
-
-        test_result = test_results(test_df)
-
         
+        test_result, shap_results = test(model, features, explainer = explainer, test_size=test_size, use_pca=pca,n_components=explained_variance)
+
         mape = test_result.mape.values[0]
         
         led_color = 'red'
@@ -2580,7 +2762,7 @@ def update_test_results(n_clicks,
                         
                         # dbc.Col([
                             html.Br(),
-                             html.H3('Testin tulokset',
+                             html.H3('Miten testi onnistui?',
                                      style = h3_style),
                              
                              html.P('Alla olevassa kuvaajassa nähdään kuinka hyvin ennustemalli olisi ennustanut työttömyysasteen ajalle {} - {}.'.format(test_result.index.strftime('%B %Y').values[0],test_result.index.strftime('%B %Y').values[-1]),
@@ -2647,7 +2829,7 @@ def update_test_results(n_clicks,
              
 
         feat = features.copy()
-        feat = ['Työttömyysaste','Ennuste','month','change','mape','n_feat']+feat
+        feat = ['Työttömyysaste','Ennuste','month','change','mape','n_feat', 'Ennustettu muutos']+feat
         
         button_children = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Lataa testitulokset koneelle'],
                                        id='test_download_button',
@@ -2660,9 +2842,9 @@ def update_test_results(n_clicks,
                                        color = 'info'
                                        )
         
-        return test_result[feat].reset_index().to_dict('records'), test_plot, button_children
+        return test_result[feat].reset_index().to_dict('records'), test_plot, button_children, shap_results.reset_index().to_dict('records')
     else:
-        return [html.Div(),html.Div(),html.Div()]
+        return [html.Div(),html.Div(),html.Div(),html.Div()]
 
 
         
@@ -2691,7 +2873,7 @@ def update_forecast_results(n_clicks,
         
         features = sorted(list(weights_dict.keys()))
         
-        df = data.copy()
+        
         
         model_name = method_selection_results['model']
              
@@ -2713,8 +2895,7 @@ def update_forecast_results(n_clicks,
         
         
         weights = pd.Series(weights_dict)
-        forecast_df = predict(df, 
-                              model, 
+        forecast_df = predict(model, 
                               features, 
                               feature_changes = weights, 
                               length=forecast_size, 
@@ -2772,6 +2953,199 @@ def update_forecast_results(n_clicks,
         return [forecast_df[feat].reset_index().to_dict('records'), forecast_div, [html.Br(),forecast_download_button]]
     else:
         return [html.Div(),html.Div(),html.Div()]
+    
+@app.callback(
+
+    Output('shap_results_div','children'),
+    [Input('test_button','n_clicks'),
+     State('shap_data','data')]    
+    
+)
+def update_shap_results(n_clicks, shap):
+    
+    if shap is None:
+        raise PreventUpdate
+        
+    if n_clicks > 0:
+    
+        shap_df = pd.DataFrame(shap)
+        
+        shap_df = shap_df.set_index(shap_df.columns[0])
+        
+        
+         
+        return html.Div([
+            
+                    html.H3('Mitkä ennustepiirteet vaikuttivat eniten?',
+                           style = h3_style),
+                    html.P('Oheisessa kuvaajassa on esitetty hyödynnettyjen ennustepiirteiden keskimääräisen absoluuttiset SHAP-arvot, jotka kuvaavat kuinka suuri kontribuutio on kullakin piirteellä ennusteeseen. Ennustepiirteisiin kuuluvat valittujen hyödykeindeksien lisäksi edellisen kuukauden työttömyysaste sekä kuukausi.',
+                           style = p_style),
+                    html.A([html.P('Katso lyhyt esittely SHAP -arvojen merkityksestä mallin selittämisessä.')], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
+                    html.P('Kuvaajan SHAP-arvot on kerrottu sadalla visualisoinnin parantamiseksi.',
+                           style = p_style),
+                    html.Br(),
+                    dbc.Row([
+                        dbc.Col([
+                                html.Div(id = 'cut_off_div'),
+                                
+                                html.Div(id = 'cut_off_indicator'),
+                                
+                                ],xs =12, sm=12, md=12, lg=9, xl=9),
+                        dbc.Col([
+                                dash_daq.BooleanSwitch(id = 'shap_features_switch', 
+                                                        label = dict(label = 'Näytä vain hyödykkeiden kontribuutio',
+                                                                     style = {'font-size':p_font_size,
+                                                                              'text-align':'center',
+                                                                              # #'fontFamily':'Cadiz Semibold'
+                                                                              }), 
+                                                        on = False, 
+                                                        color = 'red')
+                                ],xs =12, sm=12, md=12, lg=3, xl=3)
+                        ]),
+                    html.Br(),
+                    html.Div(id = 'shap_graph_div'),
+                    html.Br()
+                    
+                    
+                    
+                    
+            
+            ])
+    
+@app.callback(
+
+    Output('cut_off_indicator','children'),
+    [Input('cut_off','value')]    
+    
+)
+def update_cut_off_indicator(cut_off):
+    return [html.P('Valitsit {} piirrettä.'.format(cut_off).replace(' 1 piirrettä',' yhden piirteen'), style = p_style)]
+    
+@app.callback(
+
+    Output('cut_off_div','children'),
+    [Input('shap_data','data')]    
+    
+)
+def update_shap_slider(shap):
+    if shap is None:
+        raise PreventUpdate
+
+    shap_df = pd.DataFrame(shap)
+    return [html.P('Valitse kuinka monta piirrettä näytetään kuvaajassa',
+                       style = p_style),
+                dcc.Slider(id = 'cut_off',
+                   min = 1, 
+                   max = len(shap_df),
+                   value = int(.2*len(shap_df)),
+                   step = 1,
+                   marks=None,
+                   tooltip={"placement": "top", "always_visible": True},
+                   )]
+
+@app.callback(
+
+    Output('shap_graph_div', 'children'),
+    [Input('cut_off', 'value'),
+     Input('shap_features_switch','on'),
+     State('shap_data','data')]
+    
+)
+def update_shap_graph(cut_off, only_commodities, shap):
+    
+    if shap is None:
+        raise PreventUpdate
+        
+    
+    shap_df = pd.DataFrame(shap)
+    shap_df = shap_df.set_index(shap_df.columns[0])
+  
+    
+    
+    if only_commodities:
+        shap_df = shap_df.loc[[i for i in shap_df.index if i not in ['Kuukausi', 'Edellisen kuukauden työttömyysaste']]]
+    
+    
+    shap_df = shap_df.sort_values(by='SHAP', ascending = False)
+    
+   
+    df = pd.DataFrame(shap_df.iloc[cut_off+1:,:].sum())
+    df = df.T
+    df.index = df.index.astype(str).str.replace('0', 'Muut {} piirrettä'.format(len(shap_df.iloc[cut_off+1:,:])))
+    
+    
+    shap_df = pd.concat([shap_df.head(cut_off),df])
+    shap_df = shap_df.loc[shap_df.index != 'Muut 0 piirrettä']
+    
+
+    height = graph_height +200 + 10*len(shap_df)
+    
+    
+    return dcc.Graph(id = 'shap_graph',
+                     config = config_plots,
+                         figure = go.Figure(data=[go.Bar(y =shap_df.index, 
+                      x = np.round(100*shap_df.SHAP,2),
+                      orientation='h',
+                      name = '',
+                      marker_color = ['aquamarine' if i not in ['Kuukausi','Edellisen kuukauden työttömyysaste'] else 'black' for i in shap_df.index],
+                      # marker = dict(color = 'turquoise'),
+                      text = np.round(100*shap_df.SHAP,2),
+                      hovertemplate = '<b>%{y}</b>: %{x}',
+                          textfont = dict(
+                               family='Cadiz Semibold', 
+                              size = 20))],
+         layout=go.Layout(title = dict(text = 'Piirteiden merkitykset ennusteelle<br>SHAP - arvot',
+                                                                     x=.5,
+                                                                     font=dict(
+                                                                          family='Cadiz Semibold',
+                                                                          size=20
+                                                                         )),
+                                                      
+                                                        
+                                                        template = 'seaborn',
+                                                        margin=dict(
+                                                             l=10,
+                                                            r=10,
+                                                            # b=100,
+                                                             # t=120,
+                                                             # pad=4
+                                                        ),
+                                                        legend=dict(
+                                                             orientation = 'h',
+                                                                     # x=.1,
+                                                                     # y=1,
+                                                                     # xanchor='center',
+                                                                     # yanchor='top',
+                                                                    font=dict(
+                                                             size=12,
+                                                             family='Cadiz Book'
+                                                            )),
+                                                        
+                                                        height=height,#graph_height+200,
+                                                        xaxis = dict(title=dict(text = 'Keskimääräinen SHAP - arvo',
+                                                                                font=dict(
+                                                                                    size=18, 
+                                                                                    family = 'Cadiz Semibold'
+                                                                                    )),
+                                                                     automargin=True,
+                                                                     tickfont = dict(
+                                                                         family = 'Cadiz Semibold', 
+                                                                          size = 16
+                                                                         )),
+                                                        yaxis = dict(title=dict(text = 'Ennustepiirre',
+                                                                               font=dict(
+                                                                                    size=18, 
+                                                                                   family = 'Cadiz Semibold'
+                                                                                   )),
+                                                                    tickformat = ' ',
+                                                                     categoryorder='total ascending',
+                                                                    automargin=True,
+                                                                    tickfont = dict(
+                                                                        family = 'Cadiz Semibold', 
+                                                                         size = 16
+                                                                        ))
+                                                        )))
+    
 
 @app.callback(
     Output("forecast_download", "data"),
@@ -3192,7 +3566,7 @@ def update_time_series(values):
                                                                       # xanchor='center',
                                                                       # yanchor='top',
                                                                      font=dict(
-                                                              size=12,
+                                                              size=14,
                                                               family='Cadiz Book'
                                                              )),
                                                          xaxis = dict(title=dict(text = 'Aika',
@@ -3474,12 +3848,43 @@ def update_feature_correlation_plot(value1, value2):
 @app.callback(
 
     Output('eda_div', 'children'),
-    [Input('corr_feature','value')]    
+    [Input('features_values','data')]    
     
 )
-def update_eda_plot(values):
+def update_eda_div(features_values):
         
+
+    
+
+    selector = dbc.RadioItems(id = 'eda_y_axis', 
+                options = [{'label':'Työttömyysaste (%)','value':'Työttömyysaste'},
+                          {'label':'Työttömyysasteen kuukausimuutos (%-yksikköä)','value':'change'}],
+                labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':25,
+                            #'font-family':'Cadiz Book'
+                            },
+                className="btn-group",
+                inputClassName="btn-check",
+                labelClassName="btn btn-outline-warning",
+                labelCheckedClassName="active",
+              
+                value = 'Työttömyysaste'
+              )    
         
+  
+    
+    return [selector, html.Div(id = 'commodity_unemployment_div')]
+
+
+@app.callback(
+    
+    Output('commodity_unemployment_div','children'),
+    [Input('corr_feature','value'),
+     Input('eda_y_axis','value')]
+    
+)
+def update_commodity_unemployment_graph(values, label):
+    
+    
     symbols = ['circle',
                  'square',
                  'diamond',
@@ -3495,23 +3900,20 @@ def update_eda_plot(values):
                  'bowtie',
                  'hash']
     
-        
+    label_str = {'Työttömyysaste': 'Työttömyysaste (%)',
+                 'change': 'Työttömyysasteen kuukausimuutos (%-yksikköä)'}[label]     
             
     traces = [go.Scatter(x = data[value], 
-                         y = data['Työttömyysaste'], 
+                         y = data[label], 
                          mode = 'markers',
-                         name = ' '.join(value.split()[1:]).replace(',',',<br>')+' ({})'.format(round(sorted(data[['Työttömyysaste', value]].corr()[value].values)[0],1)),
+                         name = ' '.join(value.split()[1:]).replace(',',',<br>')+' ({})'.format(round(sorted(data[[label, value]].corr()[value].values)[0],2)),
                          showlegend=True,
                          marker = dict(size=10),
                          marker_symbol = random.choice(symbols),
-                         hovertemplate = "<b>{}</b>:".format(value)+" %{x}"+"<br><b>Työttömyysaste</b>: %{y}"+" %"+"<br>(Korrelaatio: {:.2f})".format(sorted(data[['Työttömyysaste', value]].corr()[value].values)[0])) for value in values]
-
-        
-        
-  
+                         hovertemplate = "<b>{}</b>:".format(value)+" %{x}"+"<br><b>"+label_str+"</b>: %{y}"+"<br>(Korrelaatio: {:.2f})".format(sorted(data[[label, value]].corr()[value].values)[0])) for value in values]
     
     return [dcc.Graph(figure = go.Figure(data = traces,
-          layout = go.Layout(title = dict(text = 'Valitut hyödykkeet vs.<br>Työttömyysaste', 
+          layout = go.Layout(title = dict(text = 'Valitut hyödykkeet vs.<br>'+label_str, 
                                           x=.5, 
                                           font=dict(
                                               family='Cadiz Semibold',
@@ -3552,7 +3954,7 @@ def update_eda_plot(values):
                                  font_family = 'Cadiz Book'
                                 ),
                             template = 'seaborn',                            
-                            yaxis = dict(title = dict(text='Työttömyysaste (%)', 
+                            yaxis = dict(title = dict(text=label_str, 
                                                       font=dict(
                                                            family='Cadiz Semibold',
                                                            size=20
@@ -3627,6 +4029,8 @@ def toggle_offcanvas(n1, is_open):
     if n1:
         return not is_open
     return is_open
+
+
 
 app.layout = serve_layout
 
