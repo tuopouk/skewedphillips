@@ -2980,7 +2980,8 @@ def update_shap_results(n_clicks, shap):
                            style = h3_style),
                     html.P('Oheisessa kuvaajassa on esitetty hyödynnettyjen ennustepiirteiden keskimääräisen absoluuttiset SHAP-arvot, jotka kuvaavat kuinka suuri kontribuutio on kullakin piirteellä ennusteeseen. Ennustepiirteisiin kuuluvat valittujen hyödykeindeksien lisäksi edellisen kuukauden työttömyysaste sekä kuukausi.',
                            style = p_style),
-                    html.A([html.P('Katso lyhyt esittely SHAP -arvojen merkityksestä mallin selittämisessä.')], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
+                    html.A([html.P('Katso lyhyt esittely SHAP -arvojen merkityksestä mallin selittämisessä.',
+                                   style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
                     html.P('Kuvaajan SHAP-arvot on kerrottu sadalla visualisoinnin parantamiseksi.',
                            style = p_style),
                     html.Br(),
@@ -3032,6 +3033,8 @@ def update_shap_slider(shap):
         raise PreventUpdate
 
     shap_df = pd.DataFrame(shap)
+    
+    
     return [html.P('Valitse kuinka monta piirrettä näytetään kuvaajassa',
                        style = p_style),
                 dcc.Slider(id = 'cut_off',
@@ -3247,11 +3250,12 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
     [Input("test_download_button", "n_clicks"),
     State('test_data','data'),
     State('method_selection_results','data'),
-    State('change_weights','data')
+    State('change_weights','data'),
+    State('shap_data','data')
     ]
     
 )
-def download_test_data(n_clicks, df, method_selection_results, weights_dict):
+def download_test_data(n_clicks, df, method_selection_results, weights_dict, shap_data):
     
     if n_clicks > 0:
         
@@ -3302,7 +3306,11 @@ def download_test_data(n_clicks, df, method_selection_results, weights_dict):
         hyperparam_df.index.name = 'Hyperparametri'
         hyperparam_df.columns = ['Arvo']   
         hyperparam_df['Arvo'] = hyperparam_df['Arvo'].astype(str)
-
+        
+        shap_df = pd.DataFrame(shap_data)
+        shap_df = shap_df.set_index(shap_df.columns[0])
+        shap_df.index.name = 'Piirre'
+        shap_df.SHAP = np.round(100*shap_df.SHAP,2)
         
         xlsx_io = io.BytesIO()
         writer = pd.ExcelWriter(xlsx_io, engine='xlsxwriter')
@@ -3311,6 +3319,7 @@ def download_test_data(n_clicks, df, method_selection_results, weights_dict):
         df.to_excel(writer, sheet_name= 'Testidata')
         metadata.to_excel(writer, sheet_name= 'Metadata')
         hyperparam_df.to_excel(writer, sheet_name= 'Mallin hyperparametrit')
+        shap_df.to_excel(writer, sheet_name= 'Mallin piirteiden vaikuttavuus')
 
         writer.save()
         
