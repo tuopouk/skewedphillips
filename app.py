@@ -19,6 +19,7 @@ import dash_daq
 from flask import Flask
 import os
 import io
+import math
 import shap
 from dash_extensions.enrich import callback_context,Dash  ,ALL, Output,dcc,html, Input, State
 from dash.exceptions import PreventUpdate
@@ -1391,7 +1392,7 @@ def serve_layout():
             dbc.Tab(label='Ohje ja esittely',
                     tab_id = 'ohje',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'34px',
+                    tab_style = {'font-size':'25px',
                                  # #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -1429,20 +1430,13 @@ def serve_layout():
                                   
 
                                   html.Br(),
-                                  html.H3('Esittely',style=h3_style
+                                  html.H3('Johdanto',style=h3_style
                                           ),
-                                  html.P('Tällä työkalulla voi vapaasti kehitellä koneoppimismenetelmän, joka pyrkii ennustamaan tulevien kuukausien työttömyysastetta ottaen huomioon aiemmat toteutuneet työttömyysasteet, kuukausittaiset työttömyyden kausivaihtelut sekä käyttäjän itse valitsemien hyödykkeiden kuluttajahintaindeksit. Näin on mahdollista tuottaa skenaariopohjaisia ennustemalleja kun tiettyjen hyödykkeiden tai yleisindeksin oletetaan muuttuvan tietyllä tavalla. Ennuste tehdään sillä oletuksella, että valittujen hyödykkeiden hintataso muuttuu käyttäjän syöttämän oletetun keskimääräisen kuukausimuutoksen mukaan. Lisäksi koneoppimismenetelmän voi valita ja algoritmien hyperparametrit voi säätää itse. Menetelmää voi testata valitulle aikavälille ennen ennusteen tekemistä. Hintaindeksien valintaa helpottaakseen, voi niiden keskinäisiä suhteita ja suhdetta työttömyysasteeseen tutkia sille varatulla välilehdellä. ', 
-                                        style=p_style),
-                                  html.P('Sovellus hyödyntää Tilastokeskuksen Statfin-rajapinnasta saatavaa työttömyys, -ja kuluttajahintaindeksidataa. Sovellus on avoimen lähdekoodin kehitysprojekti, joka on saatavissa kokonaisuudessaan tekijän Github-sivun kautta. Sovellus on kehitetty harrasteprojektina tutkivaan ja kokeelliseen käyttöön, ja siitä saataviin tuloksiin on suhtauduttava varauksella (ks. Vastuunvapautuslauseke alla).', 
-                                        style=p_style),
-                                  html.Br(),
-                                  html.H3('Teoria',
-                                          style=h3_style
-                                          ),
-                                  
-                                  html.P('Inflaatio, eli yleisen hintatason nousu on vaikuttanut viimeisen vuoden aikana monen kotitalouden kulutustottumuksiin. Hintavakauden saavuttamiseksi, keskuspankkien on pyrittävä kiristämään rahapolitiikkaa ohjauskorkoa nostamalla, mikä tullee nostamaan asuntovelallisten korkokuluja. Vähemmän varallisuutta ohjautuu osakemarkkinoille, mikä ajaa pörssikursseja alaspäin. Samalla työmarkkinoilla on painetta palkankorotuksille, mikä voi pahimmillaan eskaloitua lakkoiluun. Vaikuttaisi siis siltä, että inflaatiolla on vain negatiivisia vaikutuksia, mutta näin ei aina ole. Nimittäin historian aika on havaittu makrotaloustieteellinen ilmiö, jonka mukaan lyhyellä aikavälillä inflaation ja työttömyyden välillä vallitsee ristiriita. Toisin sanoen korkean inflaation koetaan lyhyellä aikavälillä matalaa työttömyyttä. Selittäviä teorioita tälle ilmiölle on useita. Lyhyellä aikavälillä hintojen noustessa tuotanto nousee, koska tuottajat nostavat hyödykkeiden tuotantoa suurempien katteiden saavuttamiseksi. Tämä johtaa matalampaan työttömyyteen, koska tuotannon kasvattaminen johtaa uusiin rekrytointeihin, jolloin työttömien osuus työvoimasta pienenee. Toisin päin katsottuna, kun työttömyys on matala, markkinoilla on työn kysyntäpainetta, mikä nostaa palkkoja. Palkkojen nousu taas johtaa yleisen hintatason nousuun, koska hyödykkeiden tarjoajat voivat pyytää korkeampaa hintaa tuotteistaan ja palveluistaan. Elämme nyt sellaista hetkeä, jossa inflaatio viimeisen noin kymmenen vuoden huipussaan. Samalla työttömyys on paljon matalampi kuin se oli esimerkiksi vuonna 2015, jolloin inflaatio oli välillä jopa negatiivinen. Ajoittain voivat molemmat olla samaan aikaan matalia tai korkeita, mutta yleisesti ottaen lyhyellä ajalla toisen noustessa toisen trendikäyrä laskee. Tämä tunnetaan makrotaloustieteessä ns. Phillipsin käyränä, joka on sen vuonna 1958 kehittäneen taloustieteilijä Alban William Phillipsin mukaan.',
-                                        style=p_style),
-                                  
+                                  html.P('Hintojen nousu vaikuttaa monen suomalaisen kuluttujan elämään. Odotettavissa on korkojen nousuja keskuspankkien kokiessa painetta hillitä inflaatiota. Asuntovelallisille on luvassa vaikeampia aikoja korkojen noustessa. Kaiken kaikkiaan vaikuttaisi siltä, että inflaatiosta ei seuraa mitään hyvää. Mutta onko todella näin?',
+                                        style = p_style),
+                                  html.P('Inflaatiosta löytyy myös hopeareunus, joka on työttömyyden lasku lyhyellä aikavälillä. Tämä ns. Phillipsin käyrä on samannimisen taloustieteilijän Alban William Phillipsin 1950 -luvulla tekemä empiirinen havainto, jossa inflaation ja työttömyyden välillä vallitsee ristiriita lyhyellä ajalla. Tämä kyseinen idea on esitetty alla olevassa kuvaajassa, jossa on kuvattu inflaatio ja saman ajankohdan työttömyysaste Suomessa. Laskeva logaritminen trendiviiva vastaa Phillipsin havaintoa.',
+                                        style = p_style),
+                                
                                   html.H3('Phillipsin käyrä Suomen taloudessa kuukausittain', 
                                           style=h3_style),
                                   html.H4('(Lähde: Tilastokeskus)', 
@@ -1480,8 +1474,11 @@ def serve_layout():
                                                     #'font-family':'Messina Modern Book', 
                                                       'font-size':p_font_size-2
                                                     }),
-                                          html.P('Kyseessä on tunnettu taloustieteen teoria, jota on tosin vaikea soveltaa, koska ei ole olemassa sääntöjä, joilla voitaisiin helposti ennustaa työttömyyttä saatavilla olevien inflaatiota kuvaavien indikaattorien avulla. Mikäli sääntöjä on vaikea formuloida, niin niitä voi yrittää koneoppimisen avulla oppia historiadataa havainnoimalla. Voisiko siis olla olemassa tilastollisen oppimisen menetelmä, joka pystyisi oppimaan Phillipsin käyrän historiadatasta? Mikäli tämänlainen menetelmä olisi olemassa, pystyisimme ennustamaan lyhyen aikavälin työttömyyttä, kun oletamme hyödykkeiden hintatason muuttuvan skenaariomme mukaisesti.',
-                                                style=p_style), 
+                                          html.P('Selittäviä teorioita Phillipsin käyrälle on useita riippuen siitä onko ilmiön katalyyttinä muutos hintatasossa vai työttömyydessä. Työttömyyden ollessa korkea, kysynnän ja tarjonnan laki vaatii hintojen alentamista hyödykkeiden menekin parantamiseksi. Toisaalta lyhyellä aikavälillä hintojen noustessa tuotanto nousee, koska tuottajat nostavat hyödykkeiden tuotantoa suurempien katteiden saavuttamiseksi. Tämä johtaa matalampaan työttömyyteen, koska tuotannon kasvattaminen johtaa uusiin rekrytointeihin, jotka voidaan tehdä työttömälle väestölle. Toisin päin katsottuna, kun työttömyys on matala, markkinoilla on työn kysyntäpainetta, mikä nostaa palkkoja. Palkkojen nousu taas johtaa yleisen hintatason nousuun, koska hyödykkeiden tarjoajat voivat pyytää korkeampaa hintaa tuotteistaan ja palveluistaan.',
+                                                 style = p_style),
+                                          html.P('Phillipsin käyrää voi havainnoida myös intuitiivisesti. Esimerkiksi vuonna 2015 työttömyysaste oli useaan otteeseen päälle kymmenen prosentin inflaation pysytellessä nollan tasolla ja ollen välillä jopa negatiivinen. Koronashokki vuonna 2020 aiheutti pompun työttömyysasteessa mutta esimerkiksi polttoaineen hinnat olivat paljon vuoden 2022 alkupuoliskoa matalammalla. Historiasta löytyy useita hetkiä, jolloin työttömyys ja inflaatio ovat muutuneet eri suuntaan. Poikkeuksiakin on ollut, esim. 1970-luvun öljykriisin aikaan molemmat olivat korkealla, mutta historiaa tarkasteltuna löytyy useita ajanjaksoja, joina Phillipsin käyrä on pätenyt. Onkin hyvä muistaa, että Phillipsin käyrä on voimassa vain lyhyellä aikavälillä, jolloin siihen perustuvia ennusteitakaan ei tulisi tehdä liian pitkälle ajalle.', style = p_style),
+                                          # html.P('Kyseessä on tunnettu taloustieteen teoria, jota on tosin vaikea soveltaa, koska ei ole olemassa sääntöjä, joilla voitaisiin helposti ennustaa työttömyyttä saatavilla olevien inflaatiota kuvaavien indikaattorien avulla. Mikäli sääntöjä on vaikea formuloida, niin niitä voi yrittää koneoppimisen avulla oppia historiadataa havainnoimalla. Voisiko siis olla olemassa tilastollisen oppimisen menetelmä, joka pystyisi oppimaan Phillipsin käyrän historiadatasta? Mikäli tämänlainen menetelmä olisi olemassa, pystyisimme ennustamaan lyhyen aikavälin työttömyyttä, kun oletamme hyödykkeiden hintatason muuttuvan skenaariomme mukaisesti.',
+                                                # style=p_style), 
                                           html.P('Phillipsin käyrälle on omistettu oma lukunsa kauppatieteellisen yliopistotutkinnon kansantaloustieteen pääsykoekirjassa, ja siitä seuraa yksi kymmenestä taloustieteen perusperiaatteesta.',
                                                 style=p_style),
                                           html.Br(),
@@ -1507,20 +1504,27 @@ def serve_layout():
                                                     }),
         
                                           html.Br(),
-                                          html.P('Tämä sovellus perustuu inflaation ja työttömyyden välisen suhteen hyödyntämiseen. Sen esittäminen matemaattisesti olisi vaikeaa ja olisi altis poikkeustapauksille. Siksi lieneekin, kuten AI-pioneeri Rodney Brooks on ilmaissut, havinnoida ilmiötä ja ja pyrkiä oppimaan siitä. Tässä on sopiva paikka hyödyntää koneoppimista, vaikkakin soveltaminen ei olekaan yksiselitteistä. Siksi tällä työkalulla on mahdollista rakentaa kokeellisesti koneoppimisen ratkaisu, joka, perustuen Phillipsin teoriaan, pyrkii ennustamaan työttömyyttä valittujen hyödykkeiden hintatason olettamien avulla. Sovellus jakaantuu ennustajapiirteiden valintaan, tutkivaan analyysiin, menetelmän suunnitteluun, toteutuksen testaamiseen sekä lyhyen aikavälin ennusteen tekemiseen.',
-                                                style=p_style), 
-                                          html.P('Inflaatiota mitataan kuluttajahintaindeksin vuosimuutoksen avulla. Kuluttajahintaindeksi on Tilastokeskuksen koostama indikaattori, joka mittaa satoja hyödykkeitä sisältävän hyödykekorin hinnan muutosta johonkin perusvuoden (tässä tapauksessa vuoden 2010) hintatasoon nähden. Tässä sovelluksessa voi valita kuluttajahintaindeksin komponentteja eli hyödykeryhmien indeksien pistelukuja työttömyyden ennustamiseen. Ennuste perustuu siten käyttäjän itse koostamaan hyödykekoriin.',
-                                                style=p_style), 
-                                          html.P('Tutkivan analyysin avulla voi arvioida mitkä hyödykkeet sopisivat parhaiten ennusteen selittäjiksi. Tutkivassa analyysissa tarkastellaan muuttujien välisiä korrelaatiota. Tässä sovelluksessa voi tehdä korrelaatioperusteisen ennusteen. Pääsääntönä on valita ennustajiksi niitä hyödykeryhmiä, jotka korreloivat eniten työttömyyden kanssa sekä vähiten keskenään. Myös koneoppimisalgoritmin valinta ja sen uniikkien hyperparametrien säätäminen vaikutta tulokseen. Testin avulla saa informaatiota siitä, miten valittu menetelmä olisi onnistunut ennustamaan työttömyyttä aikaisempina ajankohtina.',
-                                                style=p_style),
-                                          html.Br(),
+                                          html.P('Phillipsin käyrä tosin on vain teoria, joka on helppo havainnoida historiadataa havainnoimalla. Olisiko kuitenkin jollakin tavlla mahdollista hyödyntää Phillipsin havaintoa tulevan lyhyen aikavälin työttömyysasteen ennustamisessa?',
+                                                 style=p_style),
+                                          html.P('Phillipsin käyrää on vaikea muuttaa matemaattiseksi yhtälöksi, johon sijoittamalla inflaation saadaan laskettua työttömyysaste. Siitä sain ajatuksen, että voisiko olla olemassa koneoppimisen menetelmä, joka voisi oppia vallitsevat lainalaisuudet inflaation ja työttömyyden välillä, jotta ennusteita voitaisiin tehdä. Inflaatiohan on kuluttajahintaindeksin vuosimuutos. Kuluttajahintaindeksi muodostuu useista hyödykkeistä, jotka ilmaisevat yhteiskunnan sen aikaisia kulutustarpeita. Voisiko osa näistä hyödykkeistä vaikuttaa toisia enemmän? Riittäisikö ennustepiirteiksi vain perus kuluttajahintaindeksi, edellisen kuukauden työttömyysaste ja jokin tieto työttömyyden kausivaihtelusta? Mitä hyödykkeitä pitäisi valita? Mikä algoritmi, millä hyperparametreilla? Leikittelin ajatuksella, että voisi olla olemassa jokin hyödykeyhdistelmän ja metodologian kombinaatio, jolla saadaan tehtyä vähintään tyydyttävä lyhyen aikavälin ennuste. Halusinkin luoda sovelluksen, jolla kuka tahansa, akateemisesta taustasta riippumatta voisi tehdä tällaisia kokeiluja.',
+                                                 style=p_style),
+                                          html.P('Tuloksena syntyi usean iteraation jälkeen sovellus, jossa voi suunnitella hyödykekorin, valita koneoppimismenetelmän, testata näiden kombinaation kykyä ennustaa jo toteutuneita arvoja sekä lopulta tehdä ennusteita. Siihen päälle rakensin mahdollisuuden säätää koneoppimisalgoritmien hyperparametrit sekä hyödyntää pääkomponenttianalyysiä irrelevanttien piirteiden eliminoimiseksi. Seuraavaksi ongelmaksi paljastui mallien vaikea tulkittavuus. Koneoppimisessa on yleisesti tunnettu tarkkuuden ja tulkittavuuden ristiriita. Yksinkertaisempia malleja (esim. lineaariregressio) on helpompi tulkita kuin esimerkiksi satunnaismetsää, mutta satunnaismetsä voi tuottaa paremman ennusteen. Lisäsinkin yhdeksi toiminnallisuudeksi Shapley arvojen tarkastelun. Shapley- arvot ovat peliteoriaan perustuva käsite, joka perustuu pelaajien kontribuutioiden laskemiseen yhteistyöpeleissä (esim. jalkapallopelin yksittäisten pelaajien kontribuutio lopputulokseen). Koneoppimisessa vastaavaa mallia hyödynnetään ennustepiirteiden ennustekontribuution arvioimiseen. Itse työttömyyden ennustamista mielenkiintoisemmaksi tutkimusongelmaksi muodostuikin, että mitkä hyödykkeet tai hyödykeyhdistelmät onnistuvat parhaiten ennustamaan työttömyyttä!',
+                                                 style =p_style),
+                                          html.P('Tarkoituksena oli etsiä Phillipsin havaintoa koneoppimisen avulla ja kenties löytää Phillipsin käyrän kaava. Tulos on kuitenkin jotain ihan muuta, sillä koneoppivat algoritmit voivat oppia jonkin aivan toisen piilevän lainalaisuuden. Tässä vain hyödynnetään inflaation komponettien ja työttömyysasteen muutoksen välistä yhteyttä. Opittu kaava ei olekaan Phillipsin käyrä, vaan jokin toinen sääntö, vinouma Phillipsin havainnossa. Lisäksi ennustetta ei tehdä ainoastaan hintaindekseillä vaan myös edellisen kuukauden työttömyysasteella sekä kuukausien numeerisilla arvoilla (esim. kesäkuu on 6). Phillipsin käyrä onkin tässä tapauksessa vain teoreettinen lähtökohta, kipinä tutkimukselle ja tausta sille, että käy jotenkin järkeen selittää työttömyyttä inflaation komponenteilla.',
+                                                 style =p_style),
+                                          html.P('Koodasin tämän datatieteen blogin ja sovelluksen yhdistelmän (en tiedä miksi sellaista kutsutaan, "bläppi", "bloblikaatio",...), joka hyödyntää Tilastokeskuksen Statfin-rajapinnan tarjoamaa dataa Suomen kuluttajintaindeksistä hyödykkeittäin perusvuoteen 2010 suhteutettuna, sekä Suomen työttömyysastetta kuukausittain. Dataseteistä on poistettu ne hyödykeryhmät, jolta ei löydy dataa koko tarkasteluajalta. Jäljelle jää silti satoja hyödykkeitä ja hyödykeryhmiä, joista voi rakentaan ennusteen komponentteja. Algoritmivaihtoehdoiksi on valittu epälineaarisia koneoppimisalgoritmeja, koska ne soveltuvat tähän tapaukseen lineaarisia malleja paremmin.',
+                                                 style =p_style),
+                                          html.P('Sovellus on jaettu osiin, jotka on ilmaistu välilehdillä. Tarkoitus on edetä välilehdittäin vasemmalta oikealle ja iteroida aina hyödykkeitä ja menetelmää muuttamalla. ',
+                                                 style =p_style),
+                                          html.P('Lopullinen ennuste perustuu käyttäjän syöttämiin oletuksiin valittujen hyödykkeiden kuukausittaisesta muutosnopeudesta. Muutosnopeuden voi säätää jokaiselle hyödykkeelle erikseen, hyödyntää edeltävien kuukausien keskiarvoja tai asettaa kaikille hyödykkeille saman muutosnopeuden. Testit tehdään sillä oletuksella, että aiemmat indeksiarvot toteutuivat sellaisinaan. Raportoinnin ja dokumentaation parantamiseksi, testi, -ja ennustetulokset saa vietyä ulos Excel-tiedostona tarkempaa muita mahdollisia käyttötapauksia varten.',
+                                                 style =p_style),
                                           
                                           
                                            html.H3('Sovelluksen käyttöhje',
                                                    style=h3_style
                                                    ),
                                            
-                                           html.P('Seuraavaksi hieman ohjeistusta sovelluksen käyttöön. Jokainen osio olisi tehtävä vastaavassa järjestyksessä. Välilehteä valitsemalla pääset suorittamaan jokaisen vaiheen. Välilehdillä on vielä yksityiskohtaisemmat ohjeet.', 
+                                           html.P('Seuraavaksi hieman ohjeistusta sovelluksen käyttöön. Jokainen osio olisi tehtävä vastaavassa järjestyksessä. Välilehteä valitsemalla pääset suorittamaan jokaisen vaiheen. Välilehdillä on vielä yksityiskohtaisemmat ohjeet. Lisäksi sovelluksen vasemmassa yläkulmassa löytyy painike, josta saa avattua pikaohjeen millä tahansa välilehdellä.', 
                                                     style = p_style),
                                            html.Br(),
                                            html.P('1. Hyödykkeiden valinta. Valitse haluamasi hyödykeryhmät alasvetovalikosta. Näiden avulla ennustetaan työttömyyttä Phillipsin teorian mukaisesti.', 
@@ -1581,6 +1585,10 @@ def serve_layout():
                                               html.Br(),
                                               html.Label(['Wikipedia: ', 
                                                         html.A('Phillipsin käyrä', href = "https://fi.wikipedia.org/wiki/Phillipsin_k%C3%A4yr%C3%A4",target="_blank")
+                                                      ],style=p_style),
+                                              html.Br(),
+                                              html.Label(['Wikipedia: ', 
+                                                        html.A('Shapley-arvot (englanniksi)', href = "https://en.wikipedia.org/wiki/Shapley_value",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
                                               html.Label(['Wikipedia: ', 
@@ -1711,7 +1719,7 @@ def serve_layout():
             dbc.Tab(label ='Hyödykkeiden valinta',
                     tab_id ='feature_tab',
                      tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'34px',
+                    tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -1883,7 +1891,7 @@ def serve_layout():
             dbc.Tab(label = 'Tutkiva analyysi',
                     tab_id = 'eda_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'34px',
+                    tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -2062,7 +2070,7 @@ def serve_layout():
             dbc.Tab(label='Menetelmän valinta',
                     tab_id ='hyperparam_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'34px',
+                    tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -2176,7 +2184,7 @@ def serve_layout():
             dbc.Tab(label='Testaaminen',
                     tab_id ='test_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'34px',
+                    tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -2201,7 +2209,7 @@ def serve_layout():
                                         html.H3('Valitse testidatan pituus',style = h3_style),
                                         dcc.Slider(id = 'test_slider',
                                                   min = 1,
-                                                  max = 12,
+                                                  max = 18,
                                                   value = 3,
                                                   step = 1,
                                                   tooltip={"placement": "top", "always_visible": True},
@@ -2217,6 +2225,9 @@ def serve_layout():
                                                           #  9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
                                                          
                                                           12:{'label':'vuosi', 'style':{'font-size':20, 
+                                                                                        # 'font-family':'Cadiz Semibold'
+                                                                                        }},
+                                                          18:{'label':'puolitoista vuotta', 'style':{'font-size':20, 
                                                                                         # 'font-family':'Cadiz Semibold'
                                                                                         }},
                                                           
@@ -2260,7 +2271,7 @@ def serve_layout():
             dbc.Tab(label='Ennustaminen',
                     tab_id = 'forecast_tab',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'34px',
+                    tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -2298,7 +2309,7 @@ def serve_layout():
                                                 style=h3_style),
                                         dcc.Slider(id = 'forecast_slider',
                                                   min = 2,
-                                                  max = 12,
+                                                  max = 18,
                                                   value = 3,
                                                   step = 1,
                                                   tooltip={"placement": "top", "always_visible": True},
@@ -2311,6 +2322,9 @@ def serve_layout():
                                                                                               }},
                                                           # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
                                                           12:{'label':'vuosi', 'style':{'font-size':16, 
+                                                                                        # 'font-family':'Cadiz Semibold'
+                                                                                        }},
+                                                          18:{'label':'puolitoista vuotta', 'style':{'font-size':16, 
                                                                                         # 'font-family':'Cadiz Semibold'
                                                                                         }},
                                                         #  24:{'label':'kaksi vuotta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}}
@@ -3040,7 +3054,7 @@ def update_shap_slider(shap):
                 dcc.Slider(id = 'cut_off',
                    min = 1, 
                    max = len(shap_df),
-                   value = int(.2*len(shap_df)),
+                   value = int(math.ceil(.2*len(shap_df))),
                    step = 1,
                    marks=None,
                    tooltip={"placement": "top", "always_visible": True},
