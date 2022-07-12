@@ -1046,7 +1046,7 @@ def test(model, features, test_size, explainer, use_pca = False, n_components=.9
     df = pd.DataFrame(test_df.loc[i,feat]).T
     df['Työttömyysaste'] = test_df.loc[i,'Työttömyysaste']
     df['change'] = test_df.loc[i,'change']
-    df['month'] = test_df.loc[i,'month']
+    # df['month'] = test_df.loc[i,'month']
     X = scl.transform(df[feat])
 
     if use_pca:
