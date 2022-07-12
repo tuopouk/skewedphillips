@@ -2504,7 +2504,7 @@ def update_slider_div(averaging):
         
     else:
         return [
-            html.H3('Valitse kuinka iso suhteellista muutosta sovelletaan', 
+            html.H3('Valitse kuinka isoa suhteellista kuukausimuutosta sovelletaan', 
                     style = h3_style),
             
             dcc.Slider(id = 'slider',
