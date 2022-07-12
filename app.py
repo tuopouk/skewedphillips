@@ -145,7 +145,7 @@ p_style = {
 
 p_bold_style = {
         # #'font-family':'Cadiz Semibold',
-            'font-size':p_font_size-5,
+            'font-size':p_font_size-3,
            'text-align':'left'}
 
 h4_style = {
@@ -1763,52 +1763,52 @@ def serve_layout():
                                               children = [
                                                  
                                                   dbc.DropdownMenuItem("Aakkosjärjestyksessä", id = 'alphabet',style={
-                                                      'font-size':p_font_size-5, 
+                                                      'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Korrelaatio (laskeva)", id = 'corr_desc',style={
-                                                      'font-size':p_font_size-5, 
+                                                      'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Korrelaatio (nouseva)", id = 'corr_asc',style={
-                                                      'font-size':p_font_size-5, 
+                                                      'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       })
                                                       ,
                                                   dbc.DropdownMenuItem("Absoluuttinen korrelaatio (laskeva)", id = 'corr_abs_desc',style={
-                                                      'font-size':p_font_size-5, 
+                                                      'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Absoluuttinen korrelaatio (nouseva)", id = 'corr_abs_asc',style={
-                                                      'font-size':p_font_size-5, 
+                                                      'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Pääluokittain", id = 'main_class',style={
-                                                      'font-size':p_font_size-5, 
+                                                      'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("2. luokka", id = 'second_class',style={
-                                                      'font-size':p_font_size-5, 
+                                                      'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("3. luokka", id = 'third_class',style={
-                                                      'font-size':p_font_size-5, 
+                                                      'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("4. luokka", id = 'fourth_class',style={
-                                                      'font-size':p_font_size-5, 
+                                                      'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("5. luokka", id = 'fifth_class',style={
-                                                      'font-size':p_font_size-5, 
+                                                      'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       )
@@ -1820,7 +1820,7 @@ def serve_layout():
                                             className="m-1",
                                             size="lg",
                                             style={
-                                                'font-size':p_font_size-5, 
+                                                'font-size':p_font_size-3, 
                                                 #'font-family':'Cadiz Book'
                                                 }
                                             ),
@@ -1830,7 +1830,7 @@ def serve_layout():
                                           options = initial_options,
                                           multi = True,
                                           value = list(initial_features),
-                                          style = {'font-size':p_font_size-5, #'font-family':'Cadiz Book'
+                                          style = {'font-size':p_font_size-3, #'font-family':'Cadiz Book'
                                                    },
                                           placeholder = 'Valitse hyödykkeitä'),
                             html.Br(),
@@ -2121,7 +2121,7 @@ def serve_layout():
                                               value = 'Satunnaismetsä',
                                               multi = False,
                                               placeholder = 'Valitse algoritmi',
-                                              style = {'font-size':p_font_size-5, #'font-family':'Cadiz Book'
+                                              style = {'font-size':p_font_size-3, #'font-family':'Cadiz Book'
                                                        },
                                               options = [{'label': c, 'value': c} for c in MODELS.keys()]),
                                 
@@ -2683,7 +2683,7 @@ def update_hyperparameter_selections(model_name):
                                                   #label = hyperparameter,
                                                   style = {
                                                       #'font-family':'Cadiz Book',
-                                                      'font-size':p_font_size-5},
+                                                      'font-size':p_font_size-3},
                                                   options = [{'label':c, 'value': c} for c in param_options[hyperparameter] if c not in ['precomputed','poisson']],
                                                   value = value),
                                                  html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
@@ -3569,7 +3569,7 @@ def update_timeseries_selections(features_values):
                         options = [{'value':feature, 'label':feature} for feature in features],
                         value = [features[0]],
                         style = {
-                            'font-size':p_font_size-5, 
+                            'font-size':p_font_size-3, 
                             #'font-family':'Cadiz Book',
                             'color': 'black'},
                         multi = True)
@@ -3737,7 +3737,7 @@ def update_corr_selection(features_values):
                         # clearable=False,
                         options = [{'value':feature, 'label':feature} for feature in features],
                         value = [features[0]],
-                        style = {'font-size':p_font_size-5, 
+                        style = {'font-size':p_font_size-3, 
                                  #'font-family':'Cadiz Book'
                                  },
                         placeholder = 'Valitse hyödyke')
@@ -3772,7 +3772,7 @@ def update_feature_corr_selection(features_values):
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[0],
-                                style = {'font-size':p_font_size-5, 
+                                style = {'font-size':p_font_size-3, 
                                          #'font-family':'Cadiz Book'
                                          },
                                 placeholder = 'Valitse hyödyke')
@@ -3786,7 +3786,7 @@ def update_feature_corr_selection(features_values):
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[-1],
-                                style = {'font-size':p_font_size-5, 
+                                style = {'font-size':p_font_size-3, 
                                          #'font-family':'Cadiz Book'
                                          },
                                 placeholder = 'Valitse hyödyke')
