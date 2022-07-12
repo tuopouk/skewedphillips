@@ -1397,9 +1397,11 @@ def serve_layout():
                                  },
                     style = {
                             
-                              "maxHeight": "800px",
+                             
+                               
+                                "height":"100vh",
 
-                            "overflow": "auto"
+                            "overflowY": "scroll"
                         },
                     
                     children = [
@@ -1722,14 +1724,14 @@ def serve_layout():
                     tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
                                  },
-                    style = {
-                        #"position": "fixed",
-                        "maxHeight": "800px",
-                       
-                          # "height":"1024px",
-                    
-                        "overflow": "auto"
-                    },
+                  style = {
+                          
+                           
+                             
+                              "height":"100vh",
+
+                          "overflowY": "scroll"
+                      },
               children= [
         
                 dbc.Row(children = [
@@ -1896,9 +1898,11 @@ def serve_layout():
                                  },
                     style = {
                             
-                            "maxHeight": "800px",
+                             
+                               
+                                "height":"100vh",
 
-                            "overflow": "auto"
+                            "overflowY": "scroll"
                         },
                      children = [
                     
@@ -2073,12 +2077,14 @@ def serve_layout():
                     tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
                                  },
-                    style = {
+                   style = {
+                           
                             
-                            "maxHeight": "800px",
+                              
+                               "height":"100vh",
 
-                            "overflow": "auto"
-                        },
+                           "overflowY": "scroll"
+                       },
                     
                     children = [
                         dbc.Row([
@@ -2189,9 +2195,11 @@ def serve_layout():
                                  },
                     style = {
                             
-                            "maxHeight": "800px",
+                             
+                               
+                                "height":"100vh",
 
-                            "overflow": "auto"
+                            "overflowY": "scroll"
                         },
                     children = [
                         html.Br(),
@@ -2276,9 +2284,11 @@ def serve_layout():
                                  },
                     style = {
                             
-                            "maxHeight": "800px",
+                             
+                               
+                                "height":"100vh",
 
-                            "overflow": "auto"
+                            "overflowY": "scroll"
                         },
                     children = [
                         html.Br(),
