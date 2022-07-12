@@ -882,7 +882,7 @@ def plot_forecast_data(df, chart_type):
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
-                                                               size=22
+                                                               size=20
                                                               )),
     
                                        ))
@@ -2802,7 +2802,7 @@ def update_test_results(n_clicks,
                                           options = [{'label':'pylväät','value':'bars'},
                                                     {'label':'viivat','value':'lines'},
                                                     {'label':'viivat ja pylväät','value':'lines+bars'}],
-                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':25,
+                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
                                                       #'font-family':'Cadiz Book'
                                                       },
                                           className="btn-group",
@@ -2949,7 +2949,7 @@ def update_forecast_results(n_clicks,
                       dbc.RadioItems(id = 'chart_type', 
                         options = [{'label':'pylväät','value':'bars'},
                                   {'label':'viivat','value':'lines'}],
-                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':25,
+                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
                                     #'font-family':'Cadiz Book'
                                     },
                         className="btn-group",
@@ -3904,7 +3904,7 @@ def update_eda_div(features_values):
     selector = dbc.RadioItems(id = 'eda_y_axis', 
                 options = [{'label':'Työttömyysaste (%)','value':'Työttömyysaste'},
                           {'label':'Työttömyysasteen kuukausimuutos (%-yksikköä)','value':'change'}],
-                labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':25,
+                labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
                             #'font-family':'Cadiz Book'
                             },
                 className="btn-group",
@@ -3917,7 +3917,7 @@ def update_eda_div(features_values):
         
   
     
-    return [selector, html.Div(id = 'commodity_unemployment_div')]
+    return [html.Div([selector],style={'textAlign':'center'}), html.Div(id = 'commodity_unemployment_div')]
 
 
 @app.callback(
