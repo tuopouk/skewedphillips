@@ -3706,7 +3706,7 @@ def update_slider_prompt(value, averaging):
         return [html.Br(),html.P('Valitsit {} % keskimääräisen kuukausimuutoksen.'.format(value),
                       style = p_style),
                 html.Br(),
-                html.P('Voit vielä säätä yksittäisiä muutosarvoja laatikoihin kirjoittamalla tai oikealla olevista nuolista.',
+                html.P('Voit vielä säätä yksittäisiä muutosarvoja laatikoihin kirjoittamalla tai tietokoneella työskenneltäessä laatioiden oikealla olevista nuolista.',
                        style = p_style)]
         
  
