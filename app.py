@@ -1068,9 +1068,7 @@ def test(model, features, test_size, explainer, use_pca = False, n_components=.9
   result.Ennuste = np.round(result.Ennuste,1)
   result['mape'] = mean_absolute_percentage_error(result.Työttömyysaste, result.Ennuste)
   
-  # result.columns = result.columns.str.replace('change','Muutos')
-  # result.columns = result.columns.str.replace('prev','Edellisen kuukauden työttömyysaste')
-  # result.columns = result.columns.str.replace('month','Kuukausi')
+
   
   result.index.name ='Aika'
     
@@ -1168,6 +1166,10 @@ def apply_average(features, length = 4):
 
 
 data = get_data()
+
+
+# Viimeiset neljä saraketta ovat prev, month, change ja inflaatio.
+ 
 correlations_desc = data[data.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].sort_values(ascending=False)
 correlations_asc = data[data.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].sort_values(ascending=True)
 correlations_abs_desc = data[data.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].abs().sort_values(ascending=False)
@@ -1761,52 +1763,52 @@ def serve_layout():
                                               children = [
                                                  
                                                   dbc.DropdownMenuItem("Aakkosjärjestyksessä", id = 'alphabet',style={
-                                                      'font-size':p_font_size, 
+                                                      'font-size':p_font_size-5, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Korrelaatio (laskeva)", id = 'corr_desc',style={
-                                                      'font-size':p_font_size, 
+                                                      'font-size':p_font_size-5, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Korrelaatio (nouseva)", id = 'corr_asc',style={
-                                                      'font-size':p_font_size, 
+                                                      'font-size':p_font_size-5, 
                                                       #'font-family':'Cadiz Book'
                                                       })
                                                       ,
                                                   dbc.DropdownMenuItem("Absoluuttinen korrelaatio (laskeva)", id = 'corr_abs_desc',style={
-                                                      'font-size':p_font_size, 
+                                                      'font-size':p_font_size-5, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Absoluuttinen korrelaatio (nouseva)", id = 'corr_abs_asc',style={
-                                                      'font-size':p_font_size, 
+                                                      'font-size':p_font_size-5, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Pääluokittain", id = 'main_class',style={
-                                                      'font-size':p_font_size, 
+                                                      'font-size':p_font_size-5, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("2. luokka", id = 'second_class',style={
-                                                      'font-size':p_font_size, 
+                                                      'font-size':p_font_size-5, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("3. luokka", id = 'third_class',style={
-                                                      'font-size':p_font_size, 
+                                                      'font-size':p_font_size-5, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("4. luokka", id = 'fourth_class',style={
-                                                      'font-size':p_font_size, 
+                                                      'font-size':p_font_size-5, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("5. luokka", id = 'fifth_class',style={
-                                                      'font-size':p_font_size, 
+                                                      'font-size':p_font_size-5, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       )
@@ -1818,7 +1820,7 @@ def serve_layout():
                                             className="m-1",
                                             size="lg",
                                             style={
-                                                'font-size':25, 
+                                                'font-size':p_font_size-5, 
                                                 #'font-family':'Cadiz Book'
                                                 }
                                             ),
@@ -1828,7 +1830,7 @@ def serve_layout():
                                           options = initial_options,
                                           multi = True,
                                           value = list(initial_features),
-                                          style = {'font-size':22, #'font-family':'Cadiz Book'
+                                          style = {'font-size':p_font_size-5, #'font-family':'Cadiz Book'
                                                    },
                                           placeholder = 'Valitse hyödykkeitä'),
                             html.Br(),
@@ -1913,7 +1915,7 @@ def serve_layout():
                          dbc.Col([
                              html.Br(),
                               html.Br(),
-                              html.P('Tässä osiossa työttömyysastetta sekä valittujen kuluttajahintaindeksin hyödykeryhmien keskinäistä suhdetta sekä muutosta ajassa. Alla voit nähdä kuinka eri hyödykeryhmien hintaindeksit korreloivat keskenään sekä työttömyysasteen kanssa. Voit myös havainnoida indeksien, inflaation sekä sekä työttömyysasteen aikasarjoja. Kuvattu korrelaatio perustuu Pearsonin korrelaatiokertoimeen.',
+                              html.P('Tässä osiossa voit tarkastella työttömyysastetta sekä valittujen kuluttajahintaindeksin hyödykeryhmien keskinäistä suhdetta sekä muutosta ajassa. Alla voit nähdä kuinka eri hyödykeryhmien hintaindeksit korreloivat keskenään sekä työttömyysasteen kanssa. Voit myös havainnoida indeksien, inflaation sekä sekä työttömyysasteen aikasarjoja. Kuvattu korrelaatio perustuu Pearsonin korrelaatiokertoimeen.',
                                      style = p_style),
                               html.Br()
                               ],xs =12, sm=12, md=12, lg=9, xl=9)
@@ -2119,7 +2121,7 @@ def serve_layout():
                                               value = 'Satunnaismetsä',
                                               multi = False,
                                               placeholder = 'Valitse algoritmi',
-                                              style = {'font-size':p_font_size, #'font-family':'Cadiz Book'
+                                              style = {'font-size':p_font_size-5, #'font-family':'Cadiz Book'
                                                        },
                                               options = [{'label': c, 'value': c} for c in MODELS.keys()]),
                                 
@@ -2681,7 +2683,7 @@ def update_hyperparameter_selections(model_name):
                                                   #label = hyperparameter,
                                                   style = {
                                                       #'font-family':'Cadiz Book',
-                                                      'font-size':p_font_size},
+                                                      'font-size':p_font_size-5},
                                                   options = [{'label':c, 'value': c} for c in param_options[hyperparameter] if c not in ['precomputed','poisson']],
                                                   value = value),
                                                  html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
@@ -3560,14 +3562,14 @@ def update_timeseries_selections(features_values):
             html.H3('Tarkastele hyödykkeiden indeksin aikasarjoja',
                     style =h3_style),
             
-            html.P('Tällä kuvaajalla voit tarkastella hyödykkeiden indeksikehitystä kuukausittain.',
+            html.P('Tällä kuvaajalla voit tarkastella hyödykkeiden indeksikehitystä kuukausittain. Näin on helpompi arvioida paremmin millaista inflaatio-odotusta syöttää ennusteelle.',
                    style = p_style),
             html.H3('Valitse hyödyke',style = h3_style),
             dcc.Dropdown(id = 'timeseries_selection_dd',
                         options = [{'value':feature, 'label':feature} for feature in features],
                         value = [features[0]],
                         style = {
-                            'font-size':p_font_size, 
+                            'font-size':p_font_size-5, 
                             #'font-family':'Cadiz Book',
                             'color': 'black'},
                         multi = True)
@@ -3727,7 +3729,7 @@ def update_corr_selection(features_values):
             html.H3('Tarkastele valitun hyödykkeen hintaindeksin suhdetta työttömyysasteeseen',
                     style=h3_style),
             
-            html.P('Tällä kuvaajalla voit tarkastella valitun hyödykkeen hintaindeksin ja työttömyysasteen välistä korrelaatiota. Ennusteita tehtäessä on syytä valita piirteitä, jotka korreloivat vahvasti työttömyysasteen kanssa.',
+            html.P('Tällä kuvaajalla voit tarkastella valitun hyödykkeen hintaindeksin ja työttömyysasteen tai kuukausimuutoksen välistä suhdetta ja korrelaatiota. Teoriassa hyvä ennustepiirre korreloi vahvasti ennustettavan muuttujan kanssa.',
                    style = p_style),
         html.H3('Valitse hyödyke', style = h3_style),
         dcc.Dropdown(id = 'corr_feature',
@@ -3735,7 +3737,7 @@ def update_corr_selection(features_values):
                         # clearable=False,
                         options = [{'value':feature, 'label':feature} for feature in features],
                         value = [features[0]],
-                        style = {'font-size':20, 
+                        style = {'font-size':p_font_size-5, 
                                  #'font-family':'Cadiz Book'
                                  },
                         placeholder = 'Valitse hyödyke')
@@ -3760,7 +3762,7 @@ def update_feature_corr_selection(features_values):
                 html.H3('Tarkastele hyödykkeiden suhteita',
                         style=h3_style),
                 html.Br(),
-                html.P('Tällä kuvaajalla voit tarkastella hyödykkeiden välisiä korrelaatioita. Ennusteita tehtäessä on syytä valita piirteitä, jotka korreloivat heikosti keskenään.',
+                html.P('Tällä kuvaajalla voit tarkastella hyödykkeiden keskinäisiä suhteita ja korrelaatioita. Mikäli korrelaatio kahden hyödykkeen välillä on vahva, voi ennuste parantua toisen poistamalla ennustepiirteistä.',
                        style = p_style),
         
         dbc.Row(justify = 'center',children=[
@@ -3770,7 +3772,7 @@ def update_feature_corr_selection(features_values):
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[0],
-                                style = {'font-size':20, 
+                                style = {'font-size':p_font_size-5, 
                                          #'font-family':'Cadiz Book'
                                          },
                                 placeholder = 'Valitse hyödyke')
@@ -3784,7 +3786,7 @@ def update_feature_corr_selection(features_values):
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[-1],
-                                style = {'font-size':20, 
+                                style = {'font-size':p_font_size-5, 
                                          #'font-family':'Cadiz Book'
                                          },
                                 placeholder = 'Valitse hyödyke')
@@ -3962,7 +3964,7 @@ def update_commodity_unemployment_graph(values, label):
                                           x=.5, 
                                           font=dict(
                                               family='Cadiz Semibold',
-                                               size=22
+                                               size=20
                                               )
                                           ),
                             xaxis= dict(title = dict(text='Hyödykkeiden pisteluku', 
