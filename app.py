@@ -1310,7 +1310,7 @@ def serve_layout():
                               "klikkaamalla 'Lataa testitulokset koneelle -nappia'. "
                               "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä."
                               " "
-                              " Voit myös tutkia ",
+                              " Voit myös tutkia Shapley-arvojen avulla mitkä piirteet ja hyödykkeet vaikuttivat eniten ennustetulokseen.",
                               style = {
                                   # #'font-family':'Cadiz Book',
                                        'font-size':16,
@@ -1533,7 +1533,7 @@ def serve_layout():
                                                     style = p_style),
                                           html.P('2. Tutkiva analyysi. Voit tarkastella ja analysoida valitsemiasi hyödykkeitä. Voit tarvittaessa palata edelliseen vaiheeseen ja poistaa tai lisätä hyödykkeitä.',
                                                     style = p_style),
-                                          html.P('3. Menetelmän valinta. Tässä osiossa valitsen koneoppimisalgoritmin sekä säädät hyperparametrit. Lisäksi voi valita hyödynnetäänkö pääkomponenttianalyysiä ja kuinka paljon variaatiota säilötään.',
+                                          html.P('3. Menetelmän valinta. Tässä osiossa valitset koneoppimisalgoritmin sekä säädät hyperparametrit. Lisäksi voi valita hyödynnetäänkö pääkomponenttianalyysiä ja kuinka paljon variaatiota säilötään.',
                                                     style = p_style),
                                          html.P('4. Testaaminen. Voit valita menneen ajanjakson, jota malli pyrkii ennustamaan. Näin pystyt arvioimaan kuinka ennustemalli olisi toiminut jo toteutuneelle datalle. Tässä osiossa voi myös tarkastella kuinka paljon kukin ennustepiirre vaikutti ennusteen tekemiseen.',
                                                     style = p_style),
@@ -1542,18 +1542,18 @@ def serve_layout():
                                           
                                           html.Br(),
                                           
-                                          html.H3('Pääkomponenttianalyysistä',
-                                                  style=h3_style
-                                                  ),
+                                          # html.H3('Pääkomponenttianalyysistä',
+                                          #         style=h3_style
+                                          #         ),
                                           
-                                          html.P('Pääkomponenttianalyysilla (englanniksi Principal Component Analysis, PCA) pyritään minimoimaan käytettyjen muuttujien määrää pakkaamalla ne sellaisiin kokonaisuuksiin, jotta hyödynnetty informaatio säilyy. Informaation säilyvyyttä mitataan selitetyllä varianssilla (eng. explained variance), joka tarkoittaa uusista pääkomponenteista luodun datan hajonnan säilyvyyttä alkuperäiseen dataan verrattuna. Tässä sovelluksessa selitetyn varianssin (tai säilytetyn variaation) osuuden voi valita itse, mikäli hyödyntää PCA:ta. Näin saatu pääkomponenttijoukko on siten pienin sellainen joukko, joka säilyttää vähintään valitun osuuden alkuperäisen datan hajonnasta. Näin PCA-algoritmi muodostaa juuri niin monta pääkomponenttia, jotta selitetyn varianssin osuus pysyy haluttuna.',
-                                                  style=p_style),
-                                          html.P('PCA on yleisesti hyödyllinen toimenpide silloin, kun valittuja muuttujia on paljon, milloin on myös mahdollista, että osa valituista muuttujista aiheuttaa datassa kohinaa, mikä taas johtaa heikompaan ennusteeseen.  Pienellä määrällä tarkasti harkittuja muuttujia PCA ei ole välttämätön.',
-                                                  style=p_style),
-                                          html.Br(),
+                                          # html.P('Pääkomponenttianalyysilla (englanniksi Principal Component Analysis, PCA) pyritään minimoimaan käytettyjen muuttujien määrää pakkaamalla ne sellaisiin kokonaisuuksiin, jotta hyödynnetty informaatio säilyy. Informaation säilyvyyttä mitataan selitetyllä varianssilla (eng. explained variance), joka tarkoittaa uusista pääkomponenteista luodun datan hajonnan säilyvyyttä alkuperäiseen dataan verrattuna. Tässä sovelluksessa selitetyn varianssin (tai säilytetyn variaation) osuuden voi valita itse, mikäli hyödyntää PCA:ta. Näin saatu pääkomponenttijoukko on siten pienin sellainen joukko, joka säilyttää vähintään valitun osuuden alkuperäisen datan hajonnasta. Näin PCA-algoritmi muodostaa juuri niin monta pääkomponenttia, jotta selitetyn varianssin osuus pysyy haluttuna.',
+                                          #         style=p_style),
+                                          # html.P('PCA on yleisesti hyödyllinen toimenpide silloin, kun valittuja muuttujia on paljon, milloin on myös mahdollista, että osa valituista muuttujista aiheuttaa datassa kohinaa, mikä taas johtaa heikompaan ennusteeseen.  Pienellä määrällä tarkasti harkittuja muuttujia PCA ei ole välttämätön.',
+                                          #         style=p_style),
+                                          # html.Br(),
                                                                                     
                                        
-                                          html.Br(),
+                                          # html.Br(),
                                           
                                           html.H3('Vastuuvapauslauseke',
                                                   style=h3_style),
@@ -1567,6 +1567,8 @@ def serve_layout():
                                           html.P("Sovellus on testattu toimivaksi Google Chromella ja Mozilla Firefoxilla. Edge- ja Internet Explorer -selaimissa sovellus ei toimi. Opera, Safari -ja muita selaimia ei ole testattu.",
                                                   style=p_style),
                                           html.P("Sovelluksesta voi myös ladata ns. standalone-version, joten sen voi käynnistää ilman selainta esim. Windowsilla tai Androidilla. Esimerkiksi Google Chromessa selaimen osoiterivin oikealla puolella pitäisi olla ikoni, josta klikkaamalla sovelluksen voi ladata. Lataamisen jälkeen sovellus löytyy omalta laitteelta.",
+                                                  style=p_style),
+                                          html.P("Sivu käyttää vain toiminnallisia evästeitä.",
                                                   style=p_style),
                                           html.Br(),
                                           html.Div(style={'text-align':'center'},children = [
@@ -2924,6 +2926,7 @@ def update_forecast_results(n_clicks,
         
         
         weights = pd.Series(weights_dict)
+        
         forecast_df = predict(model, 
                               features, 
                               feature_changes = weights, 
@@ -3284,7 +3287,11 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
     ]
     
 )
-def download_test_data(n_clicks, df, method_selection_results, weights_dict, shap_data):
+def download_test_data(n_clicks, 
+                       df, 
+                       method_selection_results, 
+                        weights_dict, 
+                       shap_data):
     
     if n_clicks > 0:
         
