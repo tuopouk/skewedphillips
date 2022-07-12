@@ -598,7 +598,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                         size = 18),
                                                     automargin=True
                                                     ),
-                                       height = graph_height-200,
+                                       height = graph_height,
                                        margin=dict(
                                             l=10,
                                            r=10,
@@ -610,10 +610,10 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                                 family='Cadiz Book'
                                                                ),
                                                       orientation='h',
-                                                      xanchor='center',
-                                                      yanchor='top',
-                                                       x=.47,
-                                                       y=1.04
+                                                       xanchor='center',
+                                                       yanchor='top',
+                                                        x=.47,
+                                                        y=1.04
                                                      ),
                                        hoverlabel = dict(font_size = 20, 
                                                          font_family = 'Cadiz Book'
@@ -675,15 +675,15 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                         size = 18),
                                                     automargin=True
                                                     ),
-                                        height = graph_height-200,
+                                        height = graph_height,
                                         legend = dict(font=dict(size=16,
                                                                  family='Cadiz Book'
                                                                 ),
                                                        orientation='h',
-                                                       xanchor='center',
-                                                       yanchor='top',
-                                                        x=.47,
-                                                        y=1.04
+                                                        xanchor='center',
+                                                        yanchor='top',
+                                                         x=.47,
+                                                         y=1.04
                                                       ),
                                         margin=dict(
                                              l=10,
@@ -747,7 +747,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                         size = 18),
                                                         automargin=True
                                                         ),
-                                            height = graph_height-200,
+                                            height = graph_height,
                                             margin=dict(
                                                  l=10,
                                                 r=10,
@@ -759,10 +759,10 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                                      family='Cadiz Book'
                                                                     ),
                                                            orientation='h',
-                                                           xanchor='center',
-                                                           yanchor='top',
-                                                            x=.47,
-                                                            y=1.04
+                                                            xanchor='center',
+                                                            yanchor='top',
+                                                             x=.47,
+                                                             y=1.04
                                                           ),
                                             hoverlabel = dict(font_size = 20,
                                                               font_family = 'Cadiz Book'
