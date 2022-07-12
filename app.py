@@ -1593,6 +1593,10 @@ def serve_layout():
                                                         html.A('Phillipsin käyrä', href = "https://fi.wikipedia.org/wiki/Phillipsin_k%C3%A4yr%C3%A4",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
+                                              html.Label(['Raha ja Talous: ', 
+                                                        html.A('Phillipsin käyrä', href = "https://rahajatalous.wordpress.com/2012/11/15/phillipsin-kayra/",target="_blank")
+                                                      ],style=p_style),
+                                              html.Br(),
                                               html.Label(['Wikipedia: ', 
                                                         html.A('Shapley-arvot (englanniksi)', href = "https://en.wikipedia.org/wiki/Shapley_value",target="_blank")
                                                       ],style=p_style),
