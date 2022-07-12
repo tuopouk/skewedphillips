@@ -2450,7 +2450,7 @@ def add_value_adjustments(slider_value, features, averaging):
 
     Output('change_weights','data'),
     [Input({'type': 'value_adjust', 'index': ALL}, 'id'),
-    State({'type': 'value_adjust', 'index': ALL}, 'value')],    
+    Input({'type': 'value_adjust', 'index': ALL}, 'value')],    
     
 )
 def store_weights(feature_changes, feature_change_values):
@@ -2509,14 +2509,19 @@ def update_slider_div(averaging):
                           value = 0,
                           step = 0.1,
                           tooltip={"placement": "top", "always_visible": True},
-                           marks = {-10:{'label':'-10%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
+                           marks = {
+                                    # -30:{'label':'-30%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
+                                    #                                       }},
+                                   -10:{'label':'-10%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
                                                                   }},
                                     # 3:{'label':'3 kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
                                     0:{'label':'0%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
                                                               }},
                                     # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
                                     10:{'label':'10%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
-                                                                }}   
+                                                                }},
+                                    # 30:{'label':'30%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
+                                    #                             }} 
                                  }
                           
                         )
