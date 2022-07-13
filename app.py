@@ -406,7 +406,7 @@ def draw_phillips_curve():
                             ),
                 go.Scatter(x = df.Työttömyysaste, 
                             y = df['log_inflation'], 
-                            name = 'Logaritminen trendiviiva', 
+                            name = 'Logaritminen<br>trendiviiva', 
                             mode = 'lines',
                             line = dict(width=5),
                             showlegend=True,
@@ -452,7 +452,7 @@ def draw_phillips_curve():
                                                              family='Cadiz Book'
                                                             )),
                                 legend = dict(font=dict(
-                                                        size=16,
+                                                        size=18,
                                                          family = 'Cadiz Book'
                                                         ),
                                                orientation='h',
