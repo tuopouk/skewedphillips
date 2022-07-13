@@ -1257,7 +1257,7 @@ def serve_layout():
                               "Hienosäädä yksittäisten hyödykkeiden muutoksia muokkaamalla laatikoiden arvoja.",
                                style = {
                                    # #'font-family':'Cadiz Book',
-                                        'font-size':16,
+                                        'font-size':p_font_size-2,
                                          'text-align':'left'}
                           ),
                           html.Br(),
@@ -1277,7 +1277,7 @@ def serve_layout():
                               "Voit myös tarkastella indeksien, työttömyysasteen ja inflaation aikasarjoja.",
                                style = {
                                    # #'font-family':'Cadiz Book',
-                                        'font-size':16,
+                                        'font-size':p_font_size-2,
                                           'text-align':'left'}
                           ),
                           html.Br(),
@@ -1295,7 +1295,7 @@ def serve_layout():
                               "ja niin tehtäessä valitse säilötyn variaation määrä liutin-valinnalla.",
                                style = {
                                    # #'font-family':'Cadiz Book',
-                                        'font-size':16,
+                                        'font-size':p_font_size-2,
                                           'text-align':'left'}
                           ),
                           html.Br(),
@@ -1317,7 +1317,7 @@ def serve_layout():
                               " Voit myös tutkia Shapley-arvojen avulla mitkä piirteet ja hyödykkeet vaikuttivat eniten ennustetulokseen.",
                               style = {
                                   # #'font-family':'Cadiz Book',
-                                       'font-size':16,
+                                       'font-size':p_font_size-2,
                                         'text-align':'left'}
                           ),
                           html.Br(),
@@ -1339,7 +1339,7 @@ def serve_layout():
                               "Voit myös säätää hyödykeindeksien oletettuja kuukausimuutoksia ja kokeilla uudestaan.",
                               style = {
                                   # #'font-family':'Cadiz Book',   
-                                       'font-size':16,
+                                       'font-size':p_font_size-2,
                                          'text-align':'left'}
                           ),
                           
@@ -1352,7 +1352,7 @@ def serve_layout():
                           is_open=False,
                           style = {
                               # 'font-style':'Cadiz Book',
-                                  'color':'grey',
+                                  'background-color':'grey',
                                    'font-size':'30px'}
                     )  
                 
