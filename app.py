@@ -452,7 +452,7 @@ def draw_phillips_curve():
                                                              family='Cadiz Book'
                                                             )),
                                 legend = dict(font=dict(
-                                                        size=18,
+                                                        size=16,
                                                          family = 'Cadiz Book'
                                                         ),
                                                orientation='h',
