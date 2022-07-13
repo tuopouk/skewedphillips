@@ -1352,7 +1352,8 @@ def serve_layout():
                           is_open=False,
                           style = {
                               # 'font-style':'Cadiz Book',
-                                  'background-color':'grey',
+                                  'background-color':'white',
+                                  'color':'black',
                                    'font-size':'30px'}
                     )  
                 
