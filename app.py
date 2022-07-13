@@ -1211,6 +1211,7 @@ def serve_layout():
                                                       'children' : 'Vaihda väriteemaa',
                                                       'color':'warning'},
                                         offcanvas_props={'title':"Valitse jokin alla olevista väriteemoista",
+                                                         
                                                          'scrollable':True},
                                         radio_props={"value":dbc.themes.SUPERHERO}),
                     html.Br(),
@@ -1232,6 +1233,7 @@ def serve_layout():
                                   style = {
                                       # #'font-family':'Cadiz Semibold',
                                             'text-align':'left',
+                                            
                                             'font-size':22,
                                             'margin-bottom':'30px'
                                             }
@@ -1350,6 +1352,7 @@ def serve_layout():
                           is_open=False,
                           style = {
                               # 'font-style':'Cadiz Book',
+                                  'color':'grey',
                                    'font-size':'30px'}
                     )  
                 
