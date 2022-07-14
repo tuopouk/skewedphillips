@@ -1608,8 +1608,12 @@ def serve_layout():
                                                         html.A('The Phillips Curve: A Poor Guide for Monetary Policy', href = "https://www.cato.org/cato-journal/winter-2020/phillips-curve-poor-guide-monetary-policy",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
-                                              html.Label(['Model-Agnostic Interpretability of Machine Learning: ', 
-                                                        html.A('The Phillips Curve: A Poor Guide for Monetary Policy', href = "https://arxiv.org/pdf/1606.05386.pdf",target="_blank")
+                                              html.Label(['Ribeiro, Marco & Singh, Sameer & Guestrin, Carlos. (2016). : ', 
+                                                        html.A('Model-Agnostic Interpretability of Machine Learning', href = "https://arxiv.org/pdf/1606.05386.pdf",target="_blank")
+                                                      ],style=p_style),
+                                              html.Br(),
+                                              html.Label(['Lundberg, Scott & Lee, Su-In. (2017). A Unified Approach to Interpreting Model Predictions. : ', 
+                                                        html.A('A Unified Approach to Interpreting Model Predictions', href = "https://www.researchgate.net/publication/317062430_A_Unified_Approach_to_Interpreting_Model_Predictions",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
                                               html.Label(['Wikipedia: ', 
