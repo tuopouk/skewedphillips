@@ -1612,7 +1612,7 @@ def serve_layout():
                                                         html.A('Model-Agnostic Interpretability of Machine Learning', href = "https://arxiv.org/pdf/1606.05386.pdf",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
-                                              html.Label(['Lundberg, Scott & Lee, Su-In. (2017). A Unified Approach to Interpreting Model Predictions. : ', 
+                                              html.Label(['Lundberg, Scott & Lee, Su-In. (2017). : ', 
                                                         html.A('A Unified Approach to Interpreting Model Predictions', href = "https://www.researchgate.net/publication/317062430_A_Unified_Approach_to_Interpreting_Model_Predictions",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
