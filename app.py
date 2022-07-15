@@ -490,7 +490,7 @@ def get_data(lang = 'fi'):
   return data
 
 
-def draw_phillips_curve(lang = 'fi'):
+def draw_phillips_curve(lang):
     
   max_date = data.index.values[-1]
   max_date_str = data.index.strftime('%B %Y').values[-1]
@@ -3187,7 +3187,7 @@ def update_shap_graph(cut_off, only_commodities, shap, lang):
         raise PreventUpdate
         
     cf = config_plots.copy()
-    cf.update({'locale':lang})
+    cf = cf.update({'locale':lang})
 
   
     if lang == 'fi':
@@ -3760,7 +3760,7 @@ def download_test_data(n_clicks,
 def update_test_chart_type(chart_type,df, lang):
     
     cf = config_plots.copy()
-    cf.update({'locale':lang})
+    cf=cf.update({'locale':lang})
     
     df = pd.DataFrame(df).set_index('Aika')
     df.index = pd.to_datetime(df.index)
@@ -3786,7 +3786,7 @@ def update_test_chart_type(chart_type,df, lang):
 def update_forecast_chart_type(chart_type,df, lang):
     
     cf = config_plots.copy()
-    cf.update({'locale':lang})
+    cf=cf.update({'locale':lang})
     
     df = pd.DataFrame(df).set_index('Aika')
     df.index = pd.to_datetime(df.index)
@@ -4064,63 +4064,132 @@ def update_timeseries_selections(features_values, lang):
 )
 def update_time_series(values, lang):
     
-    traces = [go.Scatter(x = data.index, 
-                         y = data[value],
-                         showlegend=True,                         
-                         name = ' '.join(value.split()[1:]),
-                         mode = 'lines+markers') for value in values]
-    return html.Div([dcc.Graph(figure=go.Figure(data=traces,
-                                      layout = go.Layout(title = dict(text = 'Valittujen arvojen<br>indeksikehitys',
-                                                                      x=.5,
-                                                                      font=dict(
-                                                                           family='Cadiz Semibold',
-                                                                           size=20
-                                                                          )),
-                                                         
-                                                         height=graph_height,
-                                                         template = 'seaborn',
-                                                         margin=dict(
-                                                              l=10,
-                                                             r=10,
-                                                             # b=100,
-                                                              # t=120,
-                                                              # pad=4
-                                                         ),
-                                                         legend=dict(
-                                                              orientation = 'h',
-                                                                      # x=.1,
-                                                                      # y=1,
-                                                                      # xanchor='center',
-                                                                      # yanchor='top',
-                                                                     font=dict(
-                                                              size=14,
-                                                              family='Cadiz Book'
-                                                             )),
-                                                         xaxis = dict(title=dict(text = 'Aika',
-                                                                                 font=dict(
-                                                                                     size=18, 
-                                                                                     family = 'Cadiz Semibold'
-                                                                                     )),
-                                                                      automargin=True,
-                                                                      tickfont = dict(
-                                                                          family = 'Cadiz Semibold', 
-                                                                           size = 16
-                                                                          )),
-                                                         yaxis = dict(title=dict(text = 'Pisteluku (perusvuosi = 2010)',
-                                                                                font=dict(
-                                                                                     size=18, 
-                                                                                    family = 'Cadiz Semibold'
-                                                                                    )),
-                                                                     tickformat = ' ',
-                                                                     automargin=True,
-                                                                     tickfont = dict(
-                                                                         family = 'Cadiz Semibold', 
-                                                                          size = 16
-                                                                         ))
-                                                         )
-                                      ),
-                     config = config_plots
-                     )])
+    if lang == 'fi':
+    
+        traces = [go.Scatter(x = data.index, 
+                             y = data[value],
+                             showlegend=True,                         
+                             name = ' '.join(value.split()[1:]),
+                             mode = 'lines+markers') for value in values]
+        return html.Div([dcc.Graph(figure=go.Figure(data=traces,
+                                          layout = go.Layout(title = dict(text = 'Valittujen arvojen<br>indeksikehitys',
+                                                                          x=.5,
+                                                                          font=dict(
+                                                                               family='Cadiz Semibold',
+                                                                               size=20
+                                                                              )),
+                                                             
+                                                             height=graph_height,
+                                                             template = 'seaborn',
+                                                             margin=dict(
+                                                                  l=10,
+                                                                 r=10,
+                                                                 # b=100,
+                                                                  # t=120,
+                                                                  # pad=4
+                                                             ),
+                                                             legend=dict(
+                                                                  orientation = 'h',
+                                                                          # x=.1,
+                                                                          # y=1,
+                                                                          # xanchor='center',
+                                                                          # yanchor='top',
+                                                                         font=dict(
+                                                                  size=14,
+                                                                  family='Cadiz Book'
+                                                                 )),
+                                                             xaxis = dict(title=dict(text = 'Aika',
+                                                                                     font=dict(
+                                                                                         size=18, 
+                                                                                         family = 'Cadiz Semibold'
+                                                                                         )),
+                                                                          automargin=True,
+                                                                          tickfont = dict(
+                                                                              family = 'Cadiz Semibold', 
+                                                                               size = 16
+                                                                              )),
+                                                             yaxis = dict(title=dict(text = 'Pisteluku (perusvuosi = 2010)',
+                                                                                    font=dict(
+                                                                                         size=18, 
+                                                                                        family = 'Cadiz Semibold'
+                                                                                        )),
+                                                                         tickformat = ' ',
+                                                                         automargin=True,
+                                                                         tickfont = dict(
+                                                                             family = 'Cadiz Semibold', 
+                                                                              size = 16
+                                                                             ))
+                                                             )
+                                          ),
+                         config = config_plots
+                         )])
+    
+    elif lang == 'en':
+        
+        cf = config_plots.copy()
+        cf = cf.update({'locale':lang})
+        
+        pt = product_translations.copy().reset_index().set_index(lang)
+        pt = pt.rename(columns = {'index':'fi'})
+        pt = pt.loc[:,~pt.columns.duplicated()]
+        
+        traces = [go.Scatter(x = data.index, 
+                             y = data[value],
+                             showlegend=True,                         
+                             name = ' '.join(value.split()[1:]),
+                             mode = 'lines+markers') for value in pt.loc[values,'fi']]
+        return html.Div([dcc.Graph(figure=go.Figure(data=traces,
+                                          layout = go.Layout(title = dict(text = 'Indexes of<br>selected commodities',
+                                                                          x=.5,
+                                                                          font=dict(
+                                                                               family='Cadiz Semibold',
+                                                                               size=20
+                                                                              )),
+                                                             
+                                                             height=graph_height,
+                                                             template = 'seaborn',
+                                                             margin=dict(
+                                                                  l=10,
+                                                                 r=10,
+                                                                 # b=100,
+                                                                  # t=120,
+                                                                  # pad=4
+                                                             ),
+                                                             legend=dict(
+                                                                  orientation = 'h',
+                                                                          # x=.1,
+                                                                          # y=1,
+                                                                          # xanchor='center',
+                                                                          # yanchor='top',
+                                                                         font=dict(
+                                                                  size=14,
+                                                                  family='Cadiz Book'
+                                                                 )),
+                                                             xaxis = dict(title=dict(text = 'Time',
+                                                                                     font=dict(
+                                                                                         size=18, 
+                                                                                         family = 'Cadiz Semibold'
+                                                                                         )),
+                                                                          automargin=True,
+                                                                          tickfont = dict(
+                                                                              family = 'Cadiz Semibold', 
+                                                                               size = 16
+                                                                              )),
+                                                             yaxis = dict(title=dict(text = 'Point figure (base year = 2010)',
+                                                                                    font=dict(
+                                                                                         size=18, 
+                                                                                        family = 'Cadiz Semibold'
+                                                                                        )),
+                                                                         tickformat = ' ',
+                                                                         automargin=True,
+                                                                         tickfont = dict(
+                                                                             family = 'Cadiz Semibold', 
+                                                                              size = 16
+                                                                             ))
+                                                             )
+                                          ),
+                         config = cf
+                         )])
 
 
 
@@ -4404,7 +4473,7 @@ def update_feature_correlation_plot(value1, value2, lang):
     
     
     cf = config_plots.copy()
-    cf.update({'locale':lang})
+    cf=cf.update({'locale':lang})
     
     pt = product_translations.copy().reset_index().set_index(lang)
     pt = pt.rename(columns = {'index':'fi'})
@@ -4635,7 +4704,7 @@ def update_eda_div(lang):
 def update_commodity_unemployment_graph(values, label, lang):
     
     cf = config_plots.copy()
-    cf.update({'locale':lang})
+    cf =cf.update({'locale':lang})
     
     pt = product_translations.copy().reset_index().set_index(lang)
     pt = pt.rename(columns = {'index':'fi'})
@@ -4947,7 +5016,7 @@ def update_phillips_curve(lang):
     
     cf = config_plots.copy()
   
-    cf.update({'locale':lang})
+    cf = cf.update({'locale':lang})
 
     return dcc.Graph(figure = draw_phillips_curve(lang),
                      config = cf)
@@ -6064,7 +6133,7 @@ def update_tab_contents(lang):
 def update_eda_children(lang):
     
     cf = config_plots.copy()
-    cf.update({'locale':lang})
+    cf = cf.update({'locale':lang})
     
     
     if lang == 'fi':
