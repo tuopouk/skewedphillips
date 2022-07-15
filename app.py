@@ -4136,7 +4136,7 @@ def update_time_series(values, lang):
         traces = [go.Scatter(x = data.index, 
                              y = data[value],
                              showlegend=True,                         
-                             name = ' '.join(value.split()[1:]),
+                             name = ' '.join(product_translations.loc[value,lang].split()[1:]),
                              mode = 'lines+markers') for value in pt.loc[values,'fi']]
         return html.Div([dcc.Graph(figure=go.Figure(data=traces,
                                           layout = go.Layout(title = dict(text = 'Indexes of<br>selected commodities',
