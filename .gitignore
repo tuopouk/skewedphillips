@@ -1,0 +1,4 @@
+venv
+.pylint.d
+.spyproject
+file_system_store
