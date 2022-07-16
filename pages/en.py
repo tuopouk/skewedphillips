@@ -4,15 +4,11 @@ Created on Mon Jun 20 11:57:56 2022
 
 @author: tuomas.poukkula
 """
-
 import dash 
 
-dash.register_page(__name__, 
-                   path='/',
-                   title = 'Phillipsin vinouma',
-                   name = 'Phillipsin vinouma',
-                   redirect_from =['/assets','/assets/'])
-
+dash.register_page(__name__,
+                   title = 'Skewed Phillips',
+                   name = 'Skewed Phillips')
 import pandas as pd
 import numpy as np
 import requests
@@ -29,9 +25,7 @@ import io
 import math
 import shap
 
-
 from dash import html, dcc, callback, callback_context ,ALL, Output, Input, State
-# from dash_extensions.enrich import callback_context,Dash  ,ALL, Output,dcc,html, Input, State
 from dash.exceptions import PreventUpdate
 import random
 import dash_bootstrap_components as dbc
@@ -39,20 +33,21 @@ from datetime import datetime
 import locale
 
 
+
 np.seterr(invalid='ignore')
 
 # riippu ollaanko Windows vai Linux -ympäristössä, mitä locale-koodausta käytetään.
 
 try:
-    locale.setlocale(locale.LC_ALL, 'fi_FI')
+    locale.setlocale(locale.LC_ALL, 'en_US')
 except:
-    locale.setlocale(locale.LC_ALL, 'fi-FI')
+    locale.setlocale(locale.LC_ALL, 'en-US')
 
 in_dev = True
 
-MODELS = {
+MODELS_en = {
     
-        'Satunnaismetsä': {'model':RandomForestRegressor,
+        'Random Forest': {'model':RandomForestRegressor,
                            'doc': 'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html',
                            'video':'https://www.youtube.com/embed/cIbj0WuK41w',
                            'explainer':shap.TreeExplainer,
@@ -68,7 +63,7 @@ MODELS = {
         #              'constant_hyperparameters':{'random_state':42,
         #                                          }
         #              },
-        'K lähimmät naapurit':{'model':KNeighborsRegressor,
+        'K Nearest Neighbors':{'model':KNeighborsRegressor,
                                'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html',
                                 'video':'https://www.youtube.com/embed/jw5LhTWUoG4?list=PLRZZr7RFUUmXfON6dvwtkaaqf9oV_C1LF',
                                 'explainer':shap.KernelExplainer,
@@ -76,7 +71,7 @@ MODELS = {
                                                            'n_jobs':-1
                                                             }
                                },
-        'Tukivektorikone':{'model':SVR,
+        'Support Vector Machine':{'model':SVR,
                            'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html',
                            'video':"https://www.youtube.com/embed/_YPScrckx28",
                             'explainer':shap.KernelExplainer,
@@ -130,7 +125,7 @@ LESS_THAN_HALF = [
 
 
 
-config_plots = {'locale':'fi',
+config_plots_en = {'locale':'en',
 #                 'editable':True,
                 "modeBarButtonsToRemove":["sendDataToCloud"],
                 'modeBarButtonsToAdd' : [
@@ -197,7 +192,6 @@ h1_style = {
 # server = Flask(__name__)
 # server.secret_key = os.environ.get('secret_key','secret')
 # app = Dash(name = __name__, 
-#            plugins=[dl.plugins.pages],
 #            prevent_initial_callbacks = False, 
 #            # transforms=[ServersideOutputTransform(),
 #            #             TriggerTransform()],
@@ -214,7 +208,7 @@ h1_style = {
 # app.index_string = '''<!DOCTYPE html>
 # <html>
 # <head>
-# <title>Phillipsin vinouma</title>
+# <title>Skewed Phillips</title>
 # <link rel="manifest" href="./assets/manifest.json" />
 # {%metas%}
 # {%favicon%}
@@ -247,51 +241,14 @@ h1_style = {
 # </html>
 # '''
 
-# app.title = 'Phillipsin vinouma'
+# app.title = 'Skewed Phillips'
 
 
 
-
-
-
-# navbar = dbc.Navbar(
-#     dbc.Container(
-#         [
-#             html.A(
-#                 # Use row and col to control vertical alignment of logo / brand
-#                 dbc.Row(
-#                     [
-#                         dbc.Col(html.Img(src="assets/gofore_logo_orange.svg")),
-                        
-                        
-#                         dbc.Col(dbc.NavItem(dbc.NavLink("Change to English", href="#", target='_blank')),
-                                
-#                                 ),
-#                     ],
-#                     align="center",
-#                     justify='center',
-#                     className="flex-grow-1",
-#                 ),
-#                 href="https://gofore.com/",
-#                 target='_blank',
-#                 style = p_style
-#                 # style={"textDecoration": "none"},
-#             ),
-            
-#         ]
-#     ),
-#     color="dark",
-#     dark=True,
-#     className = 'dbc'
-# )
-
-
-
-
-def get_unemployment():
+def en_get_unemployment():
     
 
-  url = 'https://statfin.stat.fi:443/PxWeb/api/v1/fi/StatFin/tyti/statfin_tyti_pxt_135z.px'
+  url = 'https://statfin.stat.fi:443/PxWeb/api/v1/en/StatFin/tyti/statfin_tyti_pxt_135z.px'
   headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
                                     'Content-Type':'application/json'
                                    }
@@ -328,9 +285,9 @@ def get_unemployment():
 
   return df
 
-def get_inflation():
+def en_get_inflation():
 
-  url = 'https://statfin.stat.fi:443/PxWeb/api/v1/fi/StatFin/khi/statfin_khi_pxt_11xd.px'
+  url = 'https://statfin.stat.fi:443/PxWeb/api/v1/en/StatFin/khi/statfin_khi_pxt_11xd.px'
   headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
                                     'Content-Type':'application/json'
                                    }
@@ -369,9 +326,9 @@ def get_inflation():
 
   return df
 
-def get_inflation_percentage():
+def en_get_inflation_percentage():
 
-  url = 'https://pxweb2.stat.fi:443/PxWeb/api/v1/fi/StatFin/khi/statfin_khi_pxt_122p.px'
+  url = 'https://pxweb2.stat.fi:443/PxWeb/api/v1/en/StatFin/khi/statfin_khi_pxt_122p.px'
   headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
                                     'Content-Type':'application/json'
                                    }
@@ -394,10 +351,10 @@ def get_inflation_percentage():
 
   return df.set_index('Aika') 
   
-def get_data():
+def en_get_data():
 
-  unemployment_df = get_unemployment()
-  inflation_df = get_inflation()
+  unemployment_df = en_get_unemployment()
+  inflation_df = en_get_inflation()
 
 
   inflation_df = pd.pivot_table(inflation_df.reset_index(), columns = 'Hyödyke', index = 'Aika' )
@@ -411,39 +368,39 @@ def get_data():
   data['month'] = data.index.month
   data['change'] = data.Työttömyysaste - data.prev
   
-  inflation_percentage_df = get_inflation_percentage()
+  inflation_percentage_df = en_get_inflation_percentage()
 
   data = pd.merge(left = data.reset_index(), right = inflation_percentage_df.reset_index(), how = 'left', on = 'Aika').set_index('Aika')
-
+  
   return data
 
 
-def draw_phillips_curve():
+def en_draw_phillips_curve():
     
   try:
-      locale.setlocale(locale.LC_ALL, 'fi_FI')
+      locale.setlocale(locale.LC_ALL, 'en_US')
   except:
-      locale.setlocale(locale.LC_ALL, 'fi-FI')
+      locale.setlocale(locale.LC_ALL, 'en-US')  
     
-  max_date = data.index.values[-1]
-  max_date_str = data.index.strftime('%B %Y').values[-1]
+  max_date = data_en.index.values[-1]
+  max_date_str = data_en.index.strftime('%B %Y').values[-1]
 
-  a, b = np.polyfit(np.log(data.Työttömyysaste), data.Inflaatio, 1)
+  a, b = np.polyfit(np.log(data_en.Työttömyysaste), data_en.Inflaatio, 1)
 
-  y = a * np.log(data.Työttömyysaste) +b 
+  y = a * np.log(data_en.Työttömyysaste) +b 
 
-  df = data.copy()
+  df = data_en.copy()
   df['log_inflation'] = y
   df = df.sort_values(by = 'log_inflation')
   
   
 
-  hovertemplate = ['<b>{}</b><br>Työttömyysaste: {} %<br>Inflaatio: {} %'.format(df.index[i].strftime('%B %Y'), df.Työttömyysaste.values[i], df.Inflaatio.values[i]) for i in range(len(df))]
+  hovertemplate = ['<b>{}</b><br>Unemployment rate: {} %<br>Inflation: {} %'.format(df.index[i].strftime('%B %Y'), df.Työttömyysaste.values[i], df.Inflaatio.values[i]) for i in range(len(df))]
 
   return go.Figure(data=[
                   go.Scatter(y=df['Inflaatio'], 
                             x = df.Työttömyysaste, 
-                            name = 'Inflaatio', 
+                            name = 'Inflation', 
                             mode = 'markers+text', 
                             text = [None if i != max_date else '<b>'+max_date_str+'</b>' for i in df.index],
                             textposition='top left',
@@ -459,7 +416,7 @@ def draw_phillips_curve():
                             ),
                 go.Scatter(x = df.Työttömyysaste, 
                             y = df['log_inflation'], 
-                            name = 'Logaritminen<br>trendiviiva', 
+                            name = 'Logarithmic<br>trendline', 
                             mode = 'lines',
                             line = dict(width=5),
                             showlegend=True,
@@ -468,7 +425,7 @@ def draw_phillips_curve():
                   ],
             layout = go.Layout(
                                xaxis=dict(showspikes=True,
-                                          title = dict(text='Työttömyysaste (%)', font=dict(size=22, 
+                                          title = dict(text='Unemployment rate (%)', font=dict(size=22, 
                                                                                              family = 'Cadiz Semibold'
                                                                                             )), 
                                           tickformat = ' ',
@@ -480,7 +437,7 @@ def draw_phillips_curve():
                                                           )
                                           ), 
                                yaxis=dict(showspikes=True,
-                                          title = dict(text='Inflaatio (%)', font=dict(size=22, 
+                                          title = dict(text='Inflation (%)', font=dict(size=22, 
                                                                                         family = 'Cadiz Semibold'
                                                                                        )
                                                        ),
@@ -515,7 +472,7 @@ def draw_phillips_curve():
                                                # y=.99
                                               ),
                               
-                               title = dict(text = 'Työttömyysaste vs.<br>Inflaatio<br>{} - {}<br>'.format(df.index.min().strftime('%B %Y'),df.index.max().strftime('%B %Y')),
+                               title = dict(text = 'Unemployment rate vs.<br>Inflation<br>{} - {}<br>'.format(df.index.min().strftime('%B %Y'),df.index.max().strftime('%B %Y')),
                                             x=.5,
                                             font=dict(
                                                 size=22,
@@ -524,7 +481,7 @@ def draw_phillips_curve():
                               )
             )
             
-def get_shap_values(model, explainer, X_train, X_test):
+def en_get_shap_values(model, explainer, X_train, X_test):
 
 
     if explainer.__name__ == 'Kernel':
@@ -571,9 +528,9 @@ def get_shap_values(model, explainer, X_train, X_test):
         return shap_importance
         
 
-def get_param_options(model_name):
+def en_get_param_options(model_name):
 
-  model = MODELS[model_name]['model']
+  model = MODELS_en[model_name]['model']
 
   dict_list = {}
 
@@ -600,17 +557,17 @@ def get_param_options(model_name):
 
 
 
-def plot_test_results(df, chart_type = 'lines+bars'):
+def en_plot_test_results(df, chart_type = 'lines+bars'):
     
     # mape = round(100 * mean_absolute_percentage_error(df.Työttömyysaste, df.Ennuste),2)
     # mape = round(100*df.mape.values[0],1)
-    hovertemplate = ['<b>{}</b>:<br>Toteutunut: {}<br>Ennuste: {}'.format(df.index[i].strftime('%B %Y'),df.Työttömyysaste.values[i], df.Ennuste.values[i]) for i in range(len(df))]
+    hovertemplate = ['<b>{}</b>:<br>True: {}<br>Predicted: {}'.format(df.index[i].strftime('%B %Y'),df.Työttömyysaste.values[i], df.Ennuste.values[i]) for i in range(len(df))]
     
     if chart_type == 'lines+bars':
     
         return go.Figure(data=[go.Scatter(x=df.index.strftime('%B %Y'), 
                                y = df.Työttömyysaste, 
-                               name = 'Toteutunut',
+                               name = 'True',
                                showlegend=True, 
                                mode = 'lines+markers+text',
                                text=[str(round(c,2))+' %' for c in df.Työttömyysaste], 
@@ -624,7 +581,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                     
                     go.Bar(x=df.index.strftime('%B %Y'), 
                            y = df.Ennuste, 
-                           name = 'Ennuste',
+                           name = 'Predicted',
                            showlegend=True, 
                            marker = dict(color='red'), 
                            text=[str(round(c,2))+' %' for c in df.Ennuste], 
@@ -634,7 +591,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                 family='Cadiz Semibold', 
                                size = 18)
                            )
-                    ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, 
+                    ],layout=go.Layout(xaxis = dict(title = dict(text='Time',font=dict(size=20, 
                                                                                        family = 'Cadiz Semibold'
                                                                                        )),
                                                     tickfont = dict(
@@ -642,7 +599,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                         size = 18),
                                                     automargin=True
                                                     ),
-                                       yaxis = dict(title = dict(text='Työttömyysaste (%)',
+                                       yaxis = dict(title = dict(text='Unemployment rate (%)',
                                                                  font=dict(
                                                                       family='Cadiz Semibold',
                                                                      size=20)),
@@ -673,7 +630,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                          ),
                                        template = 'seaborn',
                                       # margin=dict(autoexpand=True),
-                                       title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
+                                       title = dict(text = 'Unemployment Rate Forecast<br>per Month',
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
@@ -687,7 +644,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
     
         return go.Figure(data=[go.Scatter(x=df.index, 
                                 y = df.Työttömyysaste, 
-                                name = 'Toteutunut',
+                                name = 'True',
                                 showlegend=True, 
                                 mode = 'lines+markers+text',
                                 text=[str(round(c,2))+' %' for c in df.Työttömyysaste], 
@@ -701,7 +658,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                     
                     go.Scatter(x=df.index, 
                             y = df.Ennuste, 
-                            name = 'Ennuste',
+                            name = 'Predicted',
                             showlegend=True,
                             mode = 'lines+markers+text',
                             marker = dict(color='red',size=10), 
@@ -712,7 +669,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                             textfont = dict(
                                  family='Cadiz Semibold', 
                                 size = 18,color='red'))
-                    ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, 
+                    ],layout=go.Layout(xaxis = dict(title = dict(text='Time',font=dict(size=20, 
                                                                                        family = 'Cadiz Semibold'
                                                                                        )),
                                                     tickfont = dict(
@@ -720,7 +677,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                         size = 18),
                                                     automargin=True,
                                                     ),
-                                        yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(
+                                        yaxis = dict(title = dict(text='Unemployment Rate (%)',font=dict(
                                              family='Cadiz Semibold',
                                             size=20)),
                                                     tickfont = dict(
@@ -749,7 +706,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                            font_family = 'Cadiz Book'
                                                           ),
                                         template = 'seaborn',
-                                        title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
+                                        title = dict(text = 'Unemployment Rate Forecast<br>per Month',
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
@@ -761,7 +718,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
     else:
         return go.Figure(data=[go.Bar(x=df.index.strftime('%B %Y'), 
                                     y = df.Työttömyysaste, 
-                                    name = 'Toteutunut',
+                                    name = 'True',
                            showlegend=True, 
                            marker = dict(color='green'), 
                            text=[str(round(c,2))+' %' for c in df.Työttömyysaste], 
@@ -774,7 +731,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                         
                         go.Bar(x=df.index.strftime('%B %Y'), 
                                 y = df.Ennuste, 
-                                name = 'Ennuste',
+                                name = 'Predicted',
                            showlegend=True, 
                            marker = dict(color='red'), 
                            text=[str(round(c,2))+' %' for c in df.Ennuste], 
@@ -784,7 +741,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                 family='Cadiz Semibold', 
                                size = 18)
                                 )
-                        ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, 
+                        ],layout=go.Layout(xaxis = dict(title = dict(text='Time',font=dict(size=20, 
                                                                                            family = 'Cadiz Semibold'
                                                                                            )),
                                                         tickfont = dict(
@@ -792,7 +749,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                             size = 18),
                                                         automargin=True
                                                         ),
-                                            yaxis = dict(title = dict(text='Työttömyysaste (%)',font=dict(
+                                            yaxis = dict(title = dict(text='Unemployment Rate (%)',font=dict(
                                                  family='Cadiz Semibold',
                                                 size=20)),
                                                         tickfont = dict(
@@ -821,7 +778,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                               font_family = 'Cadiz Book'
                                                               ),
                                             template = 'seaborn',
-                                            title = dict(text = 'Työttömyysasteen ennuste<br>kuukausittain',
+                                            title = dict(text = 'Unemployment Rate Forecast<br>per Month',
                                                         x=.5,
                                                         font=dict(
                                                              family='Cadiz Semibold',
@@ -833,31 +790,31 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                                     
                                                     
                                                     
-def plot_forecast_data(df, chart_type):
+def en_plot_forecast_data(df, chart_type):
     
     
-    hover_true = ['<b>{}</b><br>Työttömyysaste: {} %'.format(data.index[i].strftime('%B %Y'), data.Työttömyysaste.values[i]) for i in range(len(data))]
-    hover_pred = ['<b>{}</b><br>Työttömyysaste: {} %'.format(df.index[i].strftime('%B %Y'), round(df.Työttömyysaste.values[i],1)) for i in range(len(df))]
+    hover_true = ['<b>{}</b><br>Unemployment Rate: {} %'.format(data_en.index[i].strftime('%B %Y'), data_en.Työttömyysaste.values[i]) for i in range(len(data_en))]
+    hover_pred = ['<b>{}</b><br>Unemployment Rate: {} %'.format(df.index[i].strftime('%B %Y'), round(df.Työttömyysaste.values[i],1)) for i in range(len(df))]
     
 
     if chart_type == 'lines':
     
     
-        return go.Figure(data=[go.Scatter(x=data.index, 
-                                          y = data.Työttömyysaste, 
-                                          name = 'Toteutunut',
+        return go.Figure(data=[go.Scatter(x=data_en.index, 
+                                          y = data_en.Työttömyysaste, 
+                                          name = 'True',
                                           showlegend=True,
                                           mode="lines", 
                                           hovertemplate =  hover_true,##'<b>%{x}</b>: %{y}%',
                                           marker = dict(color='green')),
                     go.Scatter(x=df.index, 
                                y = np.round(df.Työttömyysaste,1), 
-                               name = 'Ennuste',
+                               name = 'Predicted',
                                showlegend=True,
                                mode="lines", 
                                hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
                                marker = dict(color='red'))
-                    ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',font=dict(
+                    ],layout=go.Layout(xaxis = dict(title = dict(text = 'Time',font=dict(
                          size=20, 
                         family = 'Cadiz Semibold'
                         )),
@@ -870,11 +827,11 @@ def plot_forecast_data(df, chart_type):
                                                     rangeselector=dict(
                 buttons=list([
                     dict(count=3,
-                         label="3kk",
+                         label="3m",
                          step="month",
                          stepmode="backward"),
                     dict(count=6,
-                         label="6kk",
+                         label="6m",
                          step="month",
                          stepmode="backward"),
                     dict(count=1,
@@ -882,15 +839,15 @@ def plot_forecast_data(df, chart_type):
                          step="year",
                          stepmode="todate"),
                     dict(count=1,
-                         label="1v",
+                         label="1y",
                          step="year",
                          stepmode="backward"),
                     dict(count=3,
-                         label="3v",
+                         label="3y",
                          step="year",
                          stepmode="backward"),
                     dict(count=5,
-                         label="5v",
+                         label="5y",
                          step="year",
                          stepmode="backward"),
                     dict(step="all",
@@ -921,7 +878,7 @@ def plot_forecast_data(df, chart_type):
                                                    family = 'Cadiz Semibold'
                                                    )),
                                        template = 'seaborn',
-                                       yaxis = dict(title=dict(text = 'Työttömyysaste (%)',
+                                       yaxis = dict(title=dict(text = 'Unemployment Rate (%)',
                                                      font=dict(
                                                           size=20, 
                                                          family = 'Cadiz Semibold'
@@ -931,7 +888,7 @@ def plot_forecast_data(df, chart_type):
                                                          family = 'Cadiz Book', 
                                                                       size = 18
                                                                      )),
-                                       title = dict(text = 'Työttömyysaste ja ennuste kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
+                                       title = dict(text = 'Unemployment Rate and Forecast per Month<br>{} - {}'.format(data_en.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
@@ -945,21 +902,21 @@ def plot_forecast_data(df, chart_type):
         
         
       
-        return go.Figure(data=[go.Bar(x=data.index, 
-                                          y = data.Työttömyysaste, 
-                                          name = 'Toteutunut',
+        return go.Figure(data=[go.Bar(x=data_en.index, 
+                                          y = data_en.Työttömyysaste, 
+                                          name = 'True',
                                           showlegend=True,
                                           # mode="lines", 
                                           hovertemplate = hover_true,#'<b>%{x}</b>: %{y}%',
                                           marker = dict(color='green')),
                     go.Bar(x=df.index, 
                                y = np.round(df.Työttömyysaste,1), 
-                               name = 'Ennuste',
+                               name = 'Predicted',
                                showlegend=True,
                                # mode="lines", 
                                hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
                                marker = dict(color='red'))
-                    ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',
+                    ],layout=go.Layout(xaxis = dict(title = dict(text = 'Time',
                                                                  font=dict(
                                                                      size=20, 
                                                                      family = 'Cadiz Semibold'
@@ -972,11 +929,11 @@ def plot_forecast_data(df, chart_type):
                                                     rangeselector=dict(
                 buttons=list([
                     dict(count=3,
-                          label="3kk",
+                          label="3m",
                           step="month",
                           stepmode="backward"),
                     dict(count=6,
-                          label="6kk",
+                          label="6m",
                           step="month",
                           stepmode="backward"),
                     dict(count=1,
@@ -984,15 +941,15 @@ def plot_forecast_data(df, chart_type):
                           step="year",
                           stepmode="todate"),
                     dict(count=1,
-                          label="1v",
+                          label="1y",
                           step="year",
                           stepmode="backward"),
                     dict(count=3,
-                          label="3v",
+                          label="3y",
                           step="year",
                           stepmode="backward"),
                     dict(count=5,
-                          label="5v",
+                          label="5y",
                           step="year",
                           stepmode="backward"),
                     dict(step="all",
@@ -1023,7 +980,7 @@ def plot_forecast_data(df, chart_type):
                                                     size=14,
                                                    family = 'Cadiz Semibold'
                                                    )),
-                                       yaxis = dict(title=dict(text = 'Työttömyysaste (%)',
+                                       yaxis = dict(title=dict(text = 'Unemployment Rate (%)',
                                                      font=dict(
                                                           size=20, 
                                                          family = 'Cadiz Semibold'
@@ -1034,7 +991,7 @@ def plot_forecast_data(df, chart_type):
                                                                       size = 18
                                                                      )
                                                      ),
-                                       title = dict(text = 'Työttömyysaste ja ennuste kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
+                                       title = dict(text = 'Unemployment Rate and Forecast per month<br>{} - {}'.format(data_en.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
@@ -1046,7 +1003,7 @@ def plot_forecast_data(df, chart_type):
                                                     
 
 
-def test(model, features, test_size, explainer, use_pca = False, n_components=.99):
+def en_test(model, features, test_size, explainer, use_pca = False, n_components=.99):
 
   feat = features.copy()
   feat.append('prev')
@@ -1054,8 +1011,8 @@ def test(model, features, test_size, explainer, use_pca = False, n_components=.9
   
   cols = feat
 
-  train_df = data.iloc[:-test_size,:].copy()
-  test_df = data.iloc[-test_size:,:].copy()
+  train_df = data_en.iloc[:-test_size,:].copy()
+  test_df = data_en.iloc[-test_size:,:].copy()
 
 
   scl = StandardScaler()
@@ -1071,7 +1028,7 @@ def test(model, features, test_size, explainer, use_pca = False, n_components=.9
     
     X = pca.fit_transform(X)
     n_feat = len(pd.DataFrame(X).columns)
-    cols = ['_ '+str(i+1)+'. pääkomponentti' for i in range(n_feat)]
+    cols = ['_ '+str(i+1)+'. PC' for i in range(n_feat)]
 
 
   model.fit(X,y)
@@ -1114,7 +1071,7 @@ def test(model, features, test_size, explainer, use_pca = False, n_components=.9
   
   
 
-  shap_df = get_shap_values(model, explainer, X_train = pd.DataFrame(X, columns = cols), X_test = pd.concat(scaled_features))
+  shap_df = en_get_shap_values(model, explainer, X_train = pd.DataFrame(X, columns = cols), X_test = pd.concat(scaled_features))
 
   result = pd.concat(results)
   result['n_feat'] = n_feat
@@ -1132,9 +1089,9 @@ def test(model, features, test_size, explainer, use_pca = False, n_components=.9
 
                                                 
 
-def predict(model, features, feature_changes, length, use_pca = False, n_components=.99):
+def en_predict(model, features, feature_changes, length, use_pca = False, n_components=.99):
   
-  df = data.copy()
+  df = data_en.copy()
   
   feat = features.copy()
   feat.append('prev')
@@ -1213,68 +1170,67 @@ def predict(model, features, feature_changes, length, use_pca = False, n_compone
   return result
 
 
-def apply_average(features, length = 4):
+data_en = en_get_data()
 
-  return 100 * data[features].pct_change().iloc[-length:, :].mean()
+def en_apply_average(features, length = 4):
+
+  return 100 * data_en[features].pct_change().iloc[-length:, :].mean()
 
 
-data = get_data()
+
 
 
 # Viimeiset neljä saraketta ovat prev, month, change ja inflaatio.
  
-correlations_desc = data[data.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].sort_values(ascending=False)
-correlations_asc = data[data.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].sort_values(ascending=True)
-correlations_abs_desc = data[data.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].abs().sort_values(ascending=False)
-correlations_abs_asc = data[data.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].abs().sort_values(ascending=True)
-main_classes = sorted([c for c in data.columns[:-4] if len(c.split()[0])==2])
-second_classes = sorted([c for c in data.columns[:-4] if len(c.split()[0])==4])
-third_classes = sorted([c for c in data.columns[:-4] if len(c.split()[0])==6])
-fourth_classes = sorted([c for c in data.columns[:-4] if len(c.split()[0])==8])
-fifth_classes = sorted([c for c in data.columns[:-4] if len(c.split()[0])==10])
+correlations_desc_en = data_en[data_en.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].sort_values(ascending=False)
+correlations_asc_en = data_en[data_en.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].sort_values(ascending=True)
+correlations_abs_desc_en = data_en[data_en.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].abs().sort_values(ascending=False)
+correlations_abs_asc_en = data_en[data_en.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].abs().sort_values(ascending=True)
+main_classes_en = sorted([c for c in data_en.columns[:-4] if len(c.split()[0])==2])
+second_classes_en = sorted([c for c in data_en.columns[:-4] if len(c.split()[0])==4])
+third_classes_en = sorted([c for c in data_en.columns[:-4] if len(c.split()[0])==6])
+fourth_classes_en = sorted([c for c in data_en.columns[:-4] if len(c.split()[0])==8])
+fifth_classes_en = sorted([c for c in data_en.columns[:-4] if len(c.split()[0])==10])
 
-feature_options = [{'label':c, 'value':c} for c in data.columns[1:-4]]
-corr_desc_options = [{'label':c, 'value':c} for c in correlations_desc.index]
-corr_asc_options = [{'label':c, 'value':c} for c in correlations_asc.index]
-corr_abs_desc_options = [{'label':c, 'value':c} for c in correlations_abs_desc.index]
-corr_abs_asc_options = [{'label':c, 'value':c} for c in correlations_abs_asc.index]
-main_class_options = [{'label':c, 'value':c} for c in main_classes]
-second_class_options = [{'label':c, 'value':c} for c in second_classes]
-third_class_options = [{'label':c, 'value':c} for c in third_classes]
-fourth_class_options = [{'label':c, 'value':c} for c in fourth_classes]
-fifth_class_options = [{'label':c, 'value':c} for c in fifth_classes]
+feature_options_en = [{'label':c, 'value':c} for c in data_en.columns[1:-4]]
+corr_desc_options_en = [{'label':c, 'value':c} for c in correlations_desc_en.index]
+corr_asc_options_en = [{'label':c, 'value':c} for c in correlations_asc_en.index]
+corr_abs_desc_options_en = [{'label':c, 'value':c} for c in correlations_abs_desc_en.index]
+corr_abs_asc_options_en = [{'label':c, 'value':c} for c in correlations_abs_asc_en.index]
+main_class_options_en = [{'label':c, 'value':c} for c in main_classes_en]
+second_class_options_en = [{'label':c, 'value':c} for c in second_classes_en]
+third_class_options_en = [{'label':c, 'value':c} for c in third_classes_en]
+fourth_class_options_en = [{'label':c, 'value':c} for c in fourth_classes_en]
+fifth_class_options_en = [{'label':c, 'value':c} for c in fifth_classes_en]
 
 
 
-initial_options = corr_abs_desc_options
-initial_features = [[list(f.values())[0] for f in corr_abs_desc_options][i] for i in random.sample(range(len(corr_abs_desc_options)),6)]
+initial_options_en = corr_abs_desc_options_en
+initial_features_en = [[list(f.values())[0] for f in corr_abs_desc_options_en][i] for i in random.sample(range(len(corr_abs_desc_options_en)),6)]
 
 
 def layout():
     
     return html.Div([dbc.Container(fluid=True, className = 'dbc', children=[
-        
-   
-        
         html.Br(),        
         dbc.Row(
             [
                 dbc.Col(
                     [
-                    
-                    # ThemeChangerAIO(aio_id="theme", 
-                    #                     button_props={'title':'Vaihda väriteemaa',
+                    # ThemeChangerAIO(aio_id="theme_en", 
+                    #                     button_props={'title':'Change Color Theme',
                     #                                   # 'size':'lg',
-                    #                                   'children' : 'Vaihda väriteemaa',
+                    #                                   'children' : 'Change Color Theme',
                     #                                   'color':'warning'},
-                    #                     offcanvas_props={'title':"Valitse jokin alla olevista väriteemoista",
+                    #                     offcanvas_props={'title':"Select a Color Theme",
                                                          
                     #                                      'scrollable':True},
                     #                     radio_props={"value":dbc.themes.SUPERHERO}),
                     # html.Br(),
+     
                 
-                    dbc.Button("Avaa pikaohje", 
-                                 id="open-offcanvas", 
+                    dbc.Button("Open Quick Help", 
+                                 id="open-offcanvas_en", 
                                  n_clicks=0, 
                                  outline=True,
                                   size = 'lg',
@@ -1285,7 +1241,7 @@ def layout():
                     dbc.Offcanvas(
                           [
                               
-                          html.H3('Tässä on lyhyt ohjeistus sovelluksen käyttöön. Yksityiskohtaisempaa informaatiota löytyy Ohje ja esittely -välilehdeltä sekä jokaisen toiminnon omalta välilehdeltään.', 
+                          html.H3('For more detailed information, see the Help and Introduction tab and the separate tab for each action.', 
                                   style = {
                                       # #'font-family':'Cadiz Semibold',
                                             'text-align':'left',
@@ -1295,7 +1251,7 @@ def layout():
                                             }
                                   ),
                               
-                          html.H3('1. Valitse hyödykkeitä Hyödykkeiden valinta -välilehdellä', 
+                          html.H3('1. Select commodities on the Choice of Goods tab', 
                                   style = {
                                       # #'font-family':'Cadiz Semibold',
                                             'text-align':'left',
@@ -1305,19 +1261,19 @@ def layout():
                                   ),
                           
                           html.P(
-                              "Valitse haluamasi hyödykkeet alasvetovalikosta. "
-                              "Voit lajitella hyödykkeet haluamallasi tavalla. "
-                              "Valitse käytetäänkö edellisten kuukausien muutoskeskiarvoja "
-                              "tai vakiomuutosta kaikille valitsinta klikkaamalla. "
-                              "Säädä olettu muutos liutin -valinnalla. "
-                              "Hienosäädä yksittäisten hyödykkeiden muutoksia muokkaamalla laatikoiden arvoja.",
+                              "Select the commodities you want from the drop-down menu. "
+                              "You can sort the goods any way you want. "
+                              "Select whether to use change averages from previous months "
+                              "or a standard change for all by clicking on the selector. "
+                              "Adjust the default change using the slider option. "
+                              "Fine-tune changes in individual commodities by modifying the values in the boxes.",
                                style = {
                                    # #'font-family':'Cadiz Book',
                                         'font-size':p_font_size-2,
                                          'text-align':'left'}
                           ),
                           html.Br(),
-                          html.H3('2. Tutki valitsemiasi hyödykkeitä Tutkiva analyysi -välilehdellä', 
+                          html.H3('2. Explore the products you select in the Exploratory Analysis tab', 
                                    style = {
                                        # #'font-family':'Cadiz Semibold',
                                             'margin-bottom':'30px',
@@ -1328,16 +1284,16 @@ def layout():
                                   ),
                           
                           html.P(
-                              "Tarkastele kuvaajien avulla valittujen hyödykkeiden suhdetta työttömyysasteeseen "
-                              "tai hyödykkeiden suhteita toisiinsa. "
-                              "Voit myös tarkastella indeksien, työttömyysasteen ja inflaation aikasarjoja.",
+                              "View the relationship between selected goods and unemployment rate using graphs "
+                              "or the relationship between commodities. "
+                              "You can also view time series for indices, unemployment rate, and inflation.",
                                style = {
                                    # #'font-family':'Cadiz Book',
                                         'font-size':p_font_size-2,
                                           'text-align':'left'}
                           ),
                           html.Br(),
-                          html.H3('3. Valitse menetelmä Menetelmän valinta -välilehdellä', 
+                          html.H3('3. Select a method on the Method Selection tab', 
                                    style = {
                                        # #'font-family':'Cadiz Semibold',
                                             'margin-bottom':'30px',
@@ -1345,17 +1301,17 @@ def layout():
                                               'text-align':'left'}
                                   ),
                           html.P(
-                              "Valitse haluamasi koneoppimisalgoritmi alasvetovalikosta. "
-                              "Säädä algoritmin hyperparametrit. "
-                              "Valitse painikkeesta käytetäänkö pääkomponenttianalyysiä "
-                              "ja niin tehtäessä valitse säilötyn variaation määrä liutin-valinnalla.",
+                              "Select the desired machine learning algorithm from the drop-down menu. "
+                              "Adjust the algorithm's hyperparameters. "
+                              "Select whether to use principal component analysis"
+                              "and when doing so, select the amount of explained variance with the slider selection.",
                                style = {
                                    # #'font-family':'Cadiz Book',
                                         'font-size':p_font_size-2,
                                           'text-align':'left'}
                           ),
                           html.Br(),
-                          html.H3('4. Testaa menetelmää Testaaminen-välilehdellä', 
+                          html.H3('4. Test method on Test tab', 
                                    style = {
                                        # #'font-family':'Cadiz Semibold',
                                              'text-align':'left',
@@ -1365,19 +1321,19 @@ def layout():
                                   ),
                           
                           html.P(
-                              "Valitse testin pituus ja klikkaa testaa nappia. "
-                              "Tarkastele testin kuvaajaa tai viedä tulokset Exceliin "
-                              "klikkaamalla 'Lataa testitulokset koneelle -nappia'. "
-                              "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä."
+                              "Select the test length and click the test button. "
+                              "View the test graph or export the results to Excel "
+                              "by clicking the 'Download test results' button. "
+                              "You can go back to the previous steps and try again with different commodities and methods."
                               " "
-                              " Voit myös tutkia Shapley-arvojen avulla mitkä piirteet ja hyödykkeet vaikuttivat eniten ennustetulokseen.",
+                              " You can also use Shapley values to determine which features and commodities contributed most to your forecast result.",
                               style = {
                                   # #'font-family':'Cadiz Book',
                                        'font-size':p_font_size-2,
                                         'text-align':'left'}
                           ),
                           html.Br(),
-                          html.H3('5. Tee ennuste Ennustaminen-välilehdellä', 
+                          html.H3('5. Make a forecast on the Forecast tab', 
                                    style = {
                                        # #'font-family':'Cadiz Semibold',
                                              'text-align':'left',
@@ -1388,11 +1344,11 @@ def layout():
                                   ),
                           
                           html.P(
-                              "Valitse ennusteen pituus ja klikkaa ennusta nappia. "
-                              "Tarkastele ennusteen kuvaajaa tai viedä tulokset Exceliin "
-                              "klikkaamalla 'Lataa ennustedata koneelle -nappia'. "
-                              "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä. "
-                              "Voit myös säätää hyödykeindeksien oletettuja kuukausimuutoksia ja kokeilla uudestaan.",
+                              "Select the forecast length and click the forecast button. "
+                              "View the forecast graph or export the results to Excel "
+                              "by clicking the 'Download forecast results' button."
+                              "You can go back to the previous steps and try again with different commodities and methods. "
+                              "You can also adjust expected monthly changes in commodity indices and try again.",
                               style = {
                                   # #'font-family':'Cadiz Book',   
                                        'font-size':p_font_size-2,
@@ -1402,8 +1358,8 @@ def layout():
                           
                           
                         ],
-                          id="offcanvas",
-                          title="Pikaohje",
+                          id="offcanvas_en",
+                          title="Quick Help",
                           scrollable=True,
                           is_open=False,
                           style = {
@@ -1418,41 +1374,41 @@ def layout():
                 dbc.Col([
                     
                       
-                    html.H1('Phillipsin vinouma',
+                    html.H1('Skewed Phillips',
                              style=h1_style
                             ),
                   
-                    html.H2('Työttömyyden ennustaminen hintatason muutoksilla',
+                    html.H2('Forecasting Finnish Unemployment Rate with Price Changes',
                             style=h2_style),
                     
-                    html.P('Valitse haluamasi välilehti alla olevia otsikoita klikkaamalla. ' 
-                           'Vasemman yläkulman painikkeista saat näkyviin pikaohjeen '
-                           'ja voit myös vaihtaa sivun väriteemaa.',
+                    html.P('Select the desired tab by clicking on the titles below.' 
+                           'The buttons in the upper left corner show quick help '
+                           'and you can also change the color scheme of the page.',
                            style = p_style)
                     ],xs =12, sm=12, md=12, lg=11, xl=11)
         ], justify='left'),
         html.Br(),
         
-        html.Div(id = 'hidden_store_div',
+        html.Div(id = 'hidden_store_div_en',
                  children = [
                     
-                    dcc.Store(id = 'features_values',data={f:0.0 for f in initial_features}),
-                    dcc.Store(id = 'change_weights'), 
-                    dcc.Store(id = 'method_selection_results'),
-                    dcc.Store(id ='shap_data'),
-                    dcc.Store(id = 'test_data'),
-                    dcc.Store(id = 'forecast_data'),
-                    dcc.Download(id='forecast_download'),
-                    dcc.Download(id='test_download')
+                    dcc.Store(id = 'features_values_en',data={f:0.0 for f in initial_features_en}),
+                    dcc.Store(id = 'change_weights_en'), 
+                    dcc.Store(id = 'method_selection_results_en'),
+                    dcc.Store(id ='shap_data_en'),
+                    dcc.Store(id = 'test_data_en'),
+                    dcc.Store(id = 'forecast_data_en'),
+                    dcc.Download(id='forecast_download_en'),
+                    dcc.Download(id='test_download_en')
         ]),
         
-        dbc.Tabs(id ='tabs',
+        dbc.Tabs(id ='tabs_en',
                  children = [
             
             
             
-            dbc.Tab(label='Ohje ja esittely',
-                    tab_id = 'ohje',
+            dbc.Tab(label='Introduction and Instructions',
+                    tab_id = 'ohje_en',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
                                  # #'font-family':'Cadiz Semibold'
@@ -1494,17 +1450,17 @@ def layout():
                                   
 
                                   html.Br(),
-                                  html.H3('Johdanto',style=h3_style
+                                  html.H3('Introduction',style=h3_style
                                           ),
-                                  html.P('Hintojen nousu vaikuttaa monen suomalaisen kuluttujan elämään. Odotettavissa on korkojen nousuja keskuspankkien kokiessa painetta hillitä inflaatiota. Asuntovelallisille on luvassa vaikeampia aikoja korkojen noustessa. Kaiken kaikkiaan vaikuttaisi siltä, että inflaatiosta ei seuraa mitään hyvää. Mutta onko todella näin?',
+                                  html.P('Rising prices affect the lives of many Finnish consumers, and interest rates are expected to rise as central banks feel pressure to contain inflation. People with mortgages are facing more difficult times as interest rates rise. All in all, it would seem that there is nothing good about inflation. But is this really the case?',
                                         style = p_style),
-                                  html.P('Inflaatiosta löytyy myös hopeareunus, joka on työttömyyden lasku lyhyellä aikavälillä. Tämä ns. Phillipsin käyrä on samannimisen taloustieteilijän Alban William Phillipsin 1950 -luvulla tekemä empiirinen havainto, jossa inflaation ja työttömyyden välillä vallitsee ristiriita lyhyellä ajalla. Tämä kyseinen idea on esitetty alla olevassa kuvaajassa, jossa on kuvattu inflaatio ja saman ajankohdan työttömyysaste Suomessa. Laskeva logaritminen trendiviiva vastaa Phillipsin havaintoa.',
+                                  html.P("Inflation also has a silver lining, which is a fall in unemployment in the short term. This so-called The Phillips curve is an empirical observation made in the 1950s by an economist Alban William Phillips. The observation states that there is a conflict between inflation and unemployment in the short term. This idea is presented in the graph below, which describes inflation and unemployment rate at the same time in Finland. The descending logarithmic trend line corresponds to Phillips's observation.",
                                         style = p_style),
                                 
-                                  html.H3('Phillipsin käyrä Suomen taloudessa kuukausittain', 
+                                  html.H3('Monthly Phillips Curve in Finnish Economy', 
                                           style=h3_style),
-                                  html.H4('(Lähde: Tilastokeskus)', 
-                                          style=h4_style),
+                                  html.H4('(Source: Statistics Finland)', 
+                                          style=h4_style)
                                   
                                   ])
                                   ]
@@ -1513,12 +1469,13 @@ def layout():
                                   dbc.Row([
                                       dbc.Col([
                                              
-                                              html.Div(
-                                                  [dcc.Graph(id = 'phillips',
-                                                             figure= draw_phillips_curve(),
-                                                        config = config_plots
-                                                        )
-                                                  ],style={'textAlign':'center'}
+                                               html.Div(
+                                                    [dcc.Graph(id = 'phillips_en',
+                                                                figure= en_draw_phillips_curve(),
+                                                                config = config_plots_en
+                                                          )
+                                                    ],
+                                                   style={'textAlign':'center'}
                                                    
                                                  
                                                       )
@@ -1532,35 +1489,35 @@ def layout():
                                      
                                       dbc.Col([
                                           html.Br(),
-                                          html.P('Yllä olevassa kuvaajassa on esitetty sirontakuviolla työttömyysaste ja inflaatio eri aikoina. Lisäksi siinä on nimetty viimeisin ajankohta, jolta on saatavissa sekä inflaatio että työttömyyslukema. Viemällä hiiren pisteiden päälle, näkee arvot sekä ajan. Logaritminen trendiviiva esittää aikoinaan Phillipsin tekemää empiiristä havaintoa, jossa inflaation ja työttömyysasteen välillä vallitsee negatiivinen korrelaatio. Kuvaajassa inflaation trendikäyrästä laskee työttömyyden kasvaessa.' ,
+                                          html.P('The graph above shows the unemployment rate and inflation at different times with a scatter pattern. It also identifies the latest date for both inflation and unemployment. Hover your mouse over the dots to see the values and time. The logarithmic trend line represents an empirical observation made by Phillips, in which there is a negative correlation between inflation and the unemployment rate. The indicator on the inflation trend curve decreases as unemployment increases.' ,
                                                 style = {
                                                     'text-align':'center', 
                                                     #'font-family':'Messina Modern Book', 
                                                       'font-size':p_font_size-2
                                                     }),
-                                          html.P('Selittäviä teorioita Phillipsin käyrälle on useita riippuen siitä onko ilmiön katalyyttinä muutos hintatasossa vai työttömyydessä. Työttömyyden ollessa korkea, kysynnän ja tarjonnan laki vaatii hintojen alentamista hyödykkeiden menekin parantamiseksi. Toisaalta lyhyellä aikavälillä hintojen noustessa tuotanto nousee, koska tuottajat nostavat hyödykkeiden tuotantoa suurempien katteiden saavuttamiseksi. Tämä johtaa matalampaan työttömyyteen, koska tuotannon kasvattaminen johtaa uusiin rekrytointeihin, jotka voidaan tehdä työttömälle väestölle. Toisin päin katsottuna, kun työttömyys on matala, markkinoilla on työn kysyntäpainetta, mikä nostaa palkkoja. Palkkojen nousu taas johtaa yleisen hintatason nousuun, koska hyödykkeiden tarjoajat voivat pyytää korkeampaa hintaa tuotteistaan ja palveluistaan.',
+                                          html.P('There are several theories explaining the Phillips curve, depending on whether the catalyst for the phenomenon is a change in price level or unemployment. In the face of high unemployment, the law of supply and demand requires lower prices to improve commodity sales. On the other hand, in the short term, as prices rise, output increases as producers increase commodity production to achieve higher margins. This leads to lower unemployment, as increased production leads to new recruitments that can be made to the unemployed population. On the other hand, when unemployment is low, there is labour demand pressure on the market, which increases wages. The rise in wages, on the other hand, leads to an increase in the overall price level, as suppliers of goods can ask for higher prices for their products and services.',
                                                  style = p_style),
-                                          html.P('Phillipsin käyrää voi havainnoida myös intuitiivisesti. Esimerkiksi vuonna 2015 työttömyysaste oli useaan otteeseen päälle kymmenen prosentin inflaation pysytellessä nollan tasolla ja ollen välillä jopa negatiivinen. Koronashokki vuonna 2020 aiheutti pompun työttömyysasteessa mutta esimerkiksi polttoaineen hinnat olivat paljon vuoden 2022 alkupuoliskoa matalammalla. Historiasta löytyy useita hetkiä, jolloin työttömyys ja inflaatio ovat muutuneet eri suuntaan. Poikkeuksiakin on ollut, esim. 1970-luvun öljykriisin aikaan molemmat olivat korkealla, mutta historiaa tarkasteltuna löytyy useita ajanjaksoja, joina Phillipsin käyrä on pätenyt. Onkin hyvä muistaa, että Phillipsin käyrä on voimassa vain lyhyellä aikavälillä, jolloin siihen perustuvia ennusteitakaan ei tulisi tehdä liian pitkälle ajalle.', style = p_style),
+                                          html.P('The Phillips curve can also be observed intuitively. For example, in 2015, the unemployment rate was several times above 10% with inflation remaining at zero and sometimes even negative. The coronavirus shock in 2020 caused a bump in the unemployment rate, but fuel prices, for example, were much lower than in the first half of 2022. There are several moments in history when unemployment and inflation have changed in different directions. There have also been exceptions, e.g. During the oil crisis of the 1970s, both were high, but if you look at history, there are several periods when the Phillips curve has been valid. It is important to remember that the Phillips curve is valid only in the short term, in which case predictions based on it should not be made for too long.', style = p_style),
                                           # html.P('Kyseessä on tunnettu taloustieteen teoria, jota on tosin vaikea soveltaa, koska ei ole olemassa sääntöjä, joilla voitaisiin helposti ennustaa työttömyyttä saatavilla olevien inflaatiota kuvaavien indikaattorien avulla. Mikäli sääntöjä on vaikea formuloida, niin niitä voi yrittää koneoppimisen avulla oppia historiadataa havainnoimalla. Voisiko siis olla olemassa tilastollisen oppimisen menetelmä, joka pystyisi oppimaan Phillipsin käyrän historiadatasta? Mikäli tämänlainen menetelmä olisi olemassa, pystyisimme ennustamaan lyhyen aikavälin työttömyyttä, kun oletamme hyödykkeiden hintatason muuttuvan skenaariomme mukaisesti.',
                                                 # style=p_style), 
-                                          html.P('Phillipsin käyrälle on omistettu oma lukunsa kauppatieteellisen yliopistotutkinnon kansantaloustieteen pääsykoekirjassa, ja siitä seuraa yksi kymmenestä taloustieteen perusperiaatteesta.',
+                                          html.P('The Phillips curve has its own chapter in the Economics Admission Examination Book of the University Degree in Economics and follows one of the ten basic principles of economics.',
                                                 style=p_style),
                                           html.Br(),
                                                                             
-                                          html.H3('Taloustieteen kymmenes perusperiaate:',style = {'text-align':'center', 
+                                          html.H3("Tenth Priciple of Economics:",style = {'text-align':'center', 
                                                                                                    #'font-family':'Messina Modern Semibold',
                                                                                                    'font-style': 'italic', 
                                                                                                    'font-weight': 'bold', 
                                                                                                    'font-size':'34px'}),
                                           
-                                          html.P('Työttömyyden ja inflaation kesken vallitsee lyhyellä ajalla ristiriita. Täystyöllisyyttä ja vakaata hintatasoa on vaikea saavuttaa yhtä aikaa.', 
+                                          html.P('There is a conflict between unemployment and inflation in the short term. Full employment and stable price levels are difficult to achieve at the same time.', 
                                                 style = {
                                                     'text-align':'center',
                                                     'font-style': 'italic', 
                                                     #'font-family':'Messina Modern Book', 
                                                       'font-size':p_font_size
                                                     }),
-                                          html.P('(Matti Pohjola, 2019, Taloustieteen oppikirja, s. 250, ISBN:978-952-63-5298-5)', 
+                                          html.P('(Matti Pohjola, 2019, Taloustieteen oppikirja, page 250, ISBN:978-952-63-5298-5)', 
                                                 style={
                                                     'textAlign':'center',
                                                     #'font-family':'Messina Modern Book', 
@@ -1568,39 +1525,39 @@ def layout():
                                                     }),
         
                                           html.Br(),
-                                          html.P('Phillipsin käyrä tosin on vain teoria, joka on helppo havainnoida historiadataa analysoimalla. Vaikka Phillipsin käyrä ei aina toteutuisikaan, niin olisiko kuitenkin mahdollista hyödyntää inflaation ja työttömyyden välistä suhdetta työttömyyden ennustamisessa?',
+                                          html.P('However, the Phillips curve is just a theory that is easy to observe by analyzing historical data. Even if the Phillips curve does not always materialise, would it still be possible to use the relationship between inflation and unemployment in predicting unemployment?',
                                                  style=p_style),
-                                          html.P('Phillipsin käyrää on vaikea muuttaa matemaattiseksi yhtälöksi, johon sijoittamalla inflaation saadaan laskettua työttömyysaste. Siitä sain ajatuksen, että voisiko olla olemassa koneoppimisen menetelmä, joka voisi oppia vallitsevat lainalaisuudet inflaation ja työttömyyden välillä.  Inflaatiohan on kuluttajahintaindeksin vuosimuutos. Kuluttajahintaindeksi muodostuu useista hyödykkeistä, jotka ilmaisevat yhteiskunnan sen aikaisia kulutustarpeita. Voisiko osa näistä hyödykkeistä vaikuttaa toisia enemmän? Riittäisikö ennustepiirteiksi vain perus kuluttajahintaindeksi, edellisen kuukauden työttömyysaste ja jokin tieto työttömyyden kausivaihtelusta? Mitä hyödykkeitä pitäisi valita? Mikä algoritmi, millä hyperparametreilla? Leikittelin ajatuksella, että voisi olla olemassa jokin hyödykeyhdistelmän ja metodologian kombinaatio, jolla saadaan tehtyä vähintään tyydyttävä lyhyen aikavälin ennuste. Halusinkin luoda sovelluksen, jolla kuka tahansa, akateemisesta taustasta riippumatta voisi tehdä tällaisia kokeiluja.',
+                                          html.P("It is difficult to convert the Phillips curve into a mathematical equation in which by investing inflation we can calculate the unemployment rate. This gave me the idea that there could be a machine learning method that could learn the prevailing laws between inflation and unemployment. Inflation is the annual change in the consumer price index. The consumer price index consists of several commodities that express the consumption needs of society at that time. Could some of these commodities affect more than others? Would only the basic consumer price index, the unemployment rate of the previous month and some information on seasonal fluctuations in unemployment be sufficient for forecast characteristics? Which commodities should I choose? What algorithm, what hyperparameters? I was toying with the idea that there might be some combination of commodity mix and methodology that can produce at least a satisfactory short-term forecast. That's why I wanted to create an app that anyone, regardless of academic background, could do experiments like this.",
                                                  style=p_style),
-                                          html.P('Tuloksena syntyi usean iteraation jälkeen sovellus, jossa voi suunnitella hyödykekorin, valita koneoppimismenetelmän, testata näiden kombinaation kykyä ennustaa jo toteutuneita arvoja sekä lopulta tehdä ennusteita. Siihen päälle rakensin mahdollisuuden säätää koneoppimisalgoritmien hyperparametrit sekä hyödyntää pääkomponenttianalyysiä irrelevanttien piirteiden eliminoimiseksi. Seuraavaksi ongelmaksi paljastui mallien vaikea tulkittavuus. Koneoppimisessa on yleisesti tunnettu tarkkuuden ja tulkittavuuden ristiriita. Yksinkertaisempia malleja, kuten lineaariregressio, on helpompi tulkita kuin esimerkiksi satunnaismetsää, mutta satunnaismetsä voi tuottaa paremman ennusteen. Tästä syntyy mustan laatikon ongelma, jota on syytä ratkaista, jotta menetelmästä saadaan uskottavampi ja läpinäkyvämpi ja jotta sitä voitaisiin näin hyödyntää yleisesti suunnittelussa ja päätöksenteossa. Lisäsinkin sovellukseen agnostiseksi toiminnallisuudeksi Shapley arvojen tarkastelun. Shapley- arvot ovat peliteoriaan perustuva käsite, joka perustuu pelaajien kontribuutioiden laskemiseen yhteistyöpeleissä (esim. jalkapallopelin yksittäisten pelaajien kontribuutio lopputulokseen). Koneoppimisessa vastaavaa mallia hyödynnetään ennustepiirteiden ennustekontribuution arvioimiseen. Itse työttömyyden ennustamista mielenkiintoisemmaksi tutkimusongelmaksi muodostuikin, että mitkä hyödykkeet tai hyödykeyhdistelmät onnistuvat parhaiten ennustamaan työttömyyttä!',
+                                          html.P("After several iterations, the result was an application where you can design a basket of goods, choose a machine learning method, test the ability of the combination of these to predict already realized values and finally make predictions. On top of that, I built the possibility to adjust the hyperparameters of machine learning algorithms and utilize principal component analysis to eliminate irrelevant features. The next problem was the difficulty of interpreting the models. There is a commonly known conflict between accuracy and interpretability in machine learning. Simpler models, such as linear regression, are easier to interpret than, for example, random forests, but random forests can produce better predictions. This creates a black box problem that needs to be solved in order to make the method more credible and transparent and thus to be used in general planning and decision-making. I added Shapley values as agnostic functionality to the application. Shapley values are a concept based on game theory that is based on calculating the contributions of players in cooperative games (e.g. the contribution of individual players in a football game to the outcome). In machine learning, a similar model is used to estimate the prediction contribution of forecast traits. A more interesting research problem than predicting unemployment itself turned out to be that which commodities or combinations of commodities succeed in predicting unemployment best!",
                                                  style =p_style),
-                                          html.P('Tarkoituksena oli etsiä Phillipsin havaintoa koneoppimisen avulla ja kenties löytää Phillipsin käyrän kaava. Koneoppimisen hyöty tulee siitä, että se tuottaa oman näkemyksensä ilmiöstä, sitä kuvaavaa dataa havainnoimalla. Kuten AI-pioneeri Rodney Brooks on sanonut, "maailma on itsensä paras malli, se on aina päivitetty, ja sisältää kaikki tarvittavat yksityiskohdat. Sitä pitää vain havainnoida oikein ja tarpeeksi usein."'  ,
+                                          html.P("The purpose was to find Phillips' observation using machine learning and perhaps find the formula of the Phillips curve. The benefit of machine learning comes from the fact that it produces its own view of the phenomenon by observing the data describing it. As AI pioneer Rodney Brooks has said, 'The world is the best model of itself, it is always updated, and contains all the necessary details, it just needs to be observed correctly and often enough.'"  ,
                                                  style =p_style),
-                                          html.P('Tulos voi siten olla jotain muuta kuin Phillipsin käyrän lainalaisuus, sillä koneoppivat algoritmit voivat oppia jonkin aivan toisen piilevän lainalaisuuden. Tässä vain hyödynnetään inflaation komponettien ja työttömyysasteen muutoksen välistä yhteyttä. Opittu kaava ei olekaan Phillipsin käyrä, vaan jokin toinen sääntö, vinouma Phillipsin havainnossa, mahdollisesti käänteinen Phillips tai käyrä, joka sisältää laaksoja ja kukkuloita. Lisäksi ennustetta ei tehdä ainoastaan hintaindekseillä vaan myös edellisen kuukauden työttömyysasteella sekä kuukausien numeerisilla arvoilla (esim. kesäkuu on 6). Nämä tekijät saattavat merkitä ennusteen kannalta paljon hintaindeksejä enemmän. Toisin sanoen, Phillipsin käyrä onkin tässä tapauksessa vain teoreettinen lähtökohta, kipinä tutkimukselle ja tausta sille, että käy jotenkin järkeen selittää työttömyyttä inflaation komponenteilla.',style=p_style),
-                                          html.P('Koodasin siten tämän datatieteen blogin ja sovelluksen yhdistelmän (en tiedä miksi sellaista kutsutaan, "bläppi", "bloglikaatio",...), joka hyödyntää Tilastokeskuksen Statfin-rajapinnan tarjoamaa dataa Suomen kuluttajahintaindeksistä hyödykkeittäin perusvuoteen 2010 suhteutettuna, sekä Suomen työttömyysastetta kuukausittain. Dataseteistä on poistettu ne hyödykeryhmät, jolta ei löydy dataa koko tarkasteluajalta. Jäljelle jää silti satoja hyödykkeitä ja hyödykeryhmiä, joista voi rakentaan ennusteen komponentteja. Algoritmivaihtoehdoiksi on valittu epälineaarisia koneoppimisalgoritmeja, koska ne soveltuvat tähän tapaukseen lineaarisia malleja paremmin.',
+                                          html.P('The result may therefore be something other than the law of the Phillips curve, as machine-learning algorithms can learn a completely different hidden law. The link between the components of inflation and the change in the unemployment rate is simply exploited. The formula learned is not the Phillips curve, but another rule, an oblique Phillips observation, possibly an inverse Phillips, or a curve containing valleys and hills. In addition, the forecast is made not only with price indices, but also with the unemployment rate of the previous month and the numerical values of the months (e.g. June is 6). In other words, the Phillips curve in this case is only a theoretical starting point, a spark for research and a background for somehow explaining unemployment with the components of inflation.',style=p_style),
+                                          html.P("So I coded this combination of data science blog and application (I don't know what they call it, 'blapp', 'bloglication'...), which utilizes the data provided by Statistics Finland's Statfin interface from the Finnish Consumer Price Index by commodity relative to the base year 2010, and the unemployment rate in Finland monthly. Commodity groups for which data is not available for the whole period have been removed from the data sets. There are still hundreds of commodities and commodity groups left to build forecast components. Non-linear machine learning algorithms have been chosen as algorithm alternatives because they are better suited to this case than linear models.",
                                                  style =p_style),
-                                          html.P('Sovellus on jaettu osiin, jotka on ilmaistu välilehdillä. Tarkoitus on edetä välilehdittäin vasemmalta oikealle ja iteroida aina hyödykkeitä ja menetelmää muuttamalla. Sovellus perustuu siihen hypoteesiin, että jokaisen kuukauden työttömyysasteen kuukausimuutos voidaan selittää edellisen kuukauden työttömyysasteella, sen hetkisellä kuukaudella sekä valitun hyödykekorin vallitsevilla indeksiarvoilla. Kun työttömyyden kuukausimuutos saadaan koneoppivan algoritmin tuloksena, voidaan se laskea yhteen edellisen kuukauden työttömyysasteen kanssa, jolloin saadaan tulokseksi ennuste vallitsevan kuukauden työttömyysasteelle. Tätä ajatusta sovelletaan rekursiivisesti niin pitkälle kuin halutaan ennustaa. Tämä ratkaisu vaatii sen, että teemme jotain oletuksia kuinka hyödykkeiden hintaindeksit tulevat muuttumaan. Sen arvioimiseksi vaaditaan hieman tutkivaa analyysia, jolle on omistettu osio tässä sovelluksessa. Koska ennusteeseen liittyy oletuksia, lienee parempi soveltaa ennustemallia lyhyelle ajalle (kuten Phillipsin käyrä alunperinkin oli tarkoitettu).',
+                                          html.P('The application is divided into sections, which are expressed in tabs. The goal is to go from left to right in tabs and always iterate by changing the commodities and method. The application is based on the hypothesis that the monthly change in the unemployment rate of each month can be explained by the unemployment rate of the previous month, the current month and the prevailing index values of the selected commodity basket. When the monthly change in unemployment is obtained as a result of a machine learning algorithm, it can be combined with the unemployment rate of the previous month, resulting in a forecast for the unemployment rate of the current month. This idea is applied recursively as far as one wishes to predict. This solution requires that we make some assumptions about how commodity price indices will change. To evaluate it, a little exploratory analysis is required, to which there is a dedicated section in this application. Since the forecast involves assumptions, it is probably better to apply the forecast model for a short period of time (as the Phillips curve was originally intended).',
                                                  style =p_style),
-                                          html.P('Lopullinen ennuste perustuu siis käyttäjän syöttämiin oletuksiin valittujen hyödykkeiden kuukausittaisesta muutosnopeudesta. Muutosnopeuden voi säätää jokaiselle hyödykkeelle erikseen, hyödyntää edeltävien kuukausien keskiarvoja tai asettaa kaikille hyödykkeille saman muutosnopeuden. Testit tehdään sillä oletuksella, että aiemmat indeksiarvot toteutuivat sellaisinaan. Raportoinnin ja dokumentaation parantamiseksi, testi, -ja ennustetulokset saa vietyä ulos Excel-tiedostona muita mahdollisia käyttötapauksia varten.',
+                                          html.P("The final forecast is therefore based on user input assumptions about the monthly rate of change of selected commodities. You can adjust the change rate for each commodity individually, take advantage of previous months' averages, or set the same change rate for all commodities. The tests are performed on the assumption that the previous index values were realised as such. To improve reporting and documentation, test and forecast results can be exported as an Excel file for other possible use cases.",
                                                  style =p_style),
                                           
                                           
-                                           html.H3('Sovelluksen käyttöhje',
+                                           html.H3('Instructions',
                                                    style=h3_style
                                                    ),
                                            
-                                           html.P('Seuraavaksi hieman ohjeistusta sovelluksen käyttöön. Jokainen osio olisi tehtävä vastaavassa järjestyksessä. Välilehteä valitsemalla pääset suorittamaan jokaisen vaiheen. Välilehdillä on vielä yksityiskohtaisemmat ohjeet. Lisäksi sovelluksen vasemmassa yläkulmassa löytyy painike, josta saa avattua pikaohjeen millä tahansa välilehdellä.', 
+                                           html.P("Here's some instructions on how to use the app. Each section should be done in a corresponding order. Select the tab to complete each step. The tabs have even more detailed instructions. In addition, in the upper left corner of the app there is a button that opens the Quick Help on any tab.", 
                                                     style = p_style),
                                            html.Br(),
-                                           html.P('1. Hyödykkeiden valinta. Valitse haluamasi hyödykeryhmät alasvetovalikosta. Näiden avulla ennustetaan työttömyyttä Phillipsin teorian mukaisesti.', 
+                                           html.P("1. Choice of goods. Select the commodity groups you want from the drop-down menu. These are used to predict unemployment.", 
                                                     style = p_style),
-                                          html.P('2. Tutkiva analyysi. Voit tarkastella ja analysoida valitsemiasi hyödykkeitä. Voit tarvittaessa palata edelliseen vaiheeseen ja poistaa tai lisätä hyödykkeitä.',
+                                          html.P("2. Exploratory analysis. You can view and analyze the commodities you chose. If necessary, go back to the previous step and remove or add assets.",
                                                     style = p_style),
-                                          html.P('3. Menetelmän valinta. Tässä osiossa valitset koneoppimisalgoritmin sekä säädät hyperparametrit. Lisäksi voi valita hyödynnetäänkö pääkomponenttianalyysiä ja kuinka paljon variaatiota säilötään.',
+                                          html.P('3. Method selection. In this section you select the machine learning algorithm and adjust the hyperparameters. In addition, you can choose whether to utilize the main component analysis and how much variation to store.',
                                                     style = p_style),
-                                         html.P('4. Testaaminen. Voit valita menneen ajanjakson, jota malli pyrkii ennustamaan. Näin pystyt arvioimaan kuinka ennustemalli olisi toiminut jo toteutuneelle datalle. Tässä osiossa voi myös tarkastella kuinka paljon kukin ennustepiirre vaikutti ennusteen tekemiseen.',
+                                         html.P('4. Test. You can select the time period in the past that the model seeks to predict. This allows you to estimate how the forecast model would have worked for already realized data. In this section you can also see how much each forecast feature contributed to making the forecast.',
                                                     style = p_style),
-                                         html.P('5. Ennusteen tekeminen. Voit nyt hyödyntää valitsemaasi menetelmää tehdäksesi ennusteen tulevaisuuteen. Valitse ennusteen pituus ja klikkaa ennusta. Ennusteen voi sitten viedä myös Exceliin. Ennustetta tehdessä hyödynnetään asettamiasi hyödykkeiden muutosarvoja.',
+                                         html.P('5. Forecast. You can now use your chosen method to make a prediction for the future. Select the length of the forecast and click on the forecast. You can then export the prediction to Excel as well. The forecast is based on the change values of the commodities you set.',
                                                     style = p_style),
                                           
                                           html.Br(),
@@ -1618,46 +1575,46 @@ def layout():
                                        
                                           # html.Br(),
                                           
-                                          html.H3('Vastuuvapauslauseke',
+                                          html.H3('Disclaimer',
                                                   style=h3_style),
                                           
-                                          html.P("Sivun ja sen sisältö tarjotaan ilmaiseksi sekä sellaisena kuin se on saatavilla. Kyseessä on yksityishenkilön tarjoama palvelu eikä viranomaispalvelu tai kaupalliseen tarkoitukseen tehty sovellus. Sivulta saatavan informaation hyödyntäminen on päätöksiä tekevien tahojen omalla vastuulla. Palvelun tarjoaja ei ole vastuussa menetyksistä, oikeudenkäynneistä, vaateista, kanteista, vaatimuksista, tai kustannuksista taikka vahingosta, olivat ne mitä tahansa tai aiheutuivat ne sitten miten tahansa, jotka johtuvat joko suoraan tai välillisesti yhteydestä palvelun käytöstä. Huomioi, että tämä sivu on yhä kehityksen alla.",
+                                          html.P("The site and its contents are provided free of charge and as available. This is a service provided by a private person, not an official service or an application made for commercial purposes. The use of the information obtained from the site is the responsibility of decision-makers. The Service Provider shall not be liable for any loss, litigation, claim, cost or damage, whatever or in any way, arising directly or indirectly from the use of the Service. Please note that this page is still under development.",
                                                   style=p_style),
                                           html.Br(),
-                                          html.H3('Tuetut selaimet ja tekniset rajoitukset',
+                                          html.H3('Supported browsers and technical limitations',
                                                   style=h3_style),
                                           
-                                          html.P("Sovellus on testattu toimivaksi Google Chromella, Edgellä ja Mozilla Firefoxilla. Internet Explorer -selaimessa sovellus ei toimi. Opera, Safari -ja muita selaimia ei ole testattu.",
+                                          html.P("The app has been tested to work with Google Chrome, Edge and Mozilla Firefox. In Internet Explorer, the application does not work. Opera, Safari and other browsers have not been tested.",
                                                   style=p_style),
-                                          html.P("Sovelluksesta voi myös ladata ns. standalone-version, joten sen voi käynnistää ilman selainta esim. Windowsilla tai Androidilla. Esimerkiksi Google Chromessa selaimen osoiterivin oikealla puolella pitäisi olla ikoni, josta klikkaamalla sovelluksen voi ladata. Lataamisen jälkeen sovellus löytyy omalta laitteelta.",
+                                          html.P("The application can also be downloaded so-called. standalone version, so it can be started without a browser e.g. Windows or Android. For example, in Google Chrome, on the right side of the browser's address bar, there should be an icon from which to download the app. After downloading the app, you can find it on your own device.",
                                                   style=p_style),
-                                          html.P("Sivu käyttää vain toiminnallisia evästeitä.",
+                                          html.P("This site uses only functional cookies.",
                                                   style=p_style),
                                           html.Br(),
                                           html.Div(style={'text-align':'center'},children = [
-                                              html.H3('Lähteet', 
+                                              html.H3('References', 
                                                       style = h3_style),
-                                              html.P('Tässä on vielä listattu datalähteet sekä lisälukemista kuvattuihin aiheisiin liittyen.',
+                                              html.P('Here is also a list of data sources and additional reading related to the topics described.',
                                                      style =p_style),
                                               
-                                              html.Label(['Tilastokeskus: ', 
-                                                        html.A('Työvoimatutkimuksen tärkeimmät tunnusluvut, niiden kausitasoitetut aikasarjat sekä kausi- ja satunnaisvaihtelusta tasoitetut trendit', href = "https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__tyti/statfin_tyti_pxt_135z.px/",target="_blank")
+                                              html.Label(['Statistics Finland’s free-of-charge statistical databases: ', 
+                                                        html.A('Key indicators of the Labour Force Survey and their seasonal adjusted series and trends adjusted for random and seasonal variation', href = "https://statfin.stat.fi/PxWeb/pxweb/en/StatFin/StatFin__tyti/statfin_tyti_pxt_135z.px/",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
-                                              html.Label(['Tilastokeskus: ', 
-                                                        html.A('Kuluttajahintaindeksi (2010=100)', href = "https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__khi/statfin_khi_pxt_11xd.px/",target="_blank")
+                                              html.Label(['Statistics Finland’s free-of-charge statistical databases: ', 
+                                                        html.A('Consumer Price Index (2010=100), monthly data', href = "https://statfin.stat.fi/PxWeb/pxweb/en/StatFin/StatFin__khi/statfin_khi_pxt_11xd.px/",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
-                                              html.Label(['Tilastokeskus: ', 
-                                                       html.A('Käsitteet ja määritelmät', href = "https://www.stat.fi/meta/kas/index.html",target="_blank")
+                                              html.Label(['Statistics Finland: ', 
+                                                       html.A('Concepts', href = "https://www.stat.fi/meta/kas/index_en.html",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
                                               html.Label(['Wikipedia: ', 
-                                                        html.A('Phillipsin käyrä', href = "https://fi.wikipedia.org/wiki/Phillipsin_k%C3%A4yr%C3%A4",target="_blank")
+                                                        html.A('Phillips curve', href = "https://en.wikipedia.org/wiki/Phillips_curve",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
                                               html.Label(['Raha ja Talous: ', 
-                                                        html.A('Phillipsin käyrä', href = "https://rahajatalous.wordpress.com/2012/11/15/phillipsin-kayra/",target="_blank")
+                                                        html.A('Phillipsin käyrä (in Finnish) ', href = "https://rahajatalous.wordpress.com/2012/11/15/phillipsin-kayra/",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
                                               html.Label(['Cato Journal: ', 
@@ -1673,26 +1630,26 @@ def layout():
                                                       ],style=p_style),
                                               html.Br(),
                                               html.Label(['Wikipedia: ', 
-                                                        html.A('Shapley-arvot (englanniksi)', href = "https://en.wikipedia.org/wiki/Shapley_value",target="_blank")
+                                                        html.A('Shapley values ', href = "https://en.wikipedia.org/wiki/Shapley_value",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
                                               html.Label(['Wikipedia: ', 
-                                                        html.A('Pääkomponenttianalyysi', href = "https://fi.wikipedia.org/wiki/P%C3%A4%C3%A4komponenttianalyysi",target="_blank")
+                                                        html.A('Principal component analysis', href = "https://en.wikipedia.org/wiki/Principal_component_analysis",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
                                               html.Label(['Wikipedia: ', 
-                                                        html.A('Pearsonin korrelaatiokerroin (englanniksi)', href = "https://en.wikipedia.org/wiki/Pearson_correlation_coefficient",target="_blank")
+                                                        html.A('Pearsonin correlation coefficient', href = "https://en.wikipedia.org/wiki/Pearson_correlation_coefficient",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
                                                 html.Label(['Scikit-learn: ', 
-                                                        html.A('Regressiotekniikat', href = "https://scikit-learn.org/stable/supervised_learning.html#supervised-learning",target="_blank")
+                                                        html.A('Regression', href = "https://scikit-learn.org/stable/supervised_learning.html#supervised-learning",target="_blank")
                                                         ],style=p_style),
                                                 html.Br(),
     
                                           ]),
                                           html.Br(),
                                           html.Br(),
-                                          html.H3('Tekijä', style = h3_style),
+                                          html.H3('Written by', style = h3_style),
                                           
                                           html.Div(style = {'textAlign':'center'},children = [
                                               html.I('Tuomas Poukkula', style = p_style),
@@ -1700,10 +1657,10 @@ def layout():
                                               html.Br(),
                                               html.P("Data Scientist",
                                                      style = p_style),
-                                              html.P("Gofore Oyj",
+                                              html.P("Gofore Ltd",
                                                      style = p_style),
-                                              html.A([html.P('Ota yhteyttä sähköpostilla',style = p_style)],
-                                                     href = 'mailto:tuomas.poukkula@gofore.com?subject=Phillips: Palaute ja keskustelu',
+                                              html.A([html.P('Contact via e-mail',style = p_style)],
+                                                     href = 'mailto:tuomas.poukkula@gofore.com?subject=Phillips: Q&A',
                                                      target='_blank')
                                               ]),
                                           
@@ -1721,37 +1678,37 @@ def layout():
                                       dbc.Col([
                                           html.Div([
                                               html.A([
-                                                  html.Img(
-                                                      src='/assets/256px-Linkedin_icon.png',
+                                                   html.Img(
+                                                       src='/assets/256px-Linkedin_icon.png',
                                                     
-                                                      style={
-                                                            'height' : '70px',
-                                                            'width' : '70px',
-                                                            'text-align':'right',
-                                                            'float' : 'right',
-                                                            'position' : 'center',
-                                                            'padding-top' : 0,
-                                                            'padding-right' : 0
-                                                      }
-                                                      )
+                                                       style={
+                                                             'height' : '70px',
+                                                             'width' : '70px',
+                                                             'text-align':'right',
+                                                             'float' : 'right',
+                                                             'position' : 'center',
+                                                             'padding-top' : 0,
+                                                             'padding-right' : 0
+                                                       }
+                                                       )
                                           ], href='https://www.linkedin.com/in/tuomaspoukkula/',target = '_blank', 
                                                   style = {'textAlign':'center'})
                                           ],style={'textAlign':'center'})],xs =6, sm=6, md=6, lg=6, xl=6),
                                       dbc.Col([
                                           html.Div([
                                               html.A([
-                                                  html.Img(
-                                                      src='/assets/Twitter-logo.png',
-                                                      style={
-                                                          'height' : '70px',
-                                                          'width' : '70px',
-                                                            'text-align':'left',
-                                                            'float' : 'left',
-                                                            'position' : 'center',
-                                                            'padding-top' : 0,
-                                                            'padding-right' : 0
-                                                      }
-                                                      )
+                                                   html.Img(
+                                                       src='/assets/Twitter-logo.png',
+                                                       style={
+                                                           'height' : '70px',
+                                                           'width' : '70px',
+                                                             'text-align':'left',
+                                                             'float' : 'left',
+                                                             'position' : 'center',
+                                                             'padding-top' : 0,
+                                                             'padding-right' : 0
+                                                       }
+                                                       )
                                           ], href='https://twitter.com/TuomasPoukkula',target = '_blank', style = {'textAlign':'center'})
                                           ],style={'textAlign':'center'})],xs =6, sm=6, md=6, lg=6, xl=6),
                                       ],justify ='center',
@@ -1761,17 +1718,17 @@ def layout():
                                       dbc.Col([
                                       html.Div([
                                           html.A([
-                                              html.Img(
-                                                  src='/assets/gofore_logo_orange.svg',
-                                                  style={
+                                               html.Img(
+                                                   src='/assets/gofore_logo_orange.svg',
+                                                   style={
                                                      
-                                                        'text-align':'center',
-                                                        'float' : 'center',
-                                                        'position' : 'center',
-                                                        'padding-top' : '20px',
-                                                         'padding-bottom' : '20px'
-                                                  }
-                                                  )
+                                                         'text-align':'center',
+                                                         'float' : 'center',
+                                                         'position' : 'center',
+                                                         'padding-top' : '20px',
+                                                          'padding-bottom' : '20px'
+                                                   }
+                                                   )
                                       ], href='https://gofore.com/',target = '_blank', style = {'textAlign':'center'})
                                       ],style={'textAlign':'center'})],xs =12, sm=12, md=12, lg=6, xl=6)
                                       
@@ -1782,8 +1739,8 @@ def layout():
                                       dbc.Col([
                                           html.Div(style = {'text-align':'center'},children = [
                                               
-                                              html.Label(['Sovellus ', 
-                                                      html.A('GitHub:ssa', href='https://github.com/tuopouk/skewedphillips')
+                                              html.Label(['Application on ', 
+                                                      html.A('GitHub', href='https://github.com/tuopouk/skewedphillips')
                                                       ],style=p_style)
                                       ])
                                           ],xs =12, sm=12, md=12, lg=6, xl=6)
@@ -1801,8 +1758,8 @@ def layout():
 
 ),
             
-            dbc.Tab(label ='Hyödykkeiden valinta',
-                    tab_id ='feature_tab',
+            dbc.Tab(label ='Choice of Goods',
+                    tab_id ='feature_tab_en',
                      tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
@@ -1824,69 +1781,69 @@ def layout():
                         dbc.Col(children=[
                            
                             html.Br(),
-                            html.P('Tässä osiossa valitaan hyödykkeitä, joita käytetään työttömyyden ennustamisessa.',
+                            html.P('This section selects the commodities used to predict unemployment.',
                                     style = p_style),
-                            html.P('Voit valita alla olevasta valikosta hyödykkeitä, minkä jälkeen voit säätää niiden oletettavaa kuukausimuutosta syöttämällä lukeman alle ilmestyviin laatikkoihin.',
+                            html.P('You can select items from the menu below, then you can adjust their expected monthly change by entering a number in the boxes below.',
                                     style = p_style),
-                            html.P('Voit myös säätää kaikille hyödykkeille saman kuukausimuutoksen tai hyödyntää toteutuneiden kuukausimuutosten keskiarvoja.',
+                            html.P('You can also adjust the same monthly change for all assets or take advantage of averages of actual monthly changes.',
                                     style = p_style),
-                            html.P('Hyödykevalikon voi rajata tai lajitella sen yllä olevasta alasvetovalikosta. Valittavanasi on joko aakkosjärjestys, korrelaatiojärjestykset (Pearsonin korrelaatiokertoimen mukaan) tai rajaus Tilastokeskuksen hyödykehierarkian mukaan. Korrelaatiojärjestyksellä tässä viitataan jokaisen hyödykkeen hintaindeksin arvojen ja saman ajankohdan työtömyysasteiden välistä korrelaatiokerrointa, joka on laskettu Pearsonin metodilla. Nämä voi lajitella laskevaan tai nousevaan järjestykseen joko todellisen arvon mukaan (suurin positiivinen - pienin negatiivinen) tai itseisarvon (ilman etumerkkiä +/-) mukaan.',
+                            html.P("You can select or sort the product menu from the drop-down menu above. You can choose either alphabetical order, correlation order (according to Pearson's correlation coefficient) or delineation according to Statistics Finland's commodity hierarchy. The correlation order here refers to the correlation coefficient between the values of the price index of each commodity and the unemployment rates at the same time, calculated using the Pearson method. These can be sorted in descending or ascending order by either the actual value (highest positive - lowest negative) or the absolute value (without +/-).",
                                     style = p_style),
 
                             html.Br(),
-                            html.H3('Valitse ennustepiirteiksi hyödykeryhmiä valikosta',
+                            html.H3('Select features from the dropdown menu',
                                     style=h3_style),
                             
-                            dbc.DropdownMenu(id = 'sorting',
+                            dbc.DropdownMenu(id = 'sorting_en',
                                               #align_end=True,
                                               children = [
                                                  
-                                                  dbc.DropdownMenuItem("Aakkosjärjestyksessä", id = 'alphabet',style={
+                                                  dbc.DropdownMenuItem("Alphabetical order", id = 'alphabet_en',style={
                                                       'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
-                                                  dbc.DropdownMenuItem("Korrelaatio (laskeva)", id = 'corr_desc',style={
+                                                  dbc.DropdownMenuItem("Correlation (descending)", id = 'corr_desc_en',style={
                                                       'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
-                                                  dbc.DropdownMenuItem("Korrelaatio (nouseva)", id = 'corr_asc',style={
+                                                  dbc.DropdownMenuItem("Correlation (ascending)", id = 'corr_asc_en',style={
                                                       'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       })
                                                       ,
-                                                  dbc.DropdownMenuItem("Absoluuttinen korrelaatio (laskeva)", id = 'corr_abs_desc',style={
+                                                  dbc.DropdownMenuItem("Absolute correlation (descending)", id = 'corr_abs_desc_en',style={
                                                       'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
-                                                  dbc.DropdownMenuItem("Absoluuttinen korrelaatio (nouseva)", id = 'corr_abs_asc',style={
+                                                  dbc.DropdownMenuItem("Absolute correlation (ascending)", id = 'corr_abs_asc_en',style={
                                                       'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
-                                                  dbc.DropdownMenuItem("Pääluokittain", id = 'main_class',style={
+                                                  dbc.DropdownMenuItem("Main classes", id = 'main_class_en',style={
                                                       'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
-                                                  dbc.DropdownMenuItem("2. luokka", id = 'second_class',style={
+                                                  dbc.DropdownMenuItem("2. class", id = 'second_class_en',style={
                                                       'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
-                                                  dbc.DropdownMenuItem("3. luokka", id = 'third_class',style={
+                                                  dbc.DropdownMenuItem("3. class", id = 'third_class_en',style={
                                                       'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
-                                                  dbc.DropdownMenuItem("4. luokka", id = 'fourth_class',style={
+                                                  dbc.DropdownMenuItem("4. class", id = 'fourth_class_en',style={
                                                       'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
-                                                  dbc.DropdownMenuItem("5. luokka", id = 'fifth_class',style={
+                                                  dbc.DropdownMenuItem("5. class", id = 'fifth_class_en',style={
                                                       'font-size':p_font_size-3, 
                                                       #'font-family':'Cadiz Book'
                                                       }
@@ -1894,7 +1851,7 @@ def layout():
                                                  
                                                  
                                                   ],
-                                            label = "Absoluuttinen korrelaatio (laskeva)",
+                                            label = "Absolute correlation (descending)",
                                             color="secondary", 
                                             className="m-1",
                                             size="lg",
@@ -1905,21 +1862,21 @@ def layout():
                                             ),
                             
                             html.Br(),
-                            dcc.Dropdown(id = 'feature_selection',
-                                          options = initial_options,
+                            dcc.Dropdown(id = 'feature_selection_en',
+                                          options = initial_options_en,
                                           multi = True,
-                                          value = list(initial_features),
+                                          value = list(initial_features_en),
                                           style = {'font-size':p_font_size-3, #'font-family':'Cadiz Book'
                                                    },
-                                          placeholder = 'Valitse hyödykkeitä'),
+                                          placeholder = 'Select Commodities'),
                             html.Br(),
                             
-                            dbc.Alert("Valitse ainakin yksi hyödykeryhmä valikosta!", color="danger",
+                            dbc.Alert("Select at least one commodity!", color="danger",
                                       dismissable=True, fade = True, is_open=False, id = 'alert', 
                                       style = {'text-align':'center', 'font-size':p_font_size, #'font-family':'Cadiz Semibold'
                                                }),
-                            dash_daq.BooleanSwitch(id = 'select_all', 
-                                                    label = dict(label = 'Valitse kaikki',
+                            dash_daq.BooleanSwitch(id = 'select_all_en', 
+                                                    label = dict(label = 'Select all',
                                                                  style = {'font-size':p_font_size, 
                                                                           # #'fontFamily':'Cadiz Semibold'
                                                                           }), 
@@ -1934,15 +1891,15 @@ def layout():
                         ],justify='center', 
                     # style = {'margin' : '10px 10px 10px 10px'}
                     ),
-                    dbc.Row(id = 'selections_div', children = [
+                    dbc.Row(id = 'selections_div_en', children = [
                         
                             dbc.Col([
                                 
-                                html.H3('Aseta arvioitu hyödykkeiden hintaindeksien keskimääräinen kuukausimuutos prosenteissa',
+                                html.H3('Set an estimation of average monthly index change in percentages',
                                                         style = h3_style),
                                 
-                                dash_daq.BooleanSwitch(id = 'averaging', 
-                                                        label = dict(label = 'Käytä toteutumien keskiarvoja',style = {'font-size':p_font_size, 
+                                dash_daq.BooleanSwitch(id = 'averaging_en', 
+                                                        label = dict(label = 'Use averaging',style = {'font-size':p_font_size, 
                                                                                                                       # 'font-family':'Cadiz Semibold'
                                                                                                                       }), 
                                                         on = True, 
@@ -1956,16 +1913,16 @@ def layout():
                     html.Br(),
                 dbc.Row([
                         dbc.Col([
-                            html.Div(id = 'slider_div'),
+                            html.Div(id = 'slider_div_en'),
                             html.Br(),
-                            html.Div(id='slider_prompt_div')
+                            html.Div(id='slider_prompt_div_en')
                             
                             ], xs =12, sm=12, md=12, lg=9, xl=9)
                         
                         ],justify = 'center', 
                   
                     ),
-                dbc.Row(id = 'adjustments_div',
+                dbc.Row(id = 'adjustments_div_en',
                         justify = 'left', 
                      
                         )
@@ -1973,8 +1930,8 @@ def layout():
             ),
 
 
-            dbc.Tab(label = 'Tutkiva analyysi',
-                    tab_id = 'eda_tab',
+            dbc.Tab(label = 'Exploratory Analysis',
+                    tab_id = 'eda_tab_en',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
@@ -1994,7 +1951,7 @@ def layout():
                          dbc.Col([
                              html.Br(),
                               html.Br(),
-                              html.P('Tässä osiossa voit tarkastella työttömyysastetta sekä valittujen kuluttajahintaindeksin hyödykeryhmien keskinäistä suhdetta sekä muutosta ajassa. Alla voit nähdä kuinka eri hyödykeryhmien hintaindeksit korreloivat keskenään sekä työttömyysasteen kanssa. Voit myös havainnoida indeksien, inflaation sekä sekä työttömyysasteen aikasarjoja. Kuvattu korrelaatio perustuu Pearsonin korrelaatiokertoimeen.',
+                              html.P("In this section you can view the unemployment rate and the relationship between the selected commodity groups in the Consumer Price Index and the change over time. Below you can see how the price indices of different commodity groups correlate with each other and with the unemployment rate. You can also observe time series of indices, inflation and unemployment rates. The correlation described is based on Pearson's correlation coefficient.",
                                      style = p_style),
                               html.Br()
                               ],xs =12, sm=12, md=12, lg=9, xl=9)
@@ -2008,15 +1965,13 @@ def layout():
                      dbc.Row([
                                 dbc.Col(children = [
                                    
-                                        html.Div(id = 'corr_selection_div'),
+                                        html.Div(id = 'corr_selection_div_en'),
                                         html.Br(),
-                                        html.Div(id = 'eda_div',
-                                                 children = 
-                                                     
-                                                     
-                                                     [html.Div([dbc.RadioItems(id = 'eda_y_axis', 
-                                                                 options = [{'label':'Työttömyysaste (%)','value':'Työttömyysaste'},
-                                                                           {'label':'Työttömyysasteen kuukausimuutos (%-yksikköä)','value':'change'}],
+                                        html.Div(id = 'eda_div_en', 
+                                                 children =[
+                                                     html.Div([dbc.RadioItems(id = 'eda_y_axis_en', 
+                                                                 options = [{'label':'Unemployment rate (%)','value':'Työttömyysaste'},
+                                                                           {'label':'Monthly unemployment rate change (% units)','value':'change'}],
                                                                  labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
                                                                              #'font-family':'Cadiz Book'
                                                                              },
@@ -2026,11 +1981,11 @@ def layout():
                                                                  labelCheckedClassName="active",
                                                                
                                                                  value = 'Työttömyysaste'
-                                                               ) ],style={'textAlign':'center'}), 
-                                                      html.Div(id = 'commodity_unemployment_div')]
-                                                     
-                                                     
-                                                     ),
+                                                               ) ],
+                                                              style={'textAlign':'center'}), 
+                                                     html.Div(id = 'commodity_unemployment_div_en')
+                                                     ]
+                                                 ),
                                         html.Br(),
                                        
                                    
@@ -2038,9 +1993,9 @@ def layout():
                                 ),
                                 dbc.Col(children = [
                                    
-                                        html.Div(id = 'feature_corr_selection_div'),
+                                        html.Div(id = 'feature_corr_selection_div_en'),
                                         html.Br(),
-                                        html.Div(id = 'corr_div'),
+                                        html.Div(id = 'corr_div_en'),
                                    
                                     ], xs =12, sm=12, md=12, lg=6, xl=6, align ='start'
                                 )
@@ -2049,34 +2004,34 @@ def layout():
                      ),
 
                     # html.Br(),
-                     dbc.Row(id = 'timeseries_div',children=[
+                     dbc.Row(id = 'timeseries_div_en',children=[
                         
                          dbc.Col(xs =12, sm=12, md=12, lg=6, xl=6,
                                  children = [
-                                     html.Div(id = 'timeseries_selection'),
+                                     html.Div(id = 'timeseries_selection_en'),
                                      html.Br(),
-                                     html.Div(id='timeseries')
+                                     html.Div(id='timeseries_en')
                                      ]),
                          dbc.Col(children = [
                              html.Div(style={'textAlign':'center'},children=[
                                  html.Br(),
-                                 html.H3('Alla olevassa kuvaajassa on esitetty inflaatio ja työttömyys Suomessa kuukausittain.',
+                                 html.H3('The figure below shows the monthly unemployment rate and inflation in Finland.',
                                         style = h3_style),
                                  
-                                 html.Div(id = 'employement_inflation_div',
+                                 html.Div(id = 'employment_inflation_div_en',
                                           
-                                          children=[dcc.Graph(id ='employement_inflation',
-                                                     figure = go.Figure(data=[go.Scatter(x = data.index,
-                                                                               y = data.Työttömyysaste,
-                                                                               name = 'Työttömyysaste',
+                                          children=[dcc.Graph(id ='employment_inflation_en',
+                                                     figure = go.Figure(data=[go.Scatter(x = data_en.index,
+                                                                               y = data_en.Työttömyysaste,
+                                                                               name = 'Unemployment Rate',
                                                                                mode = 'lines',
                                                                                marker = dict(color ='red')),
-                                                                    go.Scatter(x = data.index,
-                                                                               y = data.Inflaatio,
-                                                                               name = 'Inflaatio',
+                                                                    go.Scatter(x = data_en.index,
+                                                                               y = data_en.Inflaatio,
+                                                                               name = 'Inflation',
                                                                                mode ='lines',
                                                                                marker = dict(color = 'purple'))],
-                                                              layout = go.Layout(title = dict(text = 'Työttömyysaste ja inflaatio kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],data.index.strftime('%B %Y').values[-1]),
+                                                              layout = go.Layout(title = dict(text = 'Unemployment Rate and Inflation per Month<br>{} - {}'.format(data_en.index.strftime('%B %Y').values[0],data_en.index.strftime('%B %Y').values[-1]),
                                                                                               x=.5,
                                                                                               font=dict(
                                                                                                    family='Cadiz Semibold',
@@ -2103,7 +2058,7 @@ def layout():
                                                                                       size=12,
                                                                                       family='Cadiz Book'
                                                                                      )),
-                                                                                 xaxis = dict(title=dict(text = 'Aika',
+                                                                                 xaxis = dict(title=dict(text = 'Time',
                                                                                                          font=dict(
                                                                                                               size=18, 
                                                                                                              family = 'Cadiz Semibold'
@@ -2118,11 +2073,11 @@ def layout():
                                                                                               rangeselector=dict(
                                                                                                   buttons=list([
                                                                                                       dict(count=1,
-                                                                                                           label="1kk",
+                                                                                                           label="1m",
                                                                                                            step="month",
                                                                                                            stepmode="backward"),
                                                                                                       dict(count=6,
-                                                                                                           label="6kk",
+                                                                                                           label="6m",
                                                                                                            step="month",
                                                                                                            stepmode="backward"),
                                                                                                       dict(count=1,
@@ -2130,22 +2085,22 @@ def layout():
                                                                                                            step="year",
                                                                                                            stepmode="todate"),
                                                                                                       dict(count=1,
-                                                                                                           label="1v",
+                                                                                                           label="1y",
                                                                                                            step="year",
                                                                                                            stepmode="backward"),
                                                                                                       dict(count=3,
-                                                                                                           label="3v",
+                                                                                                           label="3y",
                                                                                                            step="year",
                                                                                                            stepmode="backward"),
                                                                                                       dict(count=5,
-                                                                                                           label="5v",
+                                                                                                           label="5y",
                                                                                                            step="year",
                                                                                                            stepmode="backward"),
                                                                                                       dict(step="all",label = 'MAX')
                                                                                                   ])
                                                                                               )
                                                                                               ),
-                                                                                 yaxis = dict(title=dict(text = 'Arvo (%)',
+                                                                                 yaxis = dict(title=dict(text = 'Value (%)',
                                                                                                         font=dict(
                                                                                                              size=18, 
                                                                                                             family = 'Cadiz Semibold'
@@ -2160,7 +2115,7 @@ def layout():
                                                                                 
                                                                                  )
                                                                                  ),
-                                           config=config_plots
+                                           config=config_plots_en
                                            )])
                                  ])
                                 
@@ -2174,8 +2129,8 @@ def layout():
                 
                      ]
                 ),
-            dbc.Tab(label='Menetelmän valinta',
-                    tab_id ='hyperparam_tab',
+            dbc.Tab(label='Method Selection',
+                    tab_id ='hyperparam_tab_en',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
@@ -2195,14 +2150,14 @@ def layout():
                             dbc.Col([
                             
                                 html.Br(),
-                                html.P('Tässä osiossa voit valita koneoppimisalgoritmin, säätää sen hyperparametrit sekä halutessasi hyödyntää pääkomponenttianalyysia valitsemallasi tavalla.',
+                                html.P('In this section you can select the machine learning algorithm, adjust its hyperparameters and, if you wish, utilize principal component analysis as you choose.',
                                         style = p_style),
-                                html.P('Valitse ensin algoritmi, minkä jälkeen alle ilmestyy sille ominaiset hyperparametrit, joita voit säätää sopiviksi. Hyperparametrit luetaan dynaamisesti suoraan Scikit-learn -kirjaston dokumentaatiosta, eikä niille siksi ole suomenkielistä käännöstä. Säätövalikoiden alta löytyy linkki valitun algoritmin dokumentaatiosivulle, jossa aiheesta voi lukea enemmän. Hyperparametrien säädölle ei ole yhtä ainutta tapaa, vaan eri arvoja on testattava iteratiivisesti.',
+                                html.P('First select the algorithm, then below will appear its specific hyperparameters, which you can adjust to fit. Hyperparameters are dynamically read directly from Scikit-learn library documentation and therefore there is no Finnish translation for them. Under the control menus you will find a link to the documentation page of the selected algorithm, where you can read more about the topic. There is not one single way to adjust hyperparameters, but different values must be tested iteratively.',
                                         style = p_style),
                                 html.Br(),
-                                html.P('Lisäksi voit valita hyödynnetäänkö pääkomponenttianalyysiä piirteiden karsimiseksi. Pääkompomponenttianalyysi on tilastollis-tekninen kohinanpoistomenetelmä, jolla pyritään parantamaan ennusteen laatua. Siinä valituista piirteistä muodostetaan lineaarikombinaatioita siten, että alkuperäisessä datassa oleva variaatio säilyy tietyn suhdeluvun verran muunnetussa aineistossa. Variaatio voi säätää haluamakseen. Kuten hyperparametrien tapauksessa, on tämäkin määrittely puhtaasti empiirinen.',
+                                html.P('In addition, you can choose whether to utilize principal component analysis to minimize features. The main component analysis is a statistical and technical noise reduction method aimed at improving the quality of the forecast. Linear combinations of the selected features are formed in such a way that the variation in the original data remains by a certain ratio in the modified data. You can adjust this explained variance to your liking. As in the case of hyperparameters, this definition is purely empirical.',
                                         style = p_style),
-                                html.P('Mikäli hyperparametrin laatikon reunat ovat punaisena, niin arvo ei ole sopiva. Testaaminen ja ennustaminen epäonnistuvat, jos hyperparametreihin sovelleta sallittuja arvoja. Voit tarkastaa sallitut arvot mallin dokumentaatiosta.',
+                                html.P('If the edges of the hyperparameter box are red, then the value is not appropriate. Testing and prediction fails if allowed values are applied to hyperparameters. You can check the allowed values in the model documentation.',
                                         style = p_style)
                             ],xs =12, sm=12, md=12, lg=9, xl=9)
                         ], justify = 'center', 
@@ -2212,45 +2167,45 @@ def layout():
                             ),
                         html.Br(),
                         dbc.Row([
-                            dbc.Col(id = 'model_selection', children = [
+                            dbc.Col(id = 'model_selection_en', children = [
                                 
-                                html.H3('Valitse algoritmi',style=h3_style),
+                                html.H3('Choose an algorithm',style=h3_style),
                                 
-                                dcc.Dropdown(id = 'model_selector',
-                                              value = 'Satunnaismetsä',
+                                dcc.Dropdown(id = 'model_selector_en',
+                                              value = 'Random Forest',
                                               multi = False,
-                                              placeholder = 'Valitse algoritmi',
+                                              placeholder = 'Choose an algorithm',
                                               style = {'font-size':p_font_size-3, #'font-family':'Cadiz Book'
                                                        },
-                                              options = [{'label': c, 'value': c} for c in MODELS.keys()]),
+                                              options = [{'label': c, 'value': c} for c in MODELS_en.keys()]),
                                 
                                 html.Br(),
-                                html.H3('Säädä hyperparametrit', style = h3_style),
+                                html.H3('Adjust the model hyperparameters', style = h3_style),
                                 
-                                html.Div(id = 'hyperparameters_div')
+                                html.Div(id = 'hyperparameters_div_en')
                                 
                                 ], xs =12, sm=12, md=12, lg=9, xl=9),
-                            dbc.Col(id = 'pca_selections', children = [
+                            dbc.Col(id = 'pca_selections_en', children = [
                                 html.Br(),
-                                dash_daq.BooleanSwitch(id = 'pca_switch', 
-                                                                  label = dict(label = 'Käytä pääkomponenttianalyysia',style = {'font-size':30, 
+                                dash_daq.BooleanSwitch(id = 'pca_switch_en', 
+                                                                  label = dict(label = 'Use Principal Component Analysis',style = {'font-size':30, 
                                                                                                                                 # 'font-family':'Cadiz Semibold',
                                                                                                                                 'textAlign':'center'}), 
                                                                   on = False, 
                                                                   color = 'blue'),
                                 html.Br(),
-                                html.P('Pääkomponenttianalyysi on kohinanpoistomenetelmä, jolla saadaan tiivistettyä ennustepiirteiden informaatio pääkomponentteihin. Jokainen pääkomponentti säilöö alkuperäisen datan variaatiota ja kaikkien pääkomponettien säilötty variaatio summautuu sataan prosenttiin.',
+                                html.P('Principal component analysis is a noise removal method that condenses the information of forecast features into the main components. Each major component stores the variation of the original data, and the stored variation of all major components totals 100%.',
                                        style = p_style),
-                                html.A([html.P('Katso lyhyt esittelyvideo pääkomponenttianalyysistä.',
+                                html.A([html.P('Watch a short introduction video on principal component analysis.',
                                                style = p_style)],
                                        href = "https://www.youtube.com/embed/hJZHcmJBk1o",
                                        target = '_blank'),
                                 
                                 
-                                html.Div(id = 'ev_placeholder',children =[
-                                    html.H3('Valitse säilytettävä variaatio', style = h3_style),
+                                html.Div(id = 'ev_placeholder_en',children =[
+                                    html.H3('Select explained variance', style = h3_style),
                                     
-                                    dcc.Slider(id = 'ev_slider',
+                                    dcc.Slider(id = 'ev_slider_en',
                                         min = .7, 
                                         max = .99, 
                                         value = .95, 
@@ -2270,9 +2225,9 @@ def layout():
                                                 }
                                       ),
                                     html.Br(),
-                                  html.Div(id = 'ev_slider_update', 
+                                  html.Div(id = 'ev_slider_update_en', 
                                           children = [
-                                              html.Div([html.P('Valitsit {} % säilytetyn variaation.'.format(95),
+                                              html.Div([html.P('You selected {} % explained variance.'.format(95),
                                                                 style = p_style)
                                                         ], style = {'display':'none'}
                                                       )
@@ -2290,8 +2245,8 @@ def layout():
                         
                         ]
                     ),
-            dbc.Tab(label='Testaaminen',
-                    tab_id ='test_tab',
+            dbc.Tab(label='Test',
+                    tab_id ='test_tab_en',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
@@ -2308,37 +2263,37 @@ def layout():
                         html.Br(),
                         dbc.Row([
                             dbc.Col([   
-                                        html.H3('Menetelmän testaaminen', style = h3_style),
+                                        html.H3('Test your method', style = h3_style),
                                         
-                                        html.P('Tässä osiossa voit testata kuinka hyvin valittu menetelmä olisi onnistunut ennustamaan menneiden kuukausien työttömyysasteen hyödyntäen valittuja piirteitä. Testattaessa valittu määrä kuukausia jätetään testidataksi, jota menetelmä pyrkii ennustamaan.',
+                                        html.P('In this section you can test how well the chosen method would have been able to predict the unemployment rate of the past months using the selected features. When testing, the selected number of months is left as test data, which the method seeks to predict.',
                                                style = p_style),
-                                        html.P('Tässä kohtaa hyödykeindeksien oletetaan toteutuvan sellaisinaan.',
+                                        html.P('At this point, commodity indices are assumed to materialise as they stand.',
                                                style = p_style),
-                                        html.P('Tehtyäsi testin voit tarkastella viereistä tuloskuvaajaa tai viedä testidatan alle ilmestyvästä painikeesta Exceliin.',
+                                        html.P('After you have completed the test, you can view the next result graph or export the test data from the button below to Excel.',
                                               style=p_style),
                                         html.Br(),
-                                        html.H3('Valitse testidatan pituus',style = h3_style),
-                                        dcc.Slider(id = 'test_slider',
+                                        html.H3('Select test length',style = h3_style),
+                                        dcc.Slider(id = 'test_slider_en',
                                                   min = 1,
                                                   max = 18,
                                                   value = 3,
                                                   step = 1,
                                                   tooltip={"placement": "top", "always_visible": True},
                                                  
-                                                  marks = {1: {'label':'kuukausi', 'style':{'font-size':20, 
+                                                  marks = {1: {'label':'a month', 'style':{'font-size':20, 
                                                                                             # 'font-family':'Cadiz Semibold'
                                                                                             }},
                                                           # 3:{'label':'3 kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
                                                         
-                                                            6:{'label':'puoli vuotta', 'style':{'font-size':20, 
+                                                            6:{'label':'six months', 'style':{'font-size':20, 
                                                                                                 # 'font-family':'Cadiz Semibold'
                                                                                                 }},
                                                           #  9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
                                                          
-                                                          12:{'label':'vuosi', 'style':{'font-size':20, 
+                                                          12:{'label':'a year', 'style':{'font-size':20, 
                                                                                         # 'font-family':'Cadiz Semibold'
                                                                                         }},
-                                                          18:{'label':'puolitoista vuotta', 'style':{'font-size':20, 
+                                                          18:{'label':'one and a half years', 'style':{'font-size':20, 
                                                                                         # 'font-family':'Cadiz Semibold'
                                                                                         }},
                                                           
@@ -2346,15 +2301,15 @@ def layout():
                                                             }
                                                   ),
                                         html.Br(),  
-                                        html.Div(id = 'test_size_indicator', style = {'textAlign':'center'}),
+                                        html.Div(id = 'test_size_indicator_en', style = {'textAlign':'center'}),
                                         html.Br(),
-                                        html.Div(id = 'test_button_div',children = [html.P('Valitse ensin hyödykkeitä.',style = {
+                                        html.Div(id = 'test_button_div_en',children = [html.P('Select commodities first.',style = {
                                             'text-align':'center', 
                                             #'font-family':'Cadiz Semibold', 
                                               'font-size':p_font_size
                                             })], style = {'textAlign':'center'}),
                                         html.Br(),
-                                        html.Div(id='test_download_button_div', style={'textAlign':'center'})
+                                        html.Div(id='test_download_button_div_en', style={'textAlign':'center'})
                                         
                                         
                             
@@ -2367,8 +2322,8 @@ def layout():
                             ),
                         html.Br(),
                         dbc.Row(children = [
-                            dbc.Col([html.Div(id = 'test_results_div')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
-                            dbc.Col([html.Div(id = 'shap_results_div'),],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            dbc.Col([html.Div(id = 'test_results_div_en')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            dbc.Col([html.Div(id = 'shap_results_div_en'),],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
                             
                             ], justify = 'center', 
                             
@@ -2379,8 +2334,8 @@ def layout():
                         
                         ]
                     ),
-            dbc.Tab(label='Ennustaminen',
-                    tab_id = 'forecast_tab',
+            dbc.Tab(label='Forecast',
+                    tab_id = 'forecast_tab_en',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
                                  #'font-family':'Cadiz Semibold'
@@ -2398,11 +2353,11 @@ def layout():
                         dbc.Row([
                             
                             dbc.Col([
-                                        html.H3('Ennusteen tekeminen',style=h3_style),
+                                        html.H3('Forecasting',style=h3_style),
                                         
-                                        html.P('Tässä osiossa voit tehdä ennusteen valitulle ajalle. Ennustettaessa on käytössä Menetelmän valinta -välilehdellä tehdyt asetukset. Ennusteen tekemisessä hyödynnetään Hyödykkeiden valinta -välilehdellä tehtyjä oletuksia hyödykkeiden suhteellisesta hintakehityksestä.',
+                                        html.P('In this section you can make a forecast for the selected time. When predicting, the settings made on the Method Selection tab are enabled. The forecast is based on the assumptions made in the Product Selection tab about the relative price development of commodities.',
                                               style=p_style),
-                                        html.P('Tehtyäsi ennusteen voit tarkastella viereistä ennusteen kuvaajaa tai viedä tulosdatan alle ilmestyvästä painikeesta Exceliin.',
+                                        html.P('Once you have made the forecast, you can view the adjacent forecast graph or export the result data from the button below to Excel.',
                                               style=p_style),
                                         html.Br()
                                     ],xs =12, sm=12, md=12, lg=9, xl=9)
@@ -2418,26 +2373,26 @@ def layout():
                                     dbc.Col(children = [
                                         html.Br(),
 
-                                        html.H3('Valitse ennusteen pituus',
+                                        html.H3('Select forecast length',
                                                 style=h3_style),
-                                        dcc.Slider(id = 'forecast_slider',
+                                        dcc.Slider(id = 'forecast_slider_en',
                                                   min = 2,
                                                   max = 18,
                                                   value = 3,
                                                   step = 1,
                                                   tooltip={"placement": "top", "always_visible": True},
-                                                  marks = {2: {'label':'2 kuukautta', 'style':{'font-size':16, 
+                                                  marks = {2: {'label':'two months', 'style':{'font-size':16, 
                                                                                                # #'fontFamily':'Cadiz Semibold'
                                                                                                }},
                                                           # 3: {'label':'kolme kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
-                                                          6:{'label':'puoli vuotta', 'style':{'font-size':16, 
+                                                          6:{'label':'six months', 'style':{'font-size':16, 
                                                                                               # #'fontFamily':'Cadiz Semibold'
                                                                                               }},
                                                           # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
-                                                          12:{'label':'vuosi', 'style':{'font-size':16, 
+                                                          12:{'label':'a year', 'style':{'font-size':16, 
                                                                                         # 'font-family':'Cadiz Semibold'
                                                                                         }},
-                                                          18:{'label':'puolitoista vuotta', 'style':{'font-size':16, 
+                                                          18:{'label':'one and a half years', 'style':{'font-size':16, 
                                                                                         # 'font-family':'Cadiz Semibold'
                                                                                         }},
                                                         #  24:{'label':'kaksi vuotta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}}
@@ -2447,15 +2402,15 @@ def layout():
                                                           }
                                                   ),
                                         html.Br(),
-                                        html.Div(id = 'forecast_slider_indicator',style = {'textAlign':'center'}),
-                                        html.Div(id = 'forecast_button_div',children = [html.P('Valitse ensin hyödykkeitä.',
+                                        html.Div(id = 'forecast_slider_indicator_en',style = {'textAlign':'center'}),
+                                        html.Div(id = 'forecast_button_div_en',children = [html.P('Valitse commodities first.',
                                                                                               style = p_style
                                                                                               )],style = {'textAlign':'center'})],
                                         xs =12, sm=12, md=12, lg=4, xl=4
                                         ),
                                     html.Br(),
                                     
-                                    dbc.Col([dcc.Loading(id = 'forecast_results_div',type = spinners[random.randint(0,len(spinners)-1)])],
+                                    dbc.Col([dcc.Loading(id = 'forecast_results_div_en',type = spinners[random.randint(0,len(spinners)-1)])],
                                             xs = 12, sm = 12, md = 12, lg = 8, xl = 8)
                                     ], justify = 'center', 
                              # style = {'margin' : '10px 10px 10px 10px'}
@@ -2482,24 +2437,24 @@ def layout():
 
 @callback(
     
-    [Output('shap_features_switch', 'label'),
-     Output('shap_features_switch', 'disabled')],
-    Input('shap_data','data')
+    [Output('shap_features_switch_en', 'label'),
+     Output('shap_features_switch_en', 'disabled')],
+    Input('shap_data_en','data')
     
 )
-def update_shap_switch(shap_data):
+def en_update_shap_switch(shap_data):
     
     shap_df = pd.DataFrame(shap_data)
     shap_df = shap_df.set_index(shap_df.columns[0])
     
     if 'Kuukausi' not in shap_df.index:
-        return dict(label = 'Käytit pääkomponenttianalyysiä',
+        return dict(label = 'You used Principal Component Analysis',
                      style = {'font-size':p_font_size,
                               'text-align':'center'
                               # #'fontFamily':'Cadiz Semibold'
                               }), True
     else:
-        return dict(label = 'Näytä vain hyödykkeiden kontribuutio',
+        return dict(label = 'Show only the contribution of commodities',
                      style = {'font-size':p_font_size, 
                               'text-align':'center'
                               # #'fontFamily':'Cadiz Semibold'
@@ -2507,27 +2462,27 @@ def update_shap_switch(shap_data):
 
 @callback(
 
-    [Output('adjustments_div','children'),
-     Output('features_values','data')],
-    [Input('slider','value'),
-     Input('feature_selection','value')],
-    [State('averaging','on')]    
+    [Output('adjustments_div_en','children'),
+     Output('features_values_en','data')],
+    [Input('slider_en','value'),
+     Input('feature_selection_en','value')],
+    [State('averaging_en','on')]    
     
 )
-def add_value_adjustments(slider_value, features, averaging):
+def en_add_value_adjustments(slider_value, features, averaging):
     
     
     
     if averaging:
         
-        mean_df = apply_average(features = features, length = slider_value)
+        mean_df = en_apply_average(features = features, length = slider_value)
         
         features_values = {feature:mean_df.loc[feature] for feature in features}
         
         row_children =[dbc.Col([html.Br(), 
                                 html.P(feature,style={#'font-family':'Messina Modern Semibold',
                                             'font-size':22}),
-                                dcc.Input(id = {'type':'value_adjust', 'index':feature}, 
+                                dcc.Input(id = {'type':'value_adjust_en', 'index':feature}, 
                                                value = round(mean_df.loc[feature],1), 
                                                type = 'number', 
                                                style={#'font-family':'Messina Modern Semibold',
@@ -2540,7 +2495,7 @@ def add_value_adjustments(slider_value, features, averaging):
         row_children =[dbc.Col([html.Br(), 
                                 html.P(feature,style={#'font-family':'Messina Modern Semibold',
                                             'font-size':22}),
-                                dcc.Input(id = {'type':'value_adjust', 'index':feature}, 
+                                dcc.Input(id = {'type':'value_adjust_en', 'index':feature}, 
                                                value = slider_value, 
                                                type = 'number', 
                                                style ={#'font-family':'Messina Modern Semibold',
@@ -2551,12 +2506,12 @@ def add_value_adjustments(slider_value, features, averaging):
 
 @callback(
 
-    Output('change_weights','data'),
-    [Input({'type': 'value_adjust', 'index': ALL}, 'id'),
-    Input({'type': 'value_adjust', 'index': ALL}, 'value')],    
+    Output('change_weights_en','data'),
+    [Input({'type': 'value_adjust_en', 'index': ALL}, 'id'),
+    Input({'type': 'value_adjust_en', 'index': ALL}, 'value')],    
     
 )
-def store_weights(feature_changes, feature_change_values):
+def en_store_weights(feature_changes, feature_change_values):
     
     if feature_changes is None:
         raise PreventUpdate
@@ -2568,33 +2523,33 @@ def store_weights(feature_changes, feature_change_values):
 
 @callback(
 
-    Output('slider_div','children'),
-    [Input('averaging', 'on')
+    Output('slider_div_en','children'),
+    [Input('averaging_en', 'on')
      ]
     
 )
-def update_slider_div(averaging):
+def en_update_slider_div(averaging):
     
     if averaging:
         
-        return [html.H3('Valitse kuinka monen edeltävän kuukauden keskiarvoa käytetään', 
+        return [html.H3('Select the number of latest months for averaging', 
                         style = h3_style),
         html.Br(),
-        dcc.Slider(id = 'slider',
+        dcc.Slider(id = 'slider_en',
                       min = 1,
                       max = 12,
                       value = 4,
                       step = 1,
                       tooltip={"placement": "top", "always_visible": True},
-                       marks = {1:{'label':'kuukausi', 'style':{'font-size':20, 
+                       marks = {1:{'label':'a month', 'style':{'font-size':20, 
                                                                 # #'fontFamily':'Cadiz Semibold'
                                                                 }},
                                 # 3:{'label':'3 kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
-                                6:{'label':'puoli vuotta', 'style':{'font-size':20, 
+                                6:{'label':'six months', 'style':{'font-size':20, 
                                                                     # #'fontFamily':'Cadiz Semibold'
                                                                     }},
                                 # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
-                                12:{'label':'vuosi', 'style':{'font-size':20, 
+                                12:{'label':'a year', 'style':{'font-size':20, 
                                                               # #'fontFamily':'Cadiz Semibold'
                                                               }}   
                              }
@@ -2603,10 +2558,10 @@ def update_slider_div(averaging):
         
     else:
         return [
-            html.H3('Valitse kuinka isoa suhteellista kuukausimuutosta sovelletaan', 
+            html.H3('Select the constant monthly change', 
                     style = h3_style),
             
-            dcc.Slider(id = 'slider',
+            dcc.Slider(id = 'slider_en',
                           min = -10,
                           max = 10,
                           value = 0,
@@ -2634,25 +2589,25 @@ def update_slider_div(averaging):
 
 @callback(
 
-    Output('alert', 'is_open'),
-    [Input('feature_selection','value')]
+    Output('alert_en', 'is_open'),
+    [Input('feature_selection_en','value')]
 
 )
-def update_alert(features):
+def en_update_alert(features):
     
     return len(features) == 0
 
 @callback(
 
-    Output('hyperparameters_div','children'),
-    [Input('model_selector','value')]    
+    Output('hyperparameters_div_en','children'),
+    [Input('model_selector_en','value')]    
     
 )
-def update_hyperparameter_selections(model_name):
+def en_update_hyperparameter_selections(model_name):
     
     
     
-    model = MODELS[model_name]['model']
+    model = MODELS_en[model_name]['model']
     
         
     hyperparameters = model().get_params()
@@ -2664,7 +2619,7 @@ def update_hyperparameter_selections(model_name):
         
     h_series = pd.Series(type_dict).sort_values()
 
-    param_options = get_param_options(model_name)
+    param_options = en_get_param_options(model_name)
        
     
     children = []
@@ -2686,7 +2641,7 @@ def update_hyperparameter_selections(model_name):
                 children.append(dbc.Col([html.P(hyperparameter+':', 
                                                  style=p_bold_style)],xs =12, sm=12, md=12, lg=12, xl=12))
                 children.append(html.Br())
-                children.append(dbc.Col([dcc.Slider(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
+                children.append(dbc.Col([dcc.Slider(id = {'index':hyperparameter, 'type':'hyperparameter_tuner_en'},
                                    value = value,
                                    max = 4*(value+5),
                                    min = value,
@@ -2704,7 +2659,7 @@ def update_hyperparameter_selections(model_name):
                     children.append(dbc.Col([html.P(hyperparameter+':', 
                                                      style=p_bold_style)],xs =12, sm=12, md=12, lg=2, xl=2)),
                     children.append(html.Br())
-                    children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
+                    children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner_en'},
                                                        min = 0,
                                                        max=0.99,
                                                        type = 'number',
@@ -2721,7 +2676,7 @@ def update_hyperparameter_selections(model_name):
                         children.append(dbc.Col([html.P(hyperparameter+':', 
                                                          style=p_bold_style)],xs =12, sm=12, md=12, lg=2, xl=2)),
                         children.append(html.Br())
-                        children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
+                        children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner_en'},
                                                            min = 0,
                                                            max=0.49,
                                                            type = 'number',
@@ -2739,7 +2694,7 @@ def update_hyperparameter_selections(model_name):
                     children.append(dbc.Col([html.P(hyperparameter+':', 
                                                      style=p_bold_style)],xs =12, sm=12, md=12, lg=2, xl=2)),
                     children.append(html.Br())
-                    children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'},
+                    children.append(dbc.Col([dbc.Input(id = {'index':hyperparameter, 'type':'hyperparameter_tuner_en'},
                                                        min = 0,
                                                        type = 'number',
                                                        value = value,
@@ -2759,7 +2714,7 @@ def update_hyperparameter_selections(model_name):
                 children.append(dbc.Col([html.P(hyperparameter+':', 
                                                  style=p_bold_style)],xs =12, sm=12, md=12, lg=2, xl=2)),
                 children.append(html.Br())
-                children.append(dbc.Col([dbc.Switch(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'}, 
+                children.append(dbc.Col([dbc.Switch(id = {'index':hyperparameter, 'type':'hyperparameter_tuner_en'}, 
                                           style= {
                                               #'font-family':'Cadiz Book',
                                               'font-size':p_font_size},
@@ -2777,7 +2732,7 @@ def update_hyperparameter_selections(model_name):
                         children.append(dbc.Col([html.P(hyperparameter+':', 
                                                          style=p_bold_style)],xs =12, sm=12, md=12, lg=2, xl=2)),
                         children.append(html.Br())
-                        children.append(dbc.Col([dcc.Dropdown(id = {'index':hyperparameter, 'type':'hyperparameter_tuner'}, 
+                        children.append(dbc.Col([dcc.Dropdown(id = {'index':hyperparameter, 'type':'hyperparameter_tuner_en'}, 
                                                   multi = False,
                                                   #label = hyperparameter,
                                                   style = {
@@ -2793,24 +2748,24 @@ def update_hyperparameter_selections(model_name):
      
     children.append(html.Br()) 
     children.append(html.Div(style = {'textAlign':'center'},
-             children = [html.A('Katso lyhyt esittelyvideo käytetystä algoritmista.', href = MODELS[model_name]['video'], target="_blank",style = p_style),
+             children = [html.A('Check a short introduction video about the algorithm.', href = MODELS_en[model_name]['video'], target="_blank",style = p_style),
                          html.Br(),
-                         html.A('Katso mallin tekninen dokumentaatio.', href = MODELS[model_name]['doc'], target="_blank",style = p_style),
+                         html.A('Check the technical documentation.', href = MODELS_en[model_name]['doc'], target="_blank",style = p_style),
                          ]))
     return dbc.Row(children, justify ='start')
 
 
 @callback(
 
-    Output('method_selection_results','data'),
-    [Input('model_selector','value'),
-    Input({'type': 'hyperparameter_tuner', 'index': ALL}, 'id'),
-    Input({'type': 'hyperparameter_tuner', 'index': ALL}, 'value'),
-    Input('pca_switch','on'),
-    Input('ev_slider','value')]    
+    Output('method_selection_results_en','data'),
+    [Input('model_selector_en','value'),
+    Input({'type': 'hyperparameter_tuner_en', 'index': ALL}, 'id'),
+    Input({'type': 'hyperparameter_tuner_en', 'index': ALL}, 'value'),
+    Input('pca_switch_en','on'),
+    Input('ev_slider_en','value')]    
     
 )
-def store_method_selection_results(model_name, hyperparams, hyperparam_values,pca, explained_variance):
+def en_store_method_selection_results(model_name, hyperparams, hyperparam_values,pca, explained_variance):
             
     hyperparam_grid  = {hyperparams[i]['index']:hyperparam_values[i] for i in range(len(hyperparams))}
     
@@ -2831,19 +2786,19 @@ def store_method_selection_results(model_name, hyperparams, hyperparam_values,pc
 
 @callback(
     
-      [Output('test_data','data'),
-       Output('test_results_div','children'),
-       Output('test_download_button_div','children'),
-       Output('shap_data','data')],
-      [Input('test_button','n_clicks')],
-      [State('test_slider', 'value'),
-       State('features_values','data'),
-       State('method_selection_results','data')
+      [Output('test_data_en','data'),
+       Output('test_results_div_en','children'),
+       Output('test_download_button_div_en','children'),
+       Output('shap_data_en','data')],
+      [Input('test_button_en','n_clicks')],
+      [State('test_slider_en', 'value'),
+       State('features_values_en','data'),
+       State('method_selection_results_en','data')
 
        ]
     
 )
-def update_test_results(n_clicks, 
+def en_update_test_results(n_clicks, 
                         test_size,
                         features_values,
                         method_selection_results
@@ -2862,8 +2817,8 @@ def update_test_results(n_clicks,
         explained_variance = method_selection_results['explained_variance']
         hyperparam_grid = method_selection_results['hyperparam_grid']
         
-        model = MODELS[model_name]['model']
-        constants = MODELS[model_name]['constant_hyperparameters'] 
+        model = MODELS_en[model_name]['model']
+        constants = MODELS_en[model_name]['constant_hyperparameters'] 
         
         
         model_hyperparams = hyperparam_grid.copy()
@@ -2874,10 +2829,10 @@ def update_test_results(n_clicks,
         
         model = model(**model_hyperparams)
         
-        explainer = MODELS[model_name]['explainer']
+        explainer = MODELS_en[model_name]['explainer']
         
         
-        test_result, shap_results = test(model, features, explainer = explainer, test_size=test_size, use_pca=pca,n_components=explained_variance)
+        test_result, shap_results = en_test(model, features, explainer = explainer, test_size=test_size, use_pca=pca,n_components=explained_variance)
 
         mape = test_result.mape.values[0]
         
@@ -2894,15 +2849,15 @@ def update_test_results(n_clicks,
                         
                         # dbc.Col([
                             html.Br(),
-                             html.H3('Miten testi onnistui?',
+                             html.H3('How did we do?',
                                      style = h3_style),
                              
-                             html.P('Alla olevassa kuvaajassa nähdään kuinka hyvin ennustemalli olisi ennustanut työttömyysasteen ajalle {} - {}.'.format(test_result.index.strftime('%B %Y').values[0],test_result.index.strftime('%B %Y').values[-1]),
+                             html.P('The graph below shows how well the forecast model would have predicted the unemployment rate from {} to {}.'.format(test_result.index.strftime('%B %Y').values[0],test_result.index.strftime('%B %Y').values[-1]),
                                     style = p_style),
-                              html.Div([html.Br(),dbc.RadioItems(id = 'test_chart_type', 
-                                          options = [{'label':'pylväät','value':'bars'},
-                                                    {'label':'viivat','value':'lines'},
-                                                    {'label':'viivat ja pylväät','value':'lines+bars'}],
+                              html.Div([html.Br(),dbc.RadioItems(id = 'test_chart_type_en', 
+                                          options = [{'label':'bars','value':'bars'},
+                                                    {'label':'lines','value':'lines'},
+                                                    {'label':'lines and bars','value':'lines+bars'}],
                                           labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
                                                       #'font-family':'Cadiz Book'
                                                       },
@@ -2917,7 +2872,7 @@ def update_test_results(n_clicks,
                                     style = {'textAlign':'right'}
                                   ),
                               html.Br(),
-                              html.Div([dcc.Loading(id ='test_graph_div',type = spinners[random.randint(0,len(spinners)-1)])])
+                              html.Div([dcc.Loading(id ='test_graph_div_en',type = spinners[random.randint(0,len(spinners)-1)])])
    
                         ],style= {'textAlign':'center'}),
                     html.Br(),
@@ -2937,7 +2892,7 @@ def update_test_results(n_clicks,
                                     ),
                             
                             dbc.Col([html.Br(),
-                                     html.H3('Tarkkuus (%)', style = h3_style),
+                                     html.H3('Accuracy (%)', style = h3_style),
                                      dash_daq.LEDDisplay(backgroundColor='black',
                                                          size =70,
                                                          color = led_color,
@@ -2951,7 +2906,7 @@ def update_test_results(n_clicks,
                         
                         ),
                     html.Br(),
-                    html.P('Keskimääräinen suhteellinen virhe (MAPE) on kaikkien ennustearvojen suhteellisten virheiden keskiarvo. Tarkkuus on tässä tapauksessa laskettu kaavalla 1 - MAPE.', 
+                    html.P('The mean absolute percentage error (MAPE) is the average of the relative errors of all forecast values. The accuracy in this case is calculated by formula 1 - MAPE.', 
                            style = p_style,
                            className="card-text"),
                     html.Br(),
@@ -2963,8 +2918,8 @@ def update_test_results(n_clicks,
         feat = features.copy()
         feat = ['Työttömyysaste','Ennuste','month','change','mape','n_feat', 'Ennustettu muutos']+feat
         
-        button_children = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Lataa testitulokset koneelle'],
-                                       id='test_download_button',
+        button_children = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Download Test Results'],
+                                       id='test_download_button_en',
                                        n_clicks=0,
                                        style = dict(fontSize=30,
                                                     # fontFamily='Cadiz Semibold',
@@ -2982,18 +2937,18 @@ def update_test_results(n_clicks,
         
 @callback(
     
-      [Output('forecast_data','data'),
-       Output('forecast_results_div','children'),
-       Output('forecast_download_button_div','children')],
-      [Input('forecast_button','n_clicks')],
-      [State('forecast_slider', 'value'),
-       State('change_weights','data'),
-       State('method_selection_results','data')
+      [Output('forecast_data_en','data'),
+       Output('forecast_results_div_en','children'),
+       Output('forecast_download_button_div_en','children')],
+      [Input('forecast_button_en','n_clicks')],
+      [State('forecast_slider_en', 'value'),
+       State('change_weights_en','data'),
+       State('method_selection_results_en','data')
 
        ]
     
 )
-def update_forecast_results(n_clicks, 
+def en_update_forecast_results(n_clicks, 
                         forecast_size,
                         weights_dict,
                         method_selection_results
@@ -3013,8 +2968,8 @@ def update_forecast_results(n_clicks,
         explained_variance = method_selection_results['explained_variance']
         hyperparam_grid = method_selection_results['hyperparam_grid']
         
-        model = MODELS[model_name]['model']
-        constants = MODELS[model_name]['constant_hyperparameters'] 
+        model = MODELS_en[model_name]['model']
+        constants = MODELS_en[model_name]['constant_hyperparameters'] 
         
         
         model_hyperparams = hyperparam_grid.copy()
@@ -3028,7 +2983,7 @@ def update_forecast_results(n_clicks,
         
         weights = pd.Series(weights_dict)
         
-        forecast_df = predict(model, 
+        forecast_df = en_predict(model, 
                               features, 
                               feature_changes = weights, 
                               length=forecast_size, 
@@ -3038,18 +2993,18 @@ def update_forecast_results(n_clicks,
 
         
         forecast_div =  html.Div([html.Br(),
-                      html.H3('Ennustetulokset', 
+                      html.H3('Forecast results', 
                               style = h3_style),
                       
-                      html.P('Alla olevassa kuvaajassa on esitetty toteuteet arvot sekä ennuste ajalle {} - {}.'.format(forecast_df.index.strftime('%B %Y').values[0],forecast_df.index.strftime('%B %Y').values[-1]),
+                      html.P('The graph below shows the actual values and the forecast from {} to {}.'.format(forecast_df.index.strftime('%B %Y').values[0],forecast_df.index.strftime('%B %Y').values[-1]),
                              style = p_style),
-                      html.P('Voit valita alla olevista painikkeista joko pylväs, -tai viivadiagramin. Kuvaajan pituutta voi säätää alla olevasta liukuvaliskosta. Pituutta voi rajat myös vasemman yläkulman painikkeista.',
+                      html.P('You can select either a column or a line diagram from the buttons below. The length of the time series can be adjusted from the slider below. You can also limit the length by clicking the buttons in the upper left corner.',
                              style = p_style),
                       
                       html.Div([
-                      dbc.RadioItems(id = 'chart_type', 
-                        options = [{'label':'pylväät','value':'bars'},
-                                  {'label':'viivat','value':'lines'}],
+                      dbc.RadioItems(id = 'chart_type_en', 
+                        options = [{'label':'bars','value':'bars'},
+                                  {'label':'lines','value':'lines'}],
                         labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
                                     #'font-family':'Cadiz Book'
                                     },
@@ -3062,15 +3017,15 @@ def update_forecast_results(n_clicks,
                       ],style={'textAlign':'right'}),
                       html.Br(),
 
-          html.Div(id = 'forecast_graph_div'),
+          html.Div(id = 'forecast_graph_div_en'),
         
           html.Br()
           ],style={'textAlign':'center'})
 
           
           # ], justify='center')        
-        forecast_download_button = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Lataa ennustedata koneelle'],
-                                 id='forecast_download_button',
+        forecast_download_button = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Download Forecast Results'],
+                                 id='forecast_download_button_en',
                                  n_clicks=0,
                                  style=dict(fontSize=30,
                                             # fontFamily='Cadiz Semibold',
@@ -3089,12 +3044,12 @@ def update_forecast_results(n_clicks,
     
 @callback(
 
-    Output('shap_results_div','children'),
-    [Input('test_button','n_clicks'),
-     State('shap_data','data')]    
+    Output('shap_results_div_en','children'),
+    [Input('test_button_en','n_clicks'),
+     State('shap_data_en','data')]    
     
 )
-def update_shap_results(n_clicks, shap):
+def en_update_shap_results(n_clicks, shap):
     
     if shap is None:
         raise PreventUpdate
@@ -3109,25 +3064,25 @@ def update_shap_results(n_clicks, shap):
          
         return html.Div([
             
-                    html.H3('Mitkä ennustepiirteet vaikuttivat eniten?',
+                    html.H3('Which features were the most important?',
                            style = h3_style),
-                    html.P('Oheisessa kuvaajassa on esitetty hyödynnettyjen ennustepiirteiden keskimääräisen absoluuttiset SHAP-arvot, jotka kuvaavat kuinka suuri kontribuutio on kullakin piirteellä ennusteeseen. Niillä ei ole viitearvoja, vaan yksinkertaisesti suurempi SHAP-arvo kertoo piirteen suuremmasta kontribuutiosta ennusteeseen. Ennustepiirteisiin kuuluvat valittujen hyödykeindeksien lisäksi edellisen kuukauden työttömyysaste sekä kuukausi.',
+                    html.P("The graph below shows the absolute SHAP values of the average of the utilized forecast features, which describe how much each feature contributes to the forecast. They do not have reference values, but simply a higher SHAP value indicates the feature's greater contribution to the forecast. In addition to selected commodity indices, the forecast features include the unemployment rate of the previous month and the current month.",
                            style = p_style),
-                    html.A([html.P('Katso lyhyt esittely SHAP -arvojen merkityksestä mallin selittämisessä.',
+                    html.A([html.P('See a short introduction video of the importance of SHAP values in explaining a model.',
                                    style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
-                    html.P('Kuvaajan SHAP-arvot on kerrottu sadalla visualisoinnin parantamiseksi. ',
+                    html.P("The graph's SHAP values are multiplied by 100 to improve visualization.",
                            style = p_style),
                     html.Br(),
                     dbc.Row([
                         dbc.Col([
-                                html.Div(id = 'cut_off_div'),
+                                html.Div(id = 'cut_off_div_en'),
                                 
-                                html.Div(id = 'cut_off_indicator'),
+                                html.Div(id = 'cut_off_indicator_en'),
                                 
                                 ],xs =12, sm=12, md=12, lg=9, xl=9),
                         dbc.Col([
-                                dash_daq.BooleanSwitch(id = 'shap_features_switch', 
-                                                        label = dict(label = 'Näytä vain hyödykkeiden kontribuutio',
+                                dash_daq.BooleanSwitch(id = 'shap_features_switch_en', 
+                                                        label = dict(label = 'Show only the contribution of commodities',
                                                                      style = {'font-size':p_font_size,
                                                                               'text-align':'center',
                                                                               # #'fontFamily':'Cadiz Semibold'
@@ -3137,40 +3092,37 @@ def update_shap_results(n_clicks, shap):
                                 ],xs =12, sm=12, md=12, lg=3, xl=3)
                         ]),
                     html.Br(),
-                    html.Div(id = 'shap_graph_div'),
+                    html.Div(id = 'shap_graph_div_en'),
                     html.Br()
-                    
-                    
-                    
-                    
+       
             
             ])
     
 @callback(
 
-    Output('cut_off_indicator','children'),
-    [Input('cut_off','value')]    
+    Output('cut_off_indicator_en','children'),
+    [Input('cut_off_en','value')]    
     
 )
-def update_cut_off_indicator(cut_off):
-    return [html.P('Valitsit {} piirrettä.'.format(cut_off).replace(' 1 piirrettä',' yhden piirteen'), style = p_style)]
+def en_update_cut_off_indicator(cut_off):
+    return [html.P('You chose {} features.'.format(cut_off).replace(' 1 features',' one feature'), style = p_style)]
     
 @callback(
 
-    Output('cut_off_div','children'),
-    [Input('shap_data','data')]    
+    Output('cut_off_div_en','children'),
+    [Input('shap_data_en','data')]    
     
 )
-def update_shap_slider(shap):
+def en_update_shap_slider(shap):
     if shap is None:
         raise PreventUpdate
 
     shap_df = pd.DataFrame(shap)
     
     
-    return [html.P('Valitse kuinka monta piirrettä näytetään kuvaajassa',
+    return [html.P('Select how many features are shown in the graph below.',
                        style = p_style),
-                dcc.Slider(id = 'cut_off',
+                dcc.Slider(id = 'cut_off_en',
                    min = 1, 
                    max = len(shap_df),
                    value = int(math.ceil(.2*len(shap_df))),
@@ -3181,13 +3133,13 @@ def update_shap_slider(shap):
 
 @callback(
 
-    Output('shap_graph_div', 'children'),
-    [Input('cut_off', 'value'),
-     Input('shap_features_switch','on'),
-     State('shap_data','data')]
+    Output('shap_graph_div_en', 'children'),
+    [Input('cut_off_en', 'value'),
+     Input('shap_features_switch_en','on'),
+     State('shap_data_en','data')]
     
 )
-def update_shap_graph(cut_off, only_commodities, shap):
+def en_update_shap_graph(cut_off, only_commodities, shap):
     
     if shap is None:
         raise PreventUpdate
@@ -3195,11 +3147,13 @@ def update_shap_graph(cut_off, only_commodities, shap):
     
     shap_df = pd.DataFrame(shap)
     shap_df = shap_df.set_index(shap_df.columns[0])
+    shap_df.index = shap_df.index.str.replace('Kuukausi','Month')
+    shap_df.index = shap_df.index.str.replace('Edellisen kuukauden työttömyysaste','Previous Unemployment Rate')
   
     
     
     if only_commodities:
-        shap_df = shap_df.loc[[i for i in shap_df.index if i not in ['Kuukausi', 'Edellisen kuukauden työttömyysaste']]]
+        shap_df = shap_df.loc[[i for i in shap_df.index if i not in ['Month', 'Previous Unemployment Rate']]]
     
     
     shap_df = shap_df.sort_values(by='SHAP', ascending = False)
@@ -3207,30 +3161,30 @@ def update_shap_graph(cut_off, only_commodities, shap):
    
     df = pd.DataFrame(shap_df.iloc[cut_off+1:,:].sum())
     df = df.T
-    df.index = df.index.astype(str).str.replace('0', 'Muut {} piirrettä'.format(len(shap_df.iloc[cut_off+1:,:])))
+    df.index = df.index.astype(str).str.replace('0', 'Other {} features'.format(len(shap_df.iloc[cut_off+1:,:])))
     
     
     shap_df = pd.concat([shap_df.head(cut_off),df])
-    shap_df = shap_df.loc[shap_df.index != 'Muut 0 piirrettä']
+    shap_df = shap_df.loc[shap_df.index != 'Other 0 features']
     
 
     height = graph_height +200 + 10*len(shap_df)
     
     
-    return dcc.Graph(id = 'shap_graph',
-                     config = config_plots,
+    return dcc.Graph(id = 'shap_graph_en',
+                     config = config_plots_en,
                          figure = go.Figure(data=[go.Bar(y =shap_df.index, 
                       x = np.round(100*shap_df.SHAP,2),
                       orientation='h',
                       name = '',
-                      marker_color = ['aquamarine' if i not in ['Kuukausi','Edellisen kuukauden työttömyysaste'] else 'black' for i in shap_df.index],
+                      marker_color = ['aquamarine' if i not in ['Month','Previous Unemployment Rate'] else 'black' for i in shap_df.index],
                       # marker = dict(color = 'turquoise'),
                       text = np.round(100*shap_df.SHAP,2),
                       hovertemplate = '<b>%{y}</b>: %{x}',
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 20))],
-         layout=go.Layout(title = dict(text = 'Piirteiden merkitykset ennusteelle<br>SHAP - arvot',
+         layout=go.Layout(title = dict(text = 'Feature importances<br>SHAP - values',
                                                                      x=.5,
                                                                      font=dict(
                                                                           family='Cadiz Semibold',
@@ -3258,7 +3212,7 @@ def update_shap_graph(cut_off, only_commodities, shap):
                                                             )),
                                                         
                                                         height=height,#graph_height+200,
-                                                        xaxis = dict(title=dict(text = 'Keskimääräinen SHAP - arvo',
+                                                        xaxis = dict(title=dict(text = 'Average SHAP value',
                                                                                 font=dict(
                                                                                     size=18, 
                                                                                     family = 'Cadiz Semibold'
@@ -3268,7 +3222,7 @@ def update_shap_graph(cut_off, only_commodities, shap):
                                                                          family = 'Cadiz Semibold', 
                                                                           size = 16
                                                                          )),
-                                                        yaxis = dict(title=dict(text = 'Ennustepiirre',
+                                                        yaxis = dict(title=dict(text = 'Feature',
                                                                                font=dict(
                                                                                     size=18, 
                                                                                    family = 'Cadiz Semibold'
@@ -3284,37 +3238,38 @@ def update_shap_graph(cut_off, only_commodities, shap):
     
 
 @callback(
-    Output("forecast_download", "data"),
-    [Input("forecast_download_button", "n_clicks"),
-    [State('forecast_data','data'),
-     State('method_selection_results','data'),
-     State('change_weights','data')
+    Output("forecast_download_en", "data"),
+    [Input("forecast_download_button_en", "n_clicks"),
+    [State('forecast_data_en','data'),
+     State('method_selection_results_en','data'),
+     State('change_weights_en','data')
      ]
     ]
     
 )
-def download_forecast_data(n_clicks, df, method_selection_results, weights_dict):
+def en_download_forecast_data(n_clicks, df, method_selection_results, weights_dict):
     
     if n_clicks > 0:
         
         
         df = pd.DataFrame(df).set_index('Aika').copy()
-        df.index = pd.to_datetime(df.index)       
+        df.index = pd.to_datetime(df.index)
+        df.index.name = 'Time'
         forecast_size = len(df)
         n_feat = df.n_feat.values[0]
         df.drop('n_feat',axis=1,inplace=True)
         
-        df = df.rename(columns = {'change':'Ennustettu kuukausimuutos (prosenttiyksiköä)',
-                                  'month':'Kuukausi',
-                                  'prev': 'Edellisen kuukauden ennuste',
-                                  'Työttömyysaste': 'Työttömyysaste (ennuste)'})
+        df = df.rename(columns = {'change':'Forecasted monthly change (percentage units)',
+                                  'month':'Month',
+                                  'prev': 'Previous forecast',
+                                  'Työttömyysaste': 'Unemployment Rate (forecast)'})
         
         
         features = sorted(list(weights_dict.keys()))
         
         weights_df = pd.DataFrame([weights_dict]).T
-        weights_df.index.name = 'Hyödyke'
-        weights_df.columns = ['Oletettu keskimääräinen kuukausimuutos (%)']
+        weights_df.index.name = 'Commodity'
+        weights_df.columns = ['Expected average monthly change (%)']
         
         model_name = method_selection_results['model']
              
@@ -3324,38 +3279,39 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
         
         if pca:
             metadict = {
-                        'Pääkomponenttianalyysi' : pca,
-                        'Selitetty variaatio': str(int(100*explained_variance))+'%',
-                        'Pääkomponetteja': n_feat,
-                        'Malli': model_name,
-                        'Sovellettuja hyödykeryhmiä':len(features),
-                        'Sovelletut hyödykeryhmät' : ',\n'.join(features),
-                        'Ennusteen pituus': str(forecast_size)+' kuukautta'
+                        'Principal Component Analysis' : pca,
+                        'Explained Variance': str(int(100*explained_variance))+'%',
+                        'Principal Components': n_feat,
+                        'Model': model_name,
+                        'Number of applied features':len(features),
+                        'Commodities' : ',\n'.join(features),
+                        'Forecast length': str(forecast_size)+' months'
                         
                         }
 
         else:
             metadict = {
-                            'Pääkomponenttianalyysi' : pca,
-                            'Malli': model_name,
-                            'Sovellettuja hyödykeryhmiä':len(features),
-                            'Sovelletut hyödykeryhmät' : ',\n'.join(features),
-                            'Ennusteen pituus': str(forecast_size)+' kuukautta'
+                            'Principal Component Analysis' : pca,
+                            'Model': model_name,
+                            'Number of applied features':len(features),
+                            'Commodities' : ',\n'.join(features),
+                            'Forecast length': str(forecast_size)+' months'
                             }
         
         metadata = pd.DataFrame([metadict]).T
         metadata.index.name = ''
-        metadata.columns = ['Arvo']
+        metadata.columns = ['Value']
         
         hyperparam_df = pd.DataFrame([hyperparam_grid]).T
-        hyperparam_df.index.name = 'Hyperparametri'
-        hyperparam_df.columns = ['Arvo']   
-        hyperparam_df['Arvo'] = hyperparam_df['Arvo'].astype(str)
+        hyperparam_df.index.name = 'Hyperparameter'
+        hyperparam_df.columns = ['Value']   
+        hyperparam_df['Value'] = hyperparam_df['Value'].astype(str)
 
   
-        data_ = data.copy().rename(columns={'change':'Muutos (prosenttiykköä)',
-                                      'prev':'Edellisen kuukauden työttömyys -% ',
-                                      'month':'Kuukausi'})
+        data_ = data_en.copy().rename(columns={'change':'Change (percentage units)',
+                                      'prev':'Previous unemployment rate -% ',
+                                      'month':'Month'})
+        data_.index.name = 'Time'
         
         
         xlsx_io = io.BytesIO()
@@ -3364,9 +3320,9 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
         
         
         data_.to_excel(writer, sheet_name= 'Data')
-        df.to_excel(writer, sheet_name= 'Ennustedata')
-        weights_df.to_excel(writer, sheet_name= 'Indeksimuutokset')
-        hyperparam_df.to_excel(writer, sheet_name= 'Hyperparametrit')
+        df.to_excel(writer, sheet_name= 'Forecast data')
+        weights_df.to_excel(writer, sheet_name= 'Index changes')
+        hyperparam_df.to_excel(writer, sheet_name= 'Hyperparameters')
         metadata.to_excel(writer, sheet_name= 'Metadata')
 
 
@@ -3376,19 +3332,19 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
         
         output = xlsx_io.getvalue()
 
-        return dcc.send_bytes(output, 'Ennustedata {} hyödykkeellä '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
+        return dcc.send_bytes(output, 'Forecast data with {} features '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
         
 @callback(
-    Output("test_download", "data"),
-    [Input("test_download_button", "n_clicks"),
-    State('test_data','data'),
-    State('method_selection_results','data'),
-    State('change_weights','data'),
-    State('shap_data','data')
+    Output("test_download_en", "data"),
+    [Input("test_download_button_en", "n_clicks"),
+    State('test_data_en','data'),
+    State('method_selection_results_en','data'),
+    State('change_weights_en','data'),
+    State('shap_data_en','data')
     ]
     
 )
-def download_test_data(n_clicks, 
+def en_download_test_data(n_clicks, 
                        df, 
                        method_selection_results, 
                         weights_dict, 
@@ -3398,14 +3354,18 @@ def download_test_data(n_clicks,
         
         df = pd.DataFrame(df).set_index('Aika').copy()
         df.index = pd.to_datetime(df.index)
+        df.index.name = 'Time'
         mape = df.mape.values[0]
         test_size = len(df)
         n_feat = df.n_feat.values[0]
         df.drop('n_feat',axis=1,inplace=True)
         df.drop('mape',axis=1,inplace=True)
-        df = df.rename(columns = {'change':'Ennustettu kuukausimuutos (prosenttiyksiköä)',
-                                  'month':'Kuukausi',
-                                  'prev': 'Edellisen kuukauden ennuste'})
+        df = df.rename(columns = {'change':'Monthly change (percentage units)',
+                                  'month':'Month',
+                                  'Ennustettu muutos':'Forecasted monthly change (percentage units)',
+                                  'Ennuste':'Forecasted unemployment rate',
+                                  'Työttömyysaste':'Unemployment Rate (%)',
+                                  'prev': 'Previous forecast'})
         
         
         features = sorted(list(weights_dict.keys()))
@@ -3418,45 +3378,47 @@ def download_test_data(n_clicks,
         
         if pca:
             metadict = {'MAPE': str(round(100*mape,2))+'%',
-                        'Pääkomponenttianalyysi' : pca,
-                        'Selitetty variaatio': str(int(100*explained_variance))+'%',
-                        'Pääkomponetteja': n_feat,
-                        'Malli': model_name,
-                        'Sovellettuja hyödykeryhmiä':len(features),
-                        'Sovelletut hyödykeryhmät' : ',\n'.join(features),
-                        'Testin pituus': str(test_size)+' kuukautta'
+                        'Principal Component Analysis' : pca,
+                        'Explained Variance': str(int(100*explained_variance))+'%',
+                        'Principal components': n_feat,
+                        'Model': model_name,
+                        'Number of applied features':len(features),
+                        'Commodities' : ',\n'.join(features),
+                        'Test length': str(test_size)+' months'
                         }
         else:
             metadict = {'MAPE': str(round(100*mape,2))+'%',
-                            'Pääkomponenttianalyysi' : pca,
-                            'Malli': model_name,
-                            'Sovellettuja hyödykeryhmiä':len(features),
-                            'Sovelletut hyödykeryhmät' : ',\n'.join(features),
-                            'Testin pituus': str(test_size)+' kuukautta'
+                            'Principal Component Analysis' : pca,
+                            'Model': model_name,
+                            'Number of applied features':len(features),
+                            'Commodities' : ',\n'.join(features),
+                            'Test length': str(test_size)+' months'
                             }
         
         metadata = pd.DataFrame([metadict]).T
         metadata.index.name = ''
-        metadata.columns = ['Arvo']
+        metadata.columns = ['Value']
         
         hyperparam_df = pd.DataFrame([hyperparam_grid]).T
-        hyperparam_df.index.name = 'Hyperparametri'
-        hyperparam_df.columns = ['Arvo']   
-        hyperparam_df['Arvo'] = hyperparam_df['Arvo'].astype(str)
+        hyperparam_df.index.name = 'Hyperparameter'
+        hyperparam_df.columns = ['Value']   
+        hyperparam_df['Value'] = hyperparam_df['Value'].astype(str)
         
         shap_df = pd.DataFrame(shap_data)
         shap_df = shap_df.set_index(shap_df.columns[0])
-        shap_df.index.name = 'Piirre'
+        shap_df.index.name = 'Feature'
         shap_df.SHAP = np.round(100*shap_df.SHAP,2)
+        shap_df.index = shap_df.index.str.replace('Kuukausi', 'Month')
+        shap_df.index = shap_df.index.str.replace('Edellisen kuukauden työttömyysaste', 'Unemployment rate in the previous month')
         
         xlsx_io = io.BytesIO()
         writer = pd.ExcelWriter(xlsx_io, engine='xlsxwriter')
         
         
-        df.to_excel(writer, sheet_name= 'Testidata')
+        df.to_excel(writer, sheet_name= 'Test data')
         metadata.to_excel(writer, sheet_name= 'Metadata')
-        hyperparam_df.to_excel(writer, sheet_name= 'Mallin hyperparametrit')
-        shap_df.to_excel(writer, sheet_name= 'Mallin piirteiden vaikuttavuus')
+        hyperparam_df.to_excel(writer, sheet_name= 'Model hyperparameters')
+        shap_df.to_excel(writer, sheet_name= 'Feature importances')
 
         writer.save()
         
@@ -3464,18 +3426,18 @@ def download_test_data(n_clicks,
         
         output = xlsx_io.getvalue()
 
-        return dcc.send_bytes(output, 'Testitulokset {} hyödykkeellä '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
+        return dcc.send_bytes(output, 'Test results with {} features '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
 
 
 @callback(
 
-    Output('test_graph_div', 'children'),
+    Output('test_graph_div_en', 'children'),
     
-      [Input('test_chart_type','value')],
-      [State('test_data','data')]
+      [Input('test_chart_type_en','value')],
+      [State('test_data_en','data')]
     
 )
-def update_test_chart_type(chart_type,df):
+def en_update_test_chart_type(chart_type,df):
     
     
     
@@ -3485,53 +3447,53 @@ def update_test_chart_type(chart_type,df):
     
     df = df.reset_index().drop_duplicates(subset='Aika', keep='last').set_index('Aika')[['Työttömyysaste','Ennuste','mape']].dropna(axis=0)
 
-    return [dcc.Graph(id ='test_graph', 
-                     figure = plot_test_results(df,chart_type), 
-                     config = config_plots)     ]
+    return [dcc.Graph(id ='test_graph_en', 
+                     figure = en_plot_test_results(df,chart_type), 
+                     config = config_plots_en)     ]
 
 
 
 @callback(
 
-    Output('forecast_graph_div', 'children'),
+    Output('forecast_graph_div_en', 'children'),
     
-      [Input('chart_type','value')],
-      [State('forecast_data','data')]
+      [Input('chart_type_en','value')],
+      [State('forecast_data_en','data')]
     
 )
-def update_forecast_chart_type(chart_type,df):
+def en_update_forecast_chart_type(chart_type,df):
     
     df = pd.DataFrame(df).set_index('Aika')
     df.index = pd.to_datetime(df.index)
 
-    return dcc.Graph(id = 'forecast_graph',
-                    figure = plot_forecast_data(df, chart_type = chart_type), 
-                    config = config_plots),
+    return dcc.Graph(id = 'forecast_graph_en',
+                    figure = en_plot_forecast_data(df, chart_type = chart_type), 
+                    config = config_plots_en),
 
 @callback(
 
-    Output('ev_placeholder', 'style'),
-    [Input('pca_switch', 'on')]
+    Output('ev_placeholder_en', 'style'),
+    [Input('pca_switch_en', 'on')]
 )    
-def add_ev_slider(pca):
+def en_add_ev_slider(pca):
     
     return {False: {'margin' : '5px 5px 5px 5px', 'display':'none'},
            True: {'margin' : '5px 5px 5px 5px'}}[pca]
 
 @callback(
 
-    Output('ev_slider_update', 'children'),
-    [Input('pca_switch', 'on'),
-    Input('ev_slider', 'value')]
+    Output('ev_slider_update_en', 'children'),
+    [Input('pca_switch_en', 'on'),
+    Input('ev_slider_en', 'value')]
 
 )
-def update_ev_indicator(pca, explained_variance):
+def en_update_ev_indicator(pca, explained_variance):
     
-    return {False: [html.Div([html.P('Valitsit {} % säilytetyn variaation.'.format(int(100*explained_variance)),
+    return {False: [html.Div([html.P('You chose {} % explained variance.'.format(int(100*explained_variance)),
                                                                style = p_style)
                                                        ], style = {'display':'none'}
                                                       )],
-            True: [html.Div([html.P('Valitsit {} % säilytetyn variaation.'.format(int(100*explained_variance)),
+            True: [html.Div([html.P('You chose {} % explained variance.'.format(int(100*explained_variance)),
                                                                style = p_style)
                                                        ]
                                                       )]}[pca]
@@ -3539,11 +3501,11 @@ def update_ev_indicator(pca, explained_variance):
 
 
 @callback(
-    Output('feature_selection','value'),
-    [Input('select_all', 'on'),
-    Input('feature_selection','options')]
+    Output('feature_selection_en','value'),
+    [Input('select_all_en', 'on'),
+    Input('feature_selection_en','options')]
 )
-def update_feature_list(on,options):
+def en_update_feature_list(on,options):
        
         
     if on:
@@ -3553,27 +3515,27 @@ def update_feature_list(on,options):
         
 @callback(
     
-    Output('select_all','on'),
-    [Input('feature_selection','value'),
-     State('feature_selection','options')]
+    Output('select_all_en','on'),
+    [Input('feature_selection_en','value'),
+     State('feature_selection_en','options')]
     
 )
-def update_select_all_on(features,options):
+def en_update_select_all_on(features,options):
     
     return len(features) == len(options)
 
 @callback(
     [
      
-     Output('select_all','label'),
-     Output('select_all','disabled')
+     Output('select_all_en','label'),
+     Output('select_all_en','disabled')
      ],
-    [Input('select_all', 'on')]
+    [Input('select_all_en', 'on')]
 )    
-def update_switch(on):
+def en_update_switch(on):
     
     if on:
-        return {'label':'Kaikki hyödykkeet on valittu. Voit poistaa hyödykkeitä listasta klikkaamalla rasteista.',
+        return {'label':'Everything is selected. You can remove commodities by clicking the crosess on the list.',
                        'style':{'text-align':'center', 'font-size':p_font_size,
                                 #'font-family':'Cadiz Semibold'
                                 }
@@ -3581,7 +3543,7 @@ def update_switch(on):
     
 
     else:
-        return dict(label = 'Valitse kaikki',style = {'font-size':p_font_size, 
+        return dict(label = 'Select all',style = {'font-size':p_font_size, 
                                                       # #'fontFamily':'Cadiz Semibold'
                                                       }),False
 
@@ -3589,14 +3551,14 @@ def update_switch(on):
 
 @callback(
 
-    Output('test_button_div','children'),
+    Output('test_button_div_en','children'),
     [
 
-     Input('features_values','data')
+     Input('features_values_en','data')
      ]    
     
 )
-def add_test_button(features_values):
+def en_add_test_button(features_values):
     
     if features_values is None:
         raise PreventUpdate 
@@ -3604,14 +3566,14 @@ def add_test_button(features_values):
         
     
     elif len(features_values) == 0:
-        return [html.P('Valitse ensin hyödykkeitä',
+        return [html.P('Select commodities first',
                        style = p_style)]
     
     else:
                
         
-        return dbc.Button('Testaa',
-                           id='test_button',
+        return dbc.Button('Test',
+                           id='test_button_en',
                            n_clicks=0,
                            outline=False,
                            className="me-1",
@@ -3623,21 +3585,21 @@ def add_test_button(features_values):
                           )
 
 @callback(
-    Output('test_size_indicator','children'),
-    [Input('test_slider','value')]
+    Output('test_size_indicator_en','children'),
+    [Input('test_slider_en','value')]
 )
-def update_test_size_indicator(value):
+def en_update_test_size_indicator(value):
     
-    return [html.Br(),html.P('Valitsit {} kuukautta testidataksi.'.format(value),
+    return [html.Br(),html.P('You selected {} months as test data.'.format(value),
                              style = p_style)]
 
 @callback(
-    Output('forecast_slider_indicator','children'),
-    [Input('forecast_slider','value')]
+    Output('forecast_slider_indicator_en','children'),
+    [Input('forecast_slider_en','value')]
 )
-def update_forecast_size_indicator(value):
+def en_update_forecast_size_indicator(value):
     
-    return [html.Br(),html.P('Valitsit {} kuukauden ennusteen.'.format(value),
+    return [html.Br(),html.P('You selected {} months for forecasting.'.format(value),
                              style = p_style)]
 
 
@@ -3645,26 +3607,26 @@ def update_forecast_size_indicator(value):
 
 @callback(
 
-    Output('timeseries_selection', 'children'),
+    Output('timeseries_selection_en', 'children'),
     [
      
-     Input('features_values','data')
+     Input('features_values_en','data')
      ]    
     
 )
-def update_timeseries_selections(features_values):
+def en_update_timeseries_selections(features_values):
     
     features = sorted(list(features_values.keys()))
     
     return [
             html.Br(),
-            html.H3('Tarkastele hyödykkeiden indeksin aikasarjoja',
+            html.H3('View commodity index time series',
                     style =h3_style),
             
-            html.P('Tällä kuvaajalla voit tarkastella hyödykkeiden indeksikehitystä kuukausittain. Näin on helpompi arvioida paremmin millaista inflaatio-odotusta syöttää ennusteelle.',
+            html.P('Use this graph to view the index development of commodities on a monthly basis. This will make it easier to better assess what kind of inflation expectations to feed into the forecast.',
                    style = p_style),
-            html.H3('Valitse hyödyke',style = h3_style),
-            dcc.Dropdown(id = 'timeseries_selection_dd',
+            html.H3('Select a commodity',style = h3_style),
+            dcc.Dropdown(id = 'timeseries_selection_dd_en',
                         options = [{'value':feature, 'label':feature} for feature in features],
                         value = [features[0]],
                         style = {
@@ -3677,19 +3639,19 @@ def update_timeseries_selections(features_values):
 
 @callback(
 
-    Output('timeseries', 'children'),
-    [Input('timeseries_selection_dd', 'value')]    
+    Output('timeseries_en', 'children'),
+    [Input('timeseries_selection_dd_en', 'value')]    
     
 )
-def update_time_series(values):
+def en_update_time_series(values):
     
-    traces = [go.Scatter(x = data.index, 
-                         y = data[value],
+    traces = [go.Scatter(x = data_en.index, 
+                         y = data_en[value],
                          showlegend=True,                         
                          name = ' '.join(value.split()[1:]),
                          mode = 'lines+markers') for value in values]
     return html.Div([dcc.Graph(figure=go.Figure(data=traces,
-                                      layout = go.Layout(title = dict(text = 'Valittujen arvojen<br>indeksikehitys',
+                                      layout = go.Layout(title = dict(text = 'Indexes of<br>selected commodities',
                                                                       x=.5,
                                                                       font=dict(
                                                                            family='Cadiz Semibold',
@@ -3715,7 +3677,7 @@ def update_time_series(values):
                                                               size=14,
                                                               family='Cadiz Book'
                                                              )),
-                                                         xaxis = dict(title=dict(text = 'Aika',
+                                                         xaxis = dict(title=dict(text = 'Time',
                                                                                  font=dict(
                                                                                      size=18, 
                                                                                      family = 'Cadiz Semibold'
@@ -3725,7 +3687,7 @@ def update_time_series(values):
                                                                           family = 'Cadiz Semibold', 
                                                                            size = 16
                                                                           )),
-                                                         yaxis = dict(title=dict(text = 'Pisteluku (perusvuosi = 2010)',
+                                                         yaxis = dict(title=dict(text = 'Point figure (base year = 2010)',
                                                                                 font=dict(
                                                                                      size=18, 
                                                                                     family = 'Cadiz Semibold'
@@ -3738,7 +3700,7 @@ def update_time_series(values):
                                                                          ))
                                                          )
                                       ),
-                     config = config_plots
+                     config = config_plots_en
                      )])
 
 
@@ -3746,27 +3708,27 @@ def update_time_series(values):
 
 @callback(
     
-    Output('forecast_button_div','children'),
+    Output('forecast_button_div_en','children'),
     [
      
-     Input('features_values','data')
+     Input('features_values_en','data')
      ]   
     
 )
-def add_predict_button(features_values):
+def en_add_predict_button(features_values):
     
     if features_values is None:
         raise PreventUpdate 
     
     elif len(features_values) == 0:
-        return [html.P('Valitse ensin hyödykkeitä',
+        return [html.P('Select commodities first',
                        style = p_style)]
     
     
         
     else:
-        return [dbc.Button('Ennusta',
-                   id='forecast_button',
+        return [dbc.Button('Forecast',
+                   id='forecast_button_en',
                    n_clicks=0,
                    outline=False,
                    className="me-1",
@@ -3778,7 +3740,7 @@ def add_predict_button(features_values):
                    
                    ),
                 html.Br(),
-                html.Div(id = 'forecast_download_button_div',style={'textAlign':'center'})]
+                html.Div(id = 'forecast_download_button_div_en',style={'textAlign':'center'})]
 
 
 
@@ -3786,52 +3748,52 @@ def add_predict_button(features_values):
 
 @callback(
 
-    Output('slider_prompt_div','children'),
-    [Input('slider', 'value'),
-     State('averaging', 'on')]    
+    Output('slider_prompt_div_en','children'),
+    [Input('slider_en', 'value'),
+     State('averaging_en', 'on')]    
     
 )
-def update_slider_prompt(value, averaging):
+def en_update_slider_prompt(value, averaging):
     
         
     if averaging:
     
-        return [html.Br(),html.P('Valitsit {} viimeisen kuukauden keskiarvot.'.format(value),
+        return [html.Br(),html.P('You selected the average of the latest {} months.'.format(value),
                       style = p_style),
                 html.Br(),
-                html.P('Voit vielä säätä yksittäisiä muutosarvoja laatikoihin kirjoittamalla tai tietokoneella työskenneltäessä laatioiden oikealla olevista nuolista.',
+                html.P('You can still adjust individual values on the input boxes.',
                        style = p_style)]
     else:
-        return [html.Br(),html.P('Valitsit {} % keskimääräisen kuukausimuutoksen.'.format(value),
+        return [html.Br(),html.P('You selected the estimated monthly change to be  {} %.'.format(value),
                       style = p_style),
                 html.Br(),
-                html.P('Voit vielä säätä yksittäisiä muutosarvoja laatikoihin kirjoittamalla tai tietokoneella työskenneltäessä laatioiden oikealla olevista nuolista.',
+                html.P('You can still adjust individual values on the input boxes.',
                        style = p_style)]
         
  
 
 @callback(
 
-    Output('corr_selection_div', 'children'),
+    Output('corr_selection_div_en', 'children'),
     [
 
-     Input('features_values','data')
+     Input('features_values_en','data')
      ]
     
 )
-def update_corr_selection(features_values):
+def en_update_corr_selection(features_values):
     
     features = sorted(list(features_values.keys()))
 
     return html.Div([
             html.Br(),
-            html.H3('Tarkastele valitun hyödykkeen hintaindeksin suhdetta työttömyysasteeseen',
+            html.H3('View the relationship between the price index of the selected commodity and the unemployment rate',
                     style=h3_style),
             
-            html.P('Tällä kuvaajalla voit tarkastella valitun hyödykkeen hintaindeksin ja työttömyysasteen tai kuukausimuutoksen välistä suhdetta ja korrelaatiota. Teoriassa hyvä ennustepiirre korreloi vahvasti ennustettavan muuttujan kanssa.',
+            html.P('Use this graph to view the relationship and correlation between the price index of the selected commodity and the unemployment rate or monthly change. In theory, a good predictive feature correlates strongly with the predictable variable.',
                    style = p_style),
-        html.H3('Valitse hyödyke', style = h3_style),
-        dcc.Dropdown(id = 'corr_feature',
+        html.H3('Select a commodity', style = h3_style),
+        dcc.Dropdown(id = 'corr_feature_en',
                         multi = True,
                         # clearable=False,
                         options = [{'value':feature, 'label':feature} for feature in features],
@@ -3839,56 +3801,56 @@ def update_corr_selection(features_values):
                         style = {'font-size':p_font_size-3, 
                                  #'font-family':'Cadiz Book'
                                  },
-                        placeholder = 'Valitse hyödyke')
+                        placeholder = 'Select a commodity')
         ]
         )
 
 @callback(
 
-    Output('feature_corr_selection_div', 'children'),
+    Output('feature_corr_selection_div_en', 'children'),
     [
 
-     Input('features_values','data')
+     Input('features_values_en','data')
      ]
     
 )
-def update_feature_corr_selection(features_values):
+def en_update_feature_corr_selection(features_values):
     
     features = sorted(list(features_values.keys()))
     
     return html.Div([
                 html.Br(),
-                html.H3('Tarkastele hyödykkeiden suhteita',
+                html.H3('View commodity relations',
                         style=h3_style),
                 html.Br(),
-                html.P('Tällä kuvaajalla voit tarkastella hyödykkeiden keskinäisiä suhteita ja korrelaatioita. Mikäli korrelaatio kahden hyödykkeen välillä on vahva, voi ennuste parantua toisen poistamalla ennustepiirteistä.',
+                html.P('Use this graph to view the relationships and correlations between commodities. If the correlation between two commodities is strong, the forecast can be improved by removing the other from the forecast features.',
                        style = p_style),
         
         dbc.Row(justify = 'center',children=[
             dbc.Col([
-                html.H3('Valitse hyödyke',style=h3_style),
-                dcc.Dropdown(id = 'f_corr1',
+                html.H3('Select a commodity',style=h3_style),
+                dcc.Dropdown(id = 'f_corr1_en',
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[0],
                                 style = {'font-size':p_font_size-3, 
                                          #'font-family':'Cadiz Book'
                                          },
-                                placeholder = 'Valitse hyödyke')
+                                placeholder = 'Select a commodity')
         ],xs =12, sm=12, md=12, lg=6, xl=6),
         html.Br(),
             dbc.Col([
-                html.H3('Valitse toinen hyödyke',
+                html.H3('Select another commodity',
                         style=h3_style
                         ),
-                dcc.Dropdown(id = 'f_corr2',
+                dcc.Dropdown(id = 'f_corr2_en',
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[-1],
                                 style = {'font-size':p_font_size-3, 
                                          #'font-family':'Cadiz Book'
                                          },
-                                placeholder = 'Valitse hyödyke')
+                                placeholder = 'Select another commodity')
             ],xs =12, sm=12, md=12, lg=6, xl=6)
         ])
         ])
@@ -3897,39 +3859,39 @@ def update_feature_corr_selection(features_values):
 
 @callback(
 
-    Output('corr_div', 'children'),
-    [Input('f_corr1','value'),
-     Input('f_corr2','value')]    
+    Output('corr_div_en', 'children'),
+    [Input('f_corr1_en','value'),
+     Input('f_corr2_en','value')]    
     
 )
-def update_feature_correlation_plot(value1, value2):
+def en_update_feature_correlation_plot(value1, value2):
     
     if value1 is None or value2 is None:
         raise PreventUpdate 
         
         
-    a, b = np.polyfit(np.log(data[value1]), data[value2], 1)
+    a, b = np.polyfit(np.log(data_en[value1]), data_en[value2], 1)
 
-    y = a * np.log(data[value1]) +b 
+    y = a * np.log(data_en[value1]) +b 
 
-    df = data.copy()
+    df = data_en.copy()
     df['log_trend'] = y
     df = df.sort_values(by = 'log_trend')    
     
-    corr_factor = round(sorted(data[[value1,value2]].corr().values[0])[0],2)
+    corr_factor = round(sorted(data_en[[value1,value2]].corr().values[0])[0],2)
     
-    traces = [go.Scatter(x = data[value1], 
-                         y = data[value2], 
+    traces = [go.Scatter(x = data_en[value1], 
+                         y = data_en[value2], 
                          mode = 'markers',
                          name = ' ',#.join(value.split()[1:]),
                          showlegend=False,
                          marker = dict(color = 'purple', size = 10),
                          marker_symbol='star',
-                         hovertemplate = "<b>Indeksiarvot:</b><br><b>{}</b>:".format(' '.join(value1.split()[1:]))+" %{x}"+"<br><b>"+"{}".format(' '.join(value2.split()[1:]))+"</b>: %{y}"
+                         hovertemplate = "<b>Index values:</b><br><b>{}</b>:".format(' '.join(value1.split()[1:]))+" %{x}"+"<br><b>"+"{}".format(' '.join(value2.split()[1:]))+"</b>: %{y}"
                          ),
                 go.Scatter(x = df[value1], 
                             y = df['log_trend'], 
-                            name = 'Logaritminen trendiviiva', 
+                            name = 'Logarithmic trendline', 
                             mode = 'lines',
                             line = dict(width=5),                            
                             showlegend=True,
@@ -3941,7 +3903,7 @@ def update_feature_correlation_plot(value1, value2):
     
     return [
             html.Div([dcc.Graph(figure = go.Figure(data = traces,
-          layout = go.Layout(title = dict(text = '<b>{}</b> vs.<br><b>{}</b><br>(Kokonaiskorrelaatio: {})'.format(' '.join(value1.split()[1:]), ' '.join(value2.split()[1:]), corr_factor), 
+          layout = go.Layout(title = dict(text = '<b>{}</b> vs.<br><b>{}</b><br>(Correlation: {})'.format(' '.join(value1.split()[1:]), ' '.join(value2.split()[1:]), corr_factor), 
                                           x=.5, 
                                           font=dict(
                                                family='Cadiz Semibold',
@@ -3954,7 +3916,7 @@ def update_feature_correlation_plot(value1, value2):
                                   # t=120,
                                   # pad=4
                              ),
-                            xaxis= dict(title = dict(text='{} (pisteluku)'.format(' '.join(value1.split()[1:])), 
+                            xaxis= dict(title = dict(text='{} (Point figure)'.format(' '.join(value1.split()[1:])), 
                                                      font=dict(
                                                           family='Cadiz Semibold',
                                                           size=20
@@ -3975,7 +3937,7 @@ def update_feature_correlation_plot(value1, value2):
                                  font_family = 'Cadiz Book'
                                 ),
                             template = 'seaborn',
-                            yaxis = dict(title = dict(text='{} (pisteluku)'.format(' '.join(value2.split()[1:])), 
+                            yaxis = dict(title = dict(text='{} (Point figure)'.format(' '.join(value2.split()[1:])), 
                                                       font=dict(
                                                            family='Cadiz Semibold',
                                                           size=20
@@ -3987,48 +3949,48 @@ def update_feature_correlation_plot(value1, value2):
                                              ))
                              )
           ),
-                      config = config_plots)])]
+                      config = config_plots_en)])]
 
 
 
 # @callback(
 
-#     Output('eda_div', 'children'),
-#     [Input('features_values','data')]    
+#     Output('eda_div_en', 'children'),
+#     [Input('features_values_en','data')]    
     
 # )
-# def update_eda_div(features_values):
+# def en_update_eda_div(features_values):
         
 
     
 
-    # selector = dbc.RadioItems(id = 'eda_y_axis', 
-    #             options = [{'label':'Työttömyysaste (%)','value':'Työttömyysaste'},
-    #                       {'label':'Työttömyysasteen kuukausimuutos (%-yksikköä)','value':'change'}],
-    #             labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
-    #                         #'font-family':'Cadiz Book'
-    #                         },
-    #             className="btn-group",
-    #             inputClassName="btn-check",
-    #             labelClassName="btn btn-outline-warning",
-    #             labelCheckedClassName="active",
+#     selector = dbc.RadioItems(id = 'eda_y_axis_en', 
+#                 options = [{'label':'Unemployment rate (%)','value':'Työttömyysaste'},
+#                           {'label':'Monthly unemployment rate change (% units)','value':'change'}],
+#                 labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
+#                             #'font-family':'Cadiz Book'
+#                             },
+#                 className="btn-group",
+#                 inputClassName="btn-check",
+#                 labelClassName="btn btn-outline-warning",
+#                 labelCheckedClassName="active",
               
-    #             value = 'Työttömyysaste'
-    #           )    
+#                 value = 'Työttömyysaste'
+#               )    
         
   
     
-#     return [html.Div([selector],style={'textAlign':'center'}), html.Div(id = 'commodity_unemployment_div')]
+#     return [html.Div([selector],style={'textAlign':'center'}), html.Div(id = 'commodity_unemployment_div_en')]
 
 
 @callback(
     
-    Output('commodity_unemployment_div','children'),
-    [Input('corr_feature','value'),
-     Input('eda_y_axis','value')]
+    Output('commodity_unemployment_div_en','children'),
+    [Input('corr_feature_en','value'),
+     Input('eda_y_axis_en','value')]
     
 )
-def update_commodity_unemployment_graph(values, label):
+def en_update_commodity_unemployment_graph(values, label):
     
     
     symbols = ['circle',
@@ -4046,27 +4008,27 @@ def update_commodity_unemployment_graph(values, label):
                  'bowtie',
                  'hash']
     
-    label_str = {'Työttömyysaste': 'Työttömyysaste (%)',
-                 'change': 'Työttömyysasteen kuukausimuutos (%-yksikköä)'}[label]     
+    label_str = {'Työttömyysaste': 'Unemployment rate (%)',
+                 'change': 'Monthly unemployment rate change (% units)'}[label]     
             
-    traces = [go.Scatter(x = data[value], 
-                         y = data[label], 
+    traces = [go.Scatter(x = data_en[value], 
+                         y = data_en[label], 
                          mode = 'markers',
-                         name = ' '.join(value.split()[1:]).replace(',',',<br>')+' ({})'.format(round(sorted(data[[label, value]].corr()[value].values)[0],2)),
+                         name = ' '.join(value.split()[1:]).replace(',',',<br>')+' ({})'.format(round(sorted(data_en[[label, value]].corr()[value].values)[0],2)),
                          showlegend=True,
                          marker = dict(size=10),
                          marker_symbol = random.choice(symbols),
-                         hovertemplate = "<b>{}</b>:".format(value)+" %{x}"+"<br><b>"+label_str+"</b>: %{y}"+"<br>(Korrelaatio: {:.2f})".format(sorted(data[[label, value]].corr()[value].values)[0])) for value in values]
+                         hovertemplate = "<b>{}</b>:".format(value)+" %{x}"+"<br><b>"+label_str+"</b>: %{y}"+"<br>(Korrelaatio: {:.2f})".format(sorted(data_en[[label, value]].corr()[value].values)[0])) for value in values]
     
     return [dcc.Graph(figure = go.Figure(data = traces,
-          layout = go.Layout(title = dict(text = 'Valitut hyödykkeet vs.<br>'+label_str, 
+          layout = go.Layout(title = dict(text = 'Selected commodities vs.<br>'+label_str, 
                                           x=.5, 
                                           font=dict(
                                               family='Cadiz Semibold',
                                                size=20
                                               )
                                           ),
-                            xaxis= dict(title = dict(text='Hyödykkeiden pisteluku', 
+                            xaxis= dict(title = dict(text='Point figure', 
                                                      font=dict(
                                                          family='Cadiz Semibold',
                                                           size=20
@@ -4113,71 +4075,72 @@ def update_commodity_unemployment_graph(values, label):
                                              )
                                          )
                              )
-          ),config = config_plots)]
+          ),config = config_plots_en)]
 
 @callback(
     [
      
-     Output('feature_selection', 'options'),
-     Output('sorting', 'label'),
+     Output('feature_selection_en', 'options'),
+     Output('sorting_en', 'label'),
      # Output('feature_selection', 'value')
      
      ],
-    [Input('alphabet', 'n_clicks'),
-     Input('corr_desc', 'n_clicks'),
-     Input('corr_asc', 'n_clicks'),
-     Input('corr_abs_desc', 'n_clicks'),
-     Input('corr_abs_asc', 'n_clicks'),
-     Input('main_class', 'n_clicks'),
-     Input('second_class', 'n_clicks'),
-     Input('third_class', 'n_clicks'),
-     Input('fourth_class', 'n_clicks'),
-     Input('fifth_class', 'n_clicks')
+    [Input('alphabet_en', 'n_clicks'),
+     Input('corr_desc_en', 'n_clicks'),
+     Input('corr_asc_en', 'n_clicks'),
+     Input('corr_abs_desc_en', 'n_clicks'),
+     Input('corr_abs_asc_en', 'n_clicks'),
+     Input('main_class_en', 'n_clicks'),
+     Input('second_class_en', 'n_clicks'),
+     Input('third_class_en', 'n_clicks'),
+     Input('fourth_class_en', 'n_clicks'),
+     Input('fifth_class_en', 'n_clicks')
     ]
 )
-def update_selections(*args):
+def en_update_selections(*args):
     
     ctx = callback_context
     
     
     if not ctx.triggered:
-        return corr_abs_asc_options, "Absoluuttinen korrelaatio (laskeva)"#,[f['value'] for f in corr_abs_asc_options[:4]]
+        return corr_abs_asc_options_en, "Absolute correlation (descending)"#,[f['value'] for f in corr_abs_asc_options[:4]]
     else:
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
-    if button_id == 'alphabet':
-        return feature_options, "Aakkosjärjestyksessä"#,[f['value'] for f in feature_options[:4]]
-    elif button_id == 'corr_desc':
-        return corr_desc_options, "Korrelaatio (laskeva)"#,[f['value'] for f in corr_desc_options[:4]]
-    elif button_id == 'corr_asc':
-        return corr_asc_options, "Korrelaatio (nouseva)"#,[f['value'] for f in corr_asc_options[:4]]
-    elif button_id == 'corr_abs_desc':
-        return corr_abs_desc_options, "Absoluuttinen korrelaatio (laskeva)"#,[f['value'] for f in corr_abs_desc_options[:4]]
-    elif button_id == 'corr_abs_asc':
-        return corr_abs_asc_options, "Absoluuttinen korrelaatio (nouseva)"#,[f['value'] for f in corr_abs_asc_options[:4]]
-    elif button_id == 'main_class':
-        return main_class_options, "Pääluokittain"#,[f['value'] for f in main_class_options[:4]]
-    elif button_id == 'second_class':
-        return second_class_options, "2. luokka"#,[f['value'] for f in second_class_options[:4]]
-    elif button_id == 'third_class':
-        return third_class_options, "3. luokka"#,[f['value'] for f in third_class_options[:4]]
-    elif button_id == 'fourth_class':
-        return fourth_class_options, "4. luokka"#,[f['value'] for f in fourth_class_options[:4]]
+    if button_id == 'alphabet_en':
+        return feature_options_en, "Alphabetical order",#[f['value'] for f in feature_options[:4]]
+    elif button_id == 'corr_desc_en':
+        return corr_desc_options_en, "Correlation (descending)",#[f['value'] for f in corr_desc_options[:4]]
+    elif button_id == 'corr_asc_en':
+        return corr_asc_options_en, "Correlation (ascending)",#[f['value'] for f in corr_asc_options[:4]]
+    elif button_id == 'corr_abs_desc_en':
+        return corr_abs_desc_options_en, "Absolute correlation (descending)"#,[f['value'] for f in corr_abs_desc_options[:4]]
+    elif button_id == 'corr_abs_asc_en':
+        return corr_abs_asc_options_en, "Absolute correlation (ascending)",#[f['value'] for f in corr_abs_asc_options[:4]]
+    elif button_id == 'main_class_en':
+        return main_class_options_en, "Main classes",#[f['value'] for f in main_class_options[:4]]
+    elif button_id == 'second_class_en':
+        return second_class_options_en, "2. class",#[f['value'] for f in second_class_options[:4]]
+    elif button_id == 'third_class_en':
+        return third_class_options_en, "3. class",#[f['value'] for f in third_class_options[:4]]
+    elif button_id == 'fourth_class_en':
+        return fourth_class_options_en, "4. class"#,[f['value'] for f in fourth_class_options[:4]]
     else:
-        return fifth_class_options, "5. luokka",[f['value'] for f in fifth_class_options[:4]]
+        return fifth_class_options_en, "5. class",#[f['value'] for f in fifth_class_options[:4]]
     
 @callback(
-    Output("offcanvas", "is_open"),
-    Input("open-offcanvas", "n_clicks"),
-    [State("offcanvas", "is_open")],
+    Output("offcanvas_en", "is_open"),
+    Input("open-offcanvas_en", "n_clicks"),
+    [State("offcanvas_en", "is_open")],
 )
-def toggle_offcanvas(n1, is_open):
+def en_toggle_offcanvas(n1, is_open):
     if n1:
         return not is_open
     return is_open
 
 
 
-# Käynnistä sovellus.
+
+# # Käynnistä sovellus.
 # if __name__ == "__main__":
 #     app.run_server(debug=in_dev, threaded = True)
