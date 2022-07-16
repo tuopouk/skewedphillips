@@ -3252,7 +3252,7 @@ def sv_download_forecast_data(n_clicks, df, method_selection_results, weights_di
         
         df = pd.DataFrame(df).set_index('Aika').copy()
         df.index = pd.to_datetime(df.index)
-        df.index.name = 'Time'
+        df.index.name = 'Tid'
         forecast_size = len(df)
         n_feat = df.n_feat.values[0]
         df.drop('n_feat',axis=1,inplace=True)
@@ -3352,7 +3352,7 @@ def sv_download_test_data(n_clicks,
         
         df = pd.DataFrame(df).set_index('Aika').copy()
         df.index = pd.to_datetime(df.index)
-        df.index.name = 'Time'
+        df.index.name = 'Tid'
         mape = df.mape.values[0]
         test_size = len(df)
         n_feat = df.n_feat.values[0]
