@@ -1502,7 +1502,7 @@ def layout():
                                                 style=p_style),
                                           html.Br(),
                                                                             
-                                          html.H3("Ekonomins tionde pris:",style = {'text-align':'center', 
+                                          html.H3("Ekonomins tionde grundprincip:",style = {'text-align':'center', 
                                                                                                    #'font-family':'Messina Modern Semibold',
                                                                                                    'font-style': 'italic', 
                                                                                                    'font-weight': 'bold', 
