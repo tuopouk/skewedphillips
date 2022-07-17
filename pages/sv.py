@@ -174,72 +174,7 @@ h1_style = {
 
 
 
-# dbc_css = ("https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates@V1.0.2/dbc.min.css")
 
-# external_stylesheets = [
-#                         # "https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/superhero/bootstrap.min.css",
-                        
-#                          dbc.themes.SUPERHERO,
-#                          dbc_css,
-#                          "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
-#                           'https://codepen.io/chriddyp/pen/brPBPO.css',
-                          
-#                        ]
-
-
-# server = Flask(__name__)
-# server.secret_key = os.environ.get('secret_key','secret')
-# app = Dash(name = __name__, 
-#            prevent_initial_callbacks = False, 
-#            # transforms=[ServersideOutputTransform(),
-#            #             TriggerTransform()],
-#            server = server,
-#            external_scripts = ["https://raw.githubusercontent.com/plotly/plotly.js/master/dist/plotly-locale-fi.js",
-#                                "https://cdn.plot.ly/plotly-locale-fi-latest.js"],
-#             # meta_tags=[{'name': 'viewport',
-#             #                 'content': 'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1,'}],
-#            external_stylesheets = external_stylesheets
-#           )
-# # app.scripts.config.serve_locally = True
-# #app.scripts.append_script({"external_url": "https://cdn.plot.ly/plotly-locale-fi-latest.js"})
-
-# app.index_string = '''<!DOCTYPE html>
-# <html>
-# <head>
-# <title>Skewed Phillips</title>
-# <link rel="manifest" href="./assets/manifest.json" />
-# {%metas%}
-# {%favicon%}
-# {%css%}
-# </head>
-# <script type="module">
-#    import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
-#    const el = document.createElement('pwa-update');
-#    document.body.appendChild(el);
-# </script>
-# <body>
-# <script>
-#   if ('serviceWorker' in navigator) {
-#     window.addEventListener('load', ()=> {
-#       navigator
-#       .serviceWorker
-#       .register('./assets/sw01.js')
-#       .then(()=>console.log("Ready."))
-#       .catch(()=>console.log("Err..."));
-#     });
-#   }
-# </script>
-# {%app_entry%}
-# <footer>
-# {%config%}
-# {%scripts%}
-# {%renderer%}
-# </footer>
-# </body>
-# </html>
-# '''
-
-# app.title = 'Skewed Phillips'
 
 
 
@@ -557,8 +492,12 @@ def sv_get_param_options(model_name):
 
 def sv_plot_test_results(df, chart_type = 'lines+bars'):
     
-    # mape = round(100 * mean_absolute_percentage_error(df.Työttömyysaste, df.Ennuste),2)
-    # mape = round(100*df.mape.values[0],1)
+    try:
+        locale.setlocale(locale.LC_ALL, 'sv-FI')
+    except:
+        locale.setlocale(locale.LC_ALL, 'sv_FI')
+    
+   
     hovertemplate = ['<b>{}</b>:<br>Sant: {}<br>Förutsägt: {}'.format(df.index[i].strftime('%B %Y'),df.Työttömyysaste.values[i], df.Ennuste.values[i]) for i in range(len(df))]
     
     if chart_type == 'lines+bars':
@@ -789,6 +728,11 @@ def sv_plot_test_results(df, chart_type = 'lines+bars'):
                                                     
                                                     
 def sv_plot_forecast_data(df, chart_type):
+    
+    try:
+        locale.setlocale(locale.LC_ALL, 'sv-FI')
+    except:
+        locale.setlocale(locale.LC_ALL, 'sv_FI')
     
     
     hover_true = ['<b>{}</b><br>Arbetslöshet: {} %'.format(data_sv.index[i].strftime('%B %Y'), data_sv.Työttömyysaste.values[i]) for i in range(len(data_sv))]
@@ -1371,7 +1315,7 @@ def layout():
                 
                 dbc.Col([
                     
-                      
+                    html.Br(),   
                     html.H1('Skev Phillips',
                              style=h1_style
                             ),
@@ -1737,7 +1681,7 @@ def layout():
                                       dbc.Col([
                                           html.Div(style = {'text-align':'center'},children = [
                                               
-                                              html.Label(['Application on ', 
+                                              html.Label(['Program på ', 
                                                       html.A('GitHub', href='https://github.com/tuopouk/skewedphillips')
                                                       ],style=p_style)
                                       ])

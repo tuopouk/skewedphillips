@@ -181,109 +181,7 @@ h1_style = {
 
 
 
-# dbc_css = ("https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates@V1.0.2/dbc.min.css")
 
-# external_stylesheets = [
-#                         # "https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/superhero/bootstrap.min.css",
-                        
-#                          dbc.themes.SUPERHERO,
-#                          dbc_css,
-#                          "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
-#                           'https://codepen.io/chriddyp/pen/brPBPO.css',
-                          
-#                        ]
-
-
-# server = Flask(__name__)
-# server.secret_key = os.environ.get('secret_key','secret')
-# app = Dash(name = __name__, 
-#            plugins=[dl.plugins.pages],
-#            prevent_initial_callbacks = False, 
-#            # transforms=[ServersideOutputTransform(),
-#            #             TriggerTransform()],
-#            server = server,
-#            external_scripts = ["https://raw.githubusercontent.com/plotly/plotly.js/master/dist/plotly-locale-fi.js",
-#                                "https://cdn.plot.ly/plotly-locale-fi-latest.js"],
-#             # meta_tags=[{'name': 'viewport',
-#             #                 'content': 'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1,'}],
-#            external_stylesheets = external_stylesheets
-#           )
-# # app.scripts.config.serve_locally = True
-# #app.scripts.append_script({"external_url": "https://cdn.plot.ly/plotly-locale-fi-latest.js"})
-
-# app.index_string = '''<!DOCTYPE html>
-# <html>
-# <head>
-# <title>Phillipsin vinouma</title>
-# <link rel="manifest" href="./assets/manifest.json" />
-# {%metas%}
-# {%favicon%}
-# {%css%}
-# </head>
-# <script type="module">
-#    import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
-#    const el = document.createElement('pwa-update');
-#    document.body.appendChild(el);
-# </script>
-# <body>
-# <script>
-#   if ('serviceWorker' in navigator) {
-#     window.addEventListener('load', ()=> {
-#       navigator
-#       .serviceWorker
-#       .register('./assets/sw01.js')
-#       .then(()=>console.log("Ready."))
-#       .catch(()=>console.log("Err..."));
-#     });
-#   }
-# </script>
-# {%app_entry%}
-# <footer>
-# {%config%}
-# {%scripts%}
-# {%renderer%}
-# </footer>
-# </body>
-# </html>
-# '''
-
-# app.title = 'Phillipsin vinouma'
-
-
-
-
-
-
-# navbar = dbc.Navbar(
-#     dbc.Container(
-#         [
-#             html.A(
-#                 # Use row and col to control vertical alignment of logo / brand
-#                 dbc.Row(
-#                     [
-#                         dbc.Col(html.Img(src="assets/gofore_logo_orange.svg")),
-                        
-                        
-#                         dbc.Col(dbc.NavItem(dbc.NavLink("Change to English", href="#", target='_blank')),
-                                
-#                                 ),
-#                     ],
-#                     align="center",
-#                     justify='center',
-#                     className="flex-grow-1",
-#                 ),
-#                 href="https://gofore.com/",
-#                 target='_blank',
-#                 style = p_style
-#                 # style={"textDecoration": "none"},
-#             ),
-            
-#         ]
-#     ),
-#     color="dark",
-#     dark=True,
-#     className = 'dbc'
-# )
 
 
 
@@ -1417,7 +1315,7 @@ def layout():
                 
                 dbc.Col([
                     
-                      
+                    html.Br(),  
                     html.H1('Phillipsin vinouma',
                              style=h1_style
                             ),
