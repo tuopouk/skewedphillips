@@ -3283,17 +3283,21 @@ def update_shap_graph(cut_off, only_commodities, shap):
                                                         )))
     
 
+
+
 @callback(
     Output("forecast_download", "data"),
-    [Input("forecast_download_button", "n_clicks"),
+    [Input("forecast_download_button", "n_clicks")],
     [State('forecast_data','data'),
-     State('method_selection_results','data'),
-     State('change_weights','data')
+      State('method_selection_results','data'),
+      State('change_weights','data')
      ]
-    ]
+    
     
 )
 def download_forecast_data(n_clicks, df, method_selection_results, weights_dict):
+    
+    
     
     if n_clicks > 0:
         

@@ -3237,12 +3237,12 @@ def sv_update_shap_graph(cut_off, only_commodities, shap):
 
 @callback(
     Output("forecast_download_sv", "data"),
-    [Input("forecast_download_button_sv", "n_clicks"),
+    [Input("forecast_download_button_sv", "n_clicks")],
     [State('forecast_data_sv','data'),
      State('method_selection_results_sv','data'),
      State('change_weights_sv','data')
      ]
-    ]
+    
     
 )
 def sv_download_forecast_data(n_clicks, df, method_selection_results, weights_dict):

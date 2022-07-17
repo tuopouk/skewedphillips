@@ -3239,12 +3239,12 @@ def en_update_shap_graph(cut_off, only_commodities, shap):
 
 @callback(
     Output("forecast_download_en", "data"),
-    [Input("forecast_download_button_en", "n_clicks"),
+    [Input("forecast_download_button_en", "n_clicks")],
     [State('forecast_data_en','data'),
      State('method_selection_results_en','data'),
      State('change_weights_en','data')
      ]
-    ]
+    
     
 )
 def en_download_forecast_data(n_clicks, df, method_selection_results, weights_dict):
