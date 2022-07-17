@@ -1870,7 +1870,7 @@ def layout():
                             html.Br(),
                             
                             dbc.Alert("Välj minst en vara!", color="danger",
-                                      dismissable=True, fade = True, is_open=False, id = 'alert', 
+                                      dismissable=True, fade = True, is_open=False, id = 'alert_sv', 
                                       style = {'text-align':'center', 'font-size':p_font_size, #'font-family':'Cadiz Semibold'
                                                }),
                             dash_daq.BooleanSwitch(id = 'select_all_sv', 

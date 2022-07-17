@@ -1872,7 +1872,7 @@ def layout():
                             html.Br(),
                             
                             dbc.Alert("Select at least one commodity!", color="danger",
-                                      dismissable=True, fade = True, is_open=False, id = 'alert', 
+                                      dismissable=True, fade = True, is_open=False, id = 'alert_en', 
                                       style = {'text-align':'center', 'font-size':p_font_size, #'font-family':'Cadiz Semibold'
                                                }),
                             dash_daq.BooleanSwitch(id = 'select_all_en', 
