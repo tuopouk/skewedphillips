@@ -1157,161 +1157,7 @@ def layout():
         html.Br(),        
         dbc.Row(
             [
-                dbc.Col(
-                    [
-                    
-                    # ThemeChangerAIO(aio_id="theme", 
-                    #                     button_props={'title':'Vaihda väriteemaa',
-                    #                                   # 'size':'lg',
-                    #                                   'children' : 'Vaihda väriteemaa',
-                    #                                   'color':'warning'},
-                    #                     offcanvas_props={'title':"Valitse jokin alla olevista väriteemoista",
-                                                         
-                    #                                      'scrollable':True},
-                    #                     radio_props={"value":dbc.themes.SUPERHERO}),
-                    # html.Br(),
-                
-                    dbc.Button("Avaa pikaohje", 
-                                 id="open-offcanvas", 
-                                 n_clicks=0, 
-                                 outline=True,
-                                  size = 'lg',
-                                 color = 'danger',
-                                 className="me-1",
-                                 # style = {'font-style':'Cadiz Semibold'}
-                                 ),
-                    dbc.Offcanvas(
-                          [
-                              
-                          html.H3('Tässä on lyhyt ohjeistus sovelluksen käyttöön. Yksityiskohtaisempaa informaatiota löytyy Ohje ja esittely -välilehdeltä sekä jokaisen toiminnon omalta välilehdeltään.', 
-                                  style = {
-                                      # #'font-family':'Cadiz Semibold',
-                                            'text-align':'left',
-                                            
-                                            'font-size':22,
-                                            'margin-bottom':'30px'
-                                            }
-                                  ),
-                              
-                          html.H3('1. Valitse hyödykkeitä Hyödykkeiden valinta -välilehdellä', 
-                                  style = {
-                                      # #'font-family':'Cadiz Semibold',
-                                            'text-align':'left',
-                                            'font-size':20,
-                                            'margin-bottom':'30px'
-                                            }
-                                  ),
-                          
-                          html.P(
-                              "Valitse haluamasi hyödykkeet alasvetovalikosta. "
-                              "Voit lajitella hyödykkeet haluamallasi tavalla. "
-                              "Valitse käytetäänkö edellisten kuukausien muutoskeskiarvoja "
-                              "tai vakiomuutosta kaikille valitsinta klikkaamalla. "
-                              "Säädä olettu muutos liutin -valinnalla. "
-                              "Hienosäädä yksittäisten hyödykkeiden muutoksia muokkaamalla laatikoiden arvoja.",
-                               style = {
-                                   # #'font-family':'Cadiz Book',
-                                        'font-size':p_font_size-2,
-                                         'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3('2. Tutki valitsemiasi hyödykkeitä Tutkiva analyysi -välilehdellä', 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                            'margin-bottom':'30px',
-                                            'font-size':20,
-                                              'text-align':'left',
-                                              
-                                              }
-                                  ),
-                          
-                          html.P(
-                              "Tarkastele kuvaajien avulla valittujen hyödykkeiden suhdetta työttömyysasteeseen "
-                              "tai hyödykkeiden suhteita toisiinsa. "
-                              "Voit myös tarkastella indeksien, työttömyysasteen ja inflaation aikasarjoja.",
-                               style = {
-                                   # #'font-family':'Cadiz Book',
-                                        'font-size':p_font_size-2,
-                                          'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3('3. Valitse menetelmä Menetelmän valinta -välilehdellä', 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                            'margin-bottom':'30px',
-                                            'font-size':20,
-                                              'text-align':'left'}
-                                  ),
-                          html.P(
-                              "Valitse haluamasi koneoppimisalgoritmi alasvetovalikosta. "
-                              "Säädä algoritmin hyperparametrit. "
-                              "Valitse painikkeesta käytetäänkö pääkomponenttianalyysiä "
-                              "ja niin tehtäessä valitse säilötyn variaation määrä liutin-valinnalla.",
-                               style = {
-                                   # #'font-family':'Cadiz Book',
-                                        'font-size':p_font_size-2,
-                                          'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3('4. Testaa menetelmää Testaaminen-välilehdellä', 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                             'text-align':'left',
-                                             'font-size':20,
-                                             'margin-bottom':'30px'
-                                             }
-                                  ),
-                          
-                          html.P(
-                              "Valitse testin pituus ja klikkaa testaa nappia. "
-                              "Tarkastele testin kuvaajaa tai viedä tulokset Exceliin "
-                              "klikkaamalla 'Lataa testitulokset koneelle -nappia'. "
-                              "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä."
-                              " "
-                              " Voit myös tutkia Shapley-arvojen avulla mitkä piirteet ja hyödykkeet vaikuttivat eniten ennustetulokseen.",
-                              style = {
-                                  # #'font-family':'Cadiz Book',
-                                       'font-size':p_font_size-2,
-                                        'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3('5. Tee ennuste Ennustaminen-välilehdellä', 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                             'text-align':'left',
-                                             'font-size':20,
-                                             'margin-bottom':'30px'
-                                             
-                                             }
-                                  ),
-                          
-                          html.P(
-                              "Valitse ennusteen pituus ja klikkaa ennusta nappia. "
-                              "Tarkastele ennusteen kuvaajaa tai viedä tulokset Exceliin "
-                              "klikkaamalla 'Lataa ennustedata koneelle -nappia'. "
-                              "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä. "
-                              "Voit myös säätää hyödykeindeksien oletettuja kuukausimuutoksia ja kokeilla uudestaan.",
-                              style = {
-                                  # #'font-family':'Cadiz Book',   
-                                       'font-size':p_font_size-2,
-                                         'text-align':'left'}
-                          ),
-                          
-                          
-                          
-                        ],
-                          id="offcanvas",
-                          title="Pikaohje",
-                          scrollable=True,
-                          is_open=False,
-                          style = {
-                              # 'font-style':'Cadiz Book',
-                                  'background-color':'white',
-                                  'color':'black',
-                                   'font-size':'30px'}
-                    )  
-                
-                ], xs =12, sm=12, md=12, lg=1, xl=1),
+            
                 
                 dbc.Col([
                     
@@ -1327,8 +1173,8 @@ def layout():
                            'Vasemman yläkulman painikkeista saat näkyviin pikaohjeen '
                            'ja voit myös vaihtaa sivun väriteemaa.',
                            style = p_style)
-                    ],xs =12, sm=12, md=12, lg=11, xl=11)
-        ], justify='left'),
+                    ],xs =12, sm=12, md=12, lg=9, xl=9)
+        ], justify='center'),
         html.Br(),
         
         html.Div(id = 'hidden_store_div',
@@ -4072,18 +3918,3 @@ def update_selections(*args):
     else:
         return fifth_class_options, "5. luokka"#,[f['value'] for f in fifth_class_options[:4]]
     
-@callback(
-    Output("offcanvas", "is_open"),
-    Input("open-offcanvas", "n_clicks"),
-    [State("offcanvas", "is_open")],
-)
-def toggle_offcanvas(n1, is_open):
-    if n1:
-        return not is_open
-    return is_open
-
-
-
-# Käynnistä sovellus.
-# if __name__ == "__main__":
-#     app.run_server(debug=in_dev, threaded = True)

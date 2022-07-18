@@ -1158,161 +1158,6 @@ def layout():
         html.Br(),        
         dbc.Row(
             [
-                dbc.Col(
-                    [
-                    # ThemeChangerAIO(aio_id="theme_en", 
-                    #                     button_props={'title':'Change Color Theme',
-                    #                                   # 'size':'lg',
-                    #                                   'children' : 'Change Color Theme',
-                    #                                   'color':'warning'},
-                    #                     offcanvas_props={'title':"Select a Color Theme",
-                                                         
-                    #                                      'scrollable':True},
-                    #                     radio_props={"value":dbc.themes.SUPERHERO}),
-                    # html.Br(),
-     
-                
-                    dbc.Button("Open Quick Help", 
-                                 id="open-offcanvas_en", 
-                                 n_clicks=0, 
-                                 outline=True,
-                                  size = 'lg',
-                                 color = 'danger',
-                                 className="me-1",
-                                 # style = {'font-style':'Cadiz Semibold'}
-                                 ),
-                    dbc.Offcanvas(
-                          [
-                              
-                          html.H3('For more detailed information, see the Help and Introduction tab and the separate tab for each action.', 
-                                  style = {
-                                      # #'font-family':'Cadiz Semibold',
-                                            'text-align':'left',
-                                            
-                                            'font-size':22,
-                                            'margin-bottom':'30px'
-                                            }
-                                  ),
-                              
-                          html.H3('1. Select commodities on the Choice of Goods tab', 
-                                  style = {
-                                      # #'font-family':'Cadiz Semibold',
-                                            'text-align':'left',
-                                            'font-size':20,
-                                            'margin-bottom':'30px'
-                                            }
-                                  ),
-                          
-                          html.P(
-                              "Select the commodities you want from the drop-down menu. "
-                              "You can sort the goods any way you want. "
-                              "Select whether to use change averages from previous months "
-                              "or a standard change for all by clicking on the selector. "
-                              "Adjust the default change using the slider option. "
-                              "Fine-tune changes in individual commodities by modifying the values in the boxes.",
-                               style = {
-                                   # #'font-family':'Cadiz Book',
-                                        'font-size':p_font_size-2,
-                                         'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3('2. Explore the products you select in the Exploratory Analysis tab', 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                            'margin-bottom':'30px',
-                                            'font-size':20,
-                                              'text-align':'left',
-                                              
-                                              }
-                                  ),
-                          
-                          html.P(
-                              "View the relationship between selected goods and unemployment rate using graphs "
-                              "or the relationship between commodities. "
-                              "You can also view time series for indices, unemployment rate, and inflation.",
-                               style = {
-                                   # #'font-family':'Cadiz Book',
-                                        'font-size':p_font_size-2,
-                                          'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3('3. Select a method on the Method Selection tab', 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                            'margin-bottom':'30px',
-                                            'font-size':20,
-                                              'text-align':'left'}
-                                  ),
-                          html.P(
-                              "Select the desired machine learning algorithm from the drop-down menu. "
-                              "Adjust the algorithm's hyperparameters. "
-                              "Select whether to use principal component analysis"
-                              "and when doing so, select the amount of explained variance with the slider selection.",
-                               style = {
-                                   # #'font-family':'Cadiz Book',
-                                        'font-size':p_font_size-2,
-                                          'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3('4. Test method on Test tab', 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                             'text-align':'left',
-                                             'font-size':20,
-                                             'margin-bottom':'30px'
-                                             }
-                                  ),
-                          
-                          html.P(
-                              "Select the test length and click the test button. "
-                              "View the test graph or export the results to Excel "
-                              "by clicking the 'Download test results' button. "
-                              "You can go back to the previous steps and try again with different commodities and methods."
-                              " "
-                              " You can also use Shapley values to determine which features and commodities contributed most to your forecast result.",
-                              style = {
-                                  # #'font-family':'Cadiz Book',
-                                       'font-size':p_font_size-2,
-                                        'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3('5. Make a forecast on the Forecast tab', 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                             'text-align':'left',
-                                             'font-size':20,
-                                             'margin-bottom':'30px'
-                                             
-                                             }
-                                  ),
-                          
-                          html.P(
-                              "Select the forecast length and click the forecast button. "
-                              "View the forecast graph or export the results to Excel "
-                              "by clicking the 'Download forecast results' button."
-                              "You can go back to the previous steps and try again with different commodities and methods. "
-                              "You can also adjust expected monthly changes in commodity indices and try again.",
-                              style = {
-                                  # #'font-family':'Cadiz Book',   
-                                       'font-size':p_font_size-2,
-                                         'text-align':'left'}
-                          ),
-                          
-                          
-                          
-                        ],
-                          id="offcanvas_en",
-                          title="Quick Help",
-                          scrollable=True,
-                          is_open=False,
-                          style = {
-                              # 'font-style':'Cadiz Book',
-                                  'background-color':'white',
-                                  'color':'black',
-                                   'font-size':'30px'}
-                    )  
-                
-                ], xs =12, sm=12, md=12, lg=1, xl=1),
                 
                 dbc.Col([
                     
@@ -1328,8 +1173,8 @@ def layout():
                            'The buttons in the upper left corner show quick help '
                            'and you can also change the color scheme of the page.',
                            style = p_style)
-                    ],xs =12, sm=12, md=12, lg=11, xl=11)
-        ], justify='left'),
+                    ],xs =12, sm=12, md=12, lg=9, xl=9)
+        ], justify='center'),
         html.Br(),
         
         html.Div(id = 'hidden_store_div_en',
@@ -4075,19 +3920,3 @@ def en_update_selections(*args):
     else:
         return fifth_class_options_en, "5. class",#[f['value'] for f in fifth_class_options[:4]]
     
-@callback(
-    Output("offcanvas_en", "is_open"),
-    Input("open-offcanvas_en", "n_clicks"),
-    [State("offcanvas_en", "is_open")],
-)
-def en_toggle_offcanvas(n1, is_open):
-    if n1:
-        return not is_open
-    return is_open
-
-
-
-
-# # Käynnistä sovellus.
-# if __name__ == "__main__":
-#     app.run_server(debug=in_dev, threaded = True)

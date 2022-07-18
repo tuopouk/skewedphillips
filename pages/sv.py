@@ -1157,161 +1157,7 @@ def layout():
         html.Br(),        
         dbc.Row(
             [
-                dbc.Col(
-                    [
-                    # ThemeChangerAIO(aio_id="theme_sv", 
-                    #                     button_props={'title':'Ändra färgtema',
-                    #                                   # 'size':'lg',
-                    #                                   'children' : 'Ändra färgtema',
-                    #                                   'color':'warning'},
-                    #                     offcanvas_props={'title':"Välj ett färgtema",
-                                                         
-                    #                                      'scrollable':True},
-                    #                     radio_props={"value":dbc.themes.SUPERHERO}),
-                    # html.Br(),
-     
                 
-                    dbc.Button("Öppna snabbhjälp", 
-                                 id="open-offcanvas_sv", 
-                                 n_clicks=0, 
-                                 outline=True,
-                                  size = 'lg',
-                                 color = 'danger',
-                                 className="me-1",
-                                 # style = {'font-style':'Cadiz Semibold'}
-                                 ),
-                    dbc.Offcanvas(
-                          [
-                              
-                          html.H3('Mer detaljerad information finns i fliken Hjälp och Introduktion och den separata fliken för varje åtgärd.', 
-                                  style = {
-                                      # #'font-family':'Cadiz Semibold',
-                                            'text-align':'left',
-                                            
-                                            'font-size':22,
-                                            'margin-bottom':'30px'
-                                            }
-                                  ),
-                              
-                          html.H3('1. Välj varor på fliken Val av varor', 
-                                  style = {
-                                      # #'font-family':'Cadiz Semibold',
-                                            'text-align':'left',
-                                            'font-size':20,
-                                            'margin-bottom':'30px'
-                                            }
-                                  ),
-                          
-                          html.P(
-                              "Välj de varor du vill ha från rullgardinsmenyn. "
-                                "Du kan sortera varorna som du vill."
-                                "Välj om förändringsmedel från tidigare månader ska användas "
-                                "eller en standardändring för alla genom att klicka på väljaren. "
-                                "Justera standardändringen med skjutreglaget."
-                                "Finjustera förändringar i enskilda varor genom att ändra värdena i rutorna.",
-                               style = {
-                                   # #'font-family':'Cadiz Book',
-                                        'font-size':p_font_size-2,
-                                         'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3('2. Utforska de produkter du väljer på fliken Exploratorisk analys', 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                            'margin-bottom':'30px',
-                                            'font-size':20,
-                                              'text-align':'left',
-                                              
-                                              }
-                                  ),
-                          
-                          html.P(
-                              "Se förhållandet mellan utvalda varor och arbetslöshet med hjälp av grafer "
-                            "eller förhållandet mellan varor."
-                            "Du kan också se tidsserier för index, arbetslöshet och inflation.",
-                               style = {
-                                   # #'font-family':'Cadiz Book',
-                                        'font-size':p_font_size-2,
-                                          'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3('3. Välj en metod på fliken Metodval', 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                            'margin-bottom':'30px',
-                                            'font-size':20,
-                                              'text-align':'left'}
-                                  ),
-                          html.P(
-                              "Välj önskad maskininlärningsalgoritm från rullgardinsmenyn. "
-                                "Justera algoritmens hyperparametrar."
-                                "Välj om huvudkomponentanalys ska användas"
-                                "och när du gör det väljer du mängden förklarad varians med skjutreglagets val.",
-                               style = {
-                                   # #'font-family':'Cadiz Book',
-                                        'font-size':p_font_size-2,
-                                          'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3("4. Testa din metod på fliken Test", 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                             'text-align':'left',
-                                             'font-size':20,
-                                             'margin-bottom':'30px'
-                                             }
-                                  ),
-                          
-                          html.P(
-                              "Välj testlängden och klicka på testknappen. "
-                                "Visa testgrafen eller exportera resultaten till Excel "
-                                "genom att klicka på knappen 'Hämta testresultat'."
-                                "Du kan gå tillbaka till de tidigare stegen och försöka igen med olika råvaror och metoder."
-                                " "
-                                "Du kan också använda Shapley-värden för att avgöra vilka funktioner och råvaror som bidrog mest till ditt prognosresultat.",
-                              style = {
-                                  # #'font-family':'Cadiz Book',
-                                       'font-size':p_font_size-2,
-                                        'text-align':'left'}
-                          ),
-                          html.Br(),
-                          html.H3("5. Gör en prognos på fliken Prognos", 
-                                   style = {
-                                       # #'font-family':'Cadiz Semibold',
-                                             'text-align':'left',
-                                             'font-size':20,
-                                             'margin-bottom':'30px'
-                                             
-                                             }
-                                  ),
-                          
-                          html.P(
-                              "Välj prognoslängden och klicka på prognosknappen. "
-                            "Visa prognosgrafen eller exportera resultaten till Excel "
-                            "genom att klicka på knappen 'Hämta prognosresultat'."
-                            "Du kan gå tillbaka till de tidigare stegen och försöka igen med olika råvaror och metoder. "
-                            "Du kan också justera förväntade månatliga förändringar i råvaruindex och försöka igen.",
-                              style = {
-                                  # #'font-family':'Cadiz Book',   
-                                       'font-size':p_font_size-2,
-                                         'text-align':'left'}
-                          ),
-                          
-                          
-                          
-                        ],
-                          id="offcanvas_sv",
-                          title="Snabbhjälp",
-                          scrollable=True,
-                          is_open=False,
-                          style = {
-                              # 'font-style':'Cadiz Book',
-                                  'background-color':'white',
-                                  'color':'black',
-                                   'font-size':'30px'}
-                    )  
-                
-                ], xs =12, sm=12, md=12, lg=1, xl=1),
                 
                 dbc.Col([
                     
@@ -1327,8 +1173,8 @@ def layout():
                             'Knapparna i övre vänstra hörnet visar snabb hjälp '
                             'Du kan också ändra färgschemat på sidan.',
                            style = p_style)
-                    ],xs =12, sm=12, md=12, lg=11, xl=11)
-        ], justify='left'),
+                    ],xs =12, sm=12, md=12, lg=9, xl=9)
+        ], justify='center'),
         html.Br(),
         
         html.Div(id = 'hidden_store_div_sv',
@@ -4043,13 +3889,3 @@ def sv_update_selections(*args):
     else:
         return fifth_class_options_sv, "5. klass",#[f['value'] for f in fifth_class_options[:4]]
     
-@callback(
-    Output("offcanvas_sv", "is_open"),
-    Input("open-offcanvas_sv", "n_clicks"),
-    [State("offcanvas_sv", "is_open")],
-)
-def sv_toggle_offcanvas(n1, is_open):
-    if n1:
-        return not is_open
-    return is_open
-
