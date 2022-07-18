@@ -1538,12 +1538,16 @@ def layout():
                                               html.P('Tässä on vielä listattu datalähteet sekä lisälukemista kuvattuihin aiheisiin liittyen.',
                                                      style =p_style),
                                               
-                                              html.Label(['Tilastokeskus: ', 
+                                              html.Label(['Tilastokeskuksen maksuttomat tilastotietokannat: ', 
                                                         html.A('Työvoimatutkimuksen tärkeimmät tunnusluvut, niiden kausitasoitetut aikasarjat sekä kausi- ja satunnaisvaihtelusta tasoitetut trendit', href = "https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__tyti/statfin_tyti_pxt_135z.px/",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
-                                              html.Label(['Tilastokeskus: ', 
+                                              html.Label(['Tilastokeskuksen maksuttomat tilastotietokannat: ', 
                                                         html.A('Kuluttajahintaindeksi (2010=100)', href = "https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__khi/statfin_khi_pxt_11xd.px/",target="_blank")
+                                                      ],style=p_style),
+                                              html.Br(),
+                                              html.Label(['Tilastokeskuksen maksuttomat tilastotietokannat: ', 
+                                                        html.A('Kuluttajahintaindeksin vuosimuutos, kuukausitiedot', href = "https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__khi/statfin_khi_pxt_122p.px/",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
                                               html.Label(['Tilastokeskus: ', 

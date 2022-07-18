@@ -1547,6 +1547,10 @@ def layout():
                                                         html.A('Konsumentprisindex (2010=100), månadsuppgifter', href = "https://statfin.stat.fi/PxWeb/pxweb/sv/StatFin/StatFin__khi/statfin_khi_pxt_11xd.px/",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
+                                              html.Label(['Statistikcentralens avgiftsfria statistikdatabaser: ', 
+                                                        html.A('Årsförändring av konsumentprisindexet, månadsuppgifter', href = "https://statfin.stat.fi/PxWeb/pxweb/sv/StatFin/StatFin__khi/statfin_khi_pxt_122p.px/",target="_blank")
+                                                      ],style=p_style),
+                                              html.Br(),
                                               html.Label(['Statistikcentralen: ', 
                                                        html.A('Begrepp', href = "https://www.stat.fi/meta/kas/index_sv.html",target="_blank")
                                                       ],style=p_style),

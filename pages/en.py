@@ -1548,6 +1548,10 @@ def layout():
                                                         html.A('Consumer Price Index (2010=100), monthly data', href = "https://statfin.stat.fi/PxWeb/pxweb/en/StatFin/StatFin__khi/statfin_khi_pxt_11xd.px/",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
+                                              html.Label(['Statistics Finland’s free-of-charge statistical databases: ', 
+                                                        html.A('Annual changes of Consumer Price Index, monthly data', href = "https://statfin.stat.fi/PxWeb/pxweb/en/StatFin/StatFin__khi/statfin_khi_pxt_122p.px/",target="_blank")
+                                                      ],style=p_style),
+                                              html.Br(),
                                               html.Label(['Statistics Finland: ', 
                                                        html.A('Concepts', href = "https://www.stat.fi/meta/kas/index_en.html",target="_blank")
                                                       ],style=p_style),
