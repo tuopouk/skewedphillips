@@ -393,7 +393,7 @@ def update_quick_help_offcanvas(*args):
                 
               ]
     elif button_id == 'en':
-        return "Open Quick Help", [
+        return "Quick Help", [
             
         html.H3('For more detailed information, see the Help and Introduction tab and the separate tab for each action.', 
                 style = {
@@ -513,7 +513,7 @@ def update_quick_help_offcanvas(*args):
         
       ]
     else:
-        return "Öppna snabbhjälp", [
+        return "Snabbhjälp", [
             
         html.H3('Mer detaljerad information finns i fliken Hjälp och Introduktion och den separata fliken för varje åtgärd.', 
                 style = {
