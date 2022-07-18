@@ -586,7 +586,7 @@ def update_quick_help_offcanvas(*args):
                         'text-align':'left'}
         ),
         html.Br(),
-        html.H3("4. Testa din metod på fliken Test", 
+        html.H3("4. Testa din metod på fliken Provning", 
                  style = {
                      # #'font-family':'Cadiz Semibold',
                            'text-align':'left',
