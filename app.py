@@ -113,7 +113,7 @@ navbar = dbc.Navbar(
                                 dbc.NavbarBrand("by: Tuomas Poukkula",style={'font-style':'italic'}, className="ms-2"),
                                 dbc.NavItem(dbc.NavLink(html.I(className="bi bi-github"), href="https://github.com/tuopouk/skewedphillips",external_link=True, target='_blank') ),
                                 dbc.NavItem(dbc.NavLink(html.I(className="bi bi bi-twitter"), href="https://twitter.com/TuomasPoukkula",external_link=True) ),
-                                dbc.NavItem(dbc.NavLink(html.I(className="bi bi-linkedin"), href="https://www.youtube.com/channel/UC7J8myLv3tPabjeocxKQQKw",external_link=True) ),
+                                dbc.NavItem(dbc.NavLink(html.I(className="bi bi-linkedin"), href="https://www.linkedin.com/in/tuomaspoukkula/",external_link=True) ),
                                 
                             ]
                             ),
@@ -143,7 +143,8 @@ navbar = dbc.Navbar(
     # className ='dbc'
      # className="mb-2"
     
-      ],className='dbc', fluid=True),
+      ],className='dbc', fluid=True
+       ),
                             
     color="primary",
     dark=True
