@@ -8,7 +8,7 @@
   "orientation": "any",
   "scope": "https://skewedphillips.herokuapp.com/assets/",
   "short_name": "SkewedPhillips",
-  "start_url": "https://skewedphillips.herokuapp.com/",
+  "start_url": "https://skewedphillips.herokuapp.com/assets/",
   "theme_color": "#ffffff",
   "categories": [],
   "screenshots": [],
