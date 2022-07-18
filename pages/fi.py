@@ -1199,6 +1199,7 @@ def layout():
                     tab_id = 'ohje',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  # #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -1553,6 +1554,7 @@ def layout():
                     tab_id ='feature_tab',
                      tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                   style = {
@@ -1725,6 +1727,7 @@ def layout():
                     tab_id = 'eda_tab',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -1926,6 +1929,7 @@ def layout():
                     tab_id ='hyperparam_tab',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                    style = {
@@ -2042,6 +2046,7 @@ def layout():
                     tab_id ='test_tab',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -2056,8 +2061,8 @@ def layout():
                         html.Br(),
                         dbc.Row([
                             dbc.Col([   
-                                        html.H3('Menetelmän testaaminen', style = h3_style),
-                                        
+                                        # html.H3('Menetelmän testaaminen', style = h3_style),
+                                        html.Br(),
                                         html.P('Tässä osiossa voit testata kuinka hyvin valittu menetelmä olisi onnistunut ennustamaan menneiden kuukausien työttömyysasteen hyödyntäen valittuja piirteitä. Testattaessa valittu määrä kuukausia jätetään testidataksi, jota menetelmä pyrkii ennustamaan.',
                                                style = p_style),
                                         html.P('Tässä kohtaa hyödykeindeksien oletetaan toteutuvan sellaisinaan.',
@@ -2131,6 +2136,7 @@ def layout():
                     tab_id = 'forecast_tab',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -2146,8 +2152,8 @@ def layout():
                         dbc.Row([
                             
                             dbc.Col([
-                                        html.H3('Ennusteen tekeminen',style=h3_style),
-                                        
+                                        # html.H3('Ennusteen tekeminen',style=h3_style),
+                                        html.Br(),
                                         html.P('Tässä osiossa voit tehdä ennusteen valitulle ajalle. Ennustettaessa on käytössä Menetelmän valinta -välilehdellä tehdyt asetukset. Ennusteen tekemisessä hyödynnetään Hyödykkeiden valinta -välilehdellä tehtyjä oletuksia hyödykkeiden suhteellisesta hintakehityksestä.',
                                               style=p_style),
                                         html.P('Tehtyäsi ennusteen voit tarkastella viereistä ennusteen kuvaajaa tai viedä tulosdatan alle ilmestyvästä painikeesta Exceliin.',

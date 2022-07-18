@@ -1199,6 +1199,7 @@ def layout():
                     tab_id = 'ohje_sv',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  # #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -1554,6 +1555,7 @@ def layout():
                     tab_id ='feature_tab_sv',
                      tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                   style = {
@@ -1726,6 +1728,7 @@ def layout():
                     tab_id = 'eda_tab_sv',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -1925,6 +1928,7 @@ def layout():
                     tab_id ='hyperparam_tab_sv',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                    style = {
@@ -2041,6 +2045,7 @@ def layout():
                     tab_id ='test_tab_sv',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -2055,8 +2060,8 @@ def layout():
                         html.Br(),
                         dbc.Row([
                             dbc.Col([   
-                                        html.H3('Testa din metod', style = h3_style),
-                                        
+                                        # html.H3('Testa din metod', style = h3_style),
+                                        html.Br(),
                                         html.P("I det här avsnittet kan du testa hur väl den valda metoden skulle ha kunnat förutsäga arbetslösheten under de senaste månaderna med hjälp av de valda funktionerna. Vid testning lämnas det valda antalet månader kvar som testdata, vilket metoden syftar till att förutsäga.",
                                                style = p_style),
                                         html.P("Här antas indexvärdena vara som de var i verkligheten.",
@@ -2130,6 +2135,7 @@ def layout():
                     tab_id = 'forecast_tab_sv',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -2145,8 +2151,8 @@ def layout():
                         dbc.Row([
                             
                             dbc.Col([
-                                        html.H3('Prognoser',style=h3_style),
-                                        
+                                        # html.H3('Prognoser',style=h3_style),
+                                        html.Br(),
                                         html.P("I det här avsnittet kan du göra en prognos för den valda tiden. När du förutspår aktiveras inställningarna på fliken Metodval. Prognosen bygger på antaganden som gjorts på fliken Produktval om den relativa prisutvecklingen på råvaror.",
                                               style=p_style),
                                         html.P("När du har gjort prognosen kan du visa den intilliggande prognosgrafen eller exportera resultatdata från knappen nedan till Excel.",

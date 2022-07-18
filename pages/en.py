@@ -1199,6 +1199,7 @@ def layout():
                     tab_id = 'ohje_en',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  # #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -1554,6 +1555,7 @@ def layout():
                     tab_id ='feature_tab_en',
                      tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                   style = {
@@ -1726,6 +1728,7 @@ def layout():
                     tab_id = 'eda_tab_en',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -1925,6 +1928,7 @@ def layout():
                     tab_id ='hyperparam_tab_en',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                    style = {
@@ -2041,6 +2045,7 @@ def layout():
                     tab_id ='test_tab_en',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -2055,8 +2060,8 @@ def layout():
                         html.Br(),
                         dbc.Row([
                             dbc.Col([   
-                                        html.H3('Test your method', style = h3_style),
-                                        
+                                        # html.H3('Test your method', style = h3_style),
+                                        html.Br(),
                                         html.P('In this section you can test how well the chosen method would have been able to predict the unemployment rate of the past months using the selected features. When testing, the selected number of months is left as test data, which the method seeks to predict.',
                                                style = p_style),
                                         html.P('At this point, commodity indices are assumed to materialise as they stand.',
@@ -2130,6 +2135,7 @@ def layout():
                     tab_id = 'forecast_tab_en',
                     tabClassName="flex-grow-1 text-center",
                     tab_style = {'font-size':'25px',
+                                 'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
                     style = {
@@ -2145,7 +2151,8 @@ def layout():
                         dbc.Row([
                             
                             dbc.Col([
-                                        html.H3('Forecasting',style=h3_style),
+                                        # html.H3('Forecasting',style=h3_style),
+                                        html.Br(),
                                         
                                         html.P('In this section you can make a forecast for the selected time. When predicting, the settings made on the Method Selection tab are enabled. The forecast is based on the assumptions made in the Product Selection tab about the relative price development of commodities.',
                                               style=p_style),
