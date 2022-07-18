@@ -4070,7 +4070,7 @@ def update_selections(*args):
     elif button_id == 'fourth_class':
         return fourth_class_options, "4. luokka"#,[f['value'] for f in fourth_class_options[:4]]
     else:
-        return fifth_class_options, "5. luokka",[f['value'] for f in fifth_class_options[:4]]
+        return fifth_class_options, "5. luokka"#,[f['value'] for f in fifth_class_options[:4]]
     
 @callback(
     Output("offcanvas", "is_open"),
