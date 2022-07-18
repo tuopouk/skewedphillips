@@ -194,9 +194,10 @@ navbar = dbc.Navbar(
 
 app.layout = dbc.Container(
     [navbar,
-     html.Br(), 
-     html.Br(),
      quick_help_offcanvas,
+     html.Br(),
+     html.Br(),
+     html.Br(),
      html.Br(),
      dash.page_container],
     fluid=True,
