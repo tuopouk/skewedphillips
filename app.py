@@ -149,19 +149,20 @@ navbar = dbc.Navbar(
                     dbc.Col(
                         [
                          
-                          dbc.Collapse(
+                           dbc.Collapse(
                             dbc.Nav([
                                 dbc.NavbarBrand("by: Tuomas Poukkula",style={'font-style':'italic'}, className="ms-2"),
                                 dbc.NavItem(dbc.NavLink(html.I(className="bi bi-github"), href="https://github.com/tuopouk/skewedphillips",external_link=True, target='_blank') ),
                                 dbc.NavItem(dbc.NavLink(html.I(className="bi bi bi-twitter"), href="https://twitter.com/TuomasPoukkula",external_link=True, target='_blank') ),
                                 dbc.NavItem(dbc.NavLink(html.I(className="bi bi-linkedin"), href="https://www.linkedin.com/in/tuomaspoukkula/",external_link=True, target='_blank') ),
+                                dbc.NavItem(id = 'email',children = [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skewed Phillips",external_link=True, target='_blank')] ),
                                 
                             ]
                             ),
-                            id="navbar-collapse",
-                            is_open=False,
-                            navbar=True
-                          )
+                             id="navbar-collapse",
+                             is_open=False,
+                             navbar=True
+                           )
                           ]
                     )
                 ],align="center", className = "d-flex justify-content-end"),
@@ -674,7 +675,21 @@ def toggle_offcanvas(n1, is_open):
         return not is_open
     return is_open
 
+@dash.callback(
+    Output('email','children'),
+    [Input('dd_menu','label')]
+    )
+def update_email_topic(label):
+        
 
+    if label == 'FI':
+        return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Phillipsin vinouma",external_link=True, target='_blank')]
+    elif label == 'EN':
+        return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skewed Phillips",external_link=True, target='_blank')]
+    elif label == 'SV':
+        return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skev Phillips",external_link=True, target='_blank')]
+    else:
+       return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=https://skewedphillips.herokuapp.com/",external_link=True, target='_blank')] 
 
 if __name__ == "__main__":
     app.run_server(debug=False)
