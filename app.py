@@ -176,7 +176,7 @@ navbar = dbc.Navbar(
                                                   dbc.DropdownMenuItem('SV',id = 'sv',  href='/sv')
                                             ],
                 # nav=True,
-                label="FI"
+                label="文 / A"
             )], align = 'center')
             
               ], align = 'center', className = "d-flex justify-content-end"),
@@ -218,7 +218,8 @@ def update_label(*args):
     ctx = dash.callback_context
 
     if not ctx.triggered:
-        button_id = "fi"
+        # button_id = "fi"
+        return '文 / A'
     else:
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
