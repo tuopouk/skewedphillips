@@ -2361,8 +2361,8 @@ def update_slider_div(averaging):
                     style = h3_style),
             
             dcc.Slider(id = 'slider',
-                          min = -10,
-                          max = 10,
+                          min = -20,
+                          max = 20,
                           value = 0,
                           step = 0.1,
                           tooltip={"placement": "top", "always_visible": True},
