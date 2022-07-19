@@ -12,7 +12,9 @@ dash.register_page(__name__, path="/404")
 
 
 layout = html.Div([
-    
+    html.Br(),
+    html.Br(),
+    html.Br(),
     html.H1('Oops!'),
     
     html.H2('Siirry osoitteeseen:'),
@@ -20,10 +22,10 @@ layout = html.Div([
            href = 'https://skewedphillips.herokuapp.com/'),
     html.Br(),
     html.H2('Please go to:'),
-    html.A([html.P('https://skewedphillips.herokuapp.com/')],
-           href = 'https://skewedphillips.herokuapp.com/'),
+    html.A([html.P('https://skewedphillips.herokuapp.com/en')],
+           href = 'https://skewedphillips.herokuapp.com/en'),
     html.H2('Gå till:'),
-    html.A([html.P('https://skewedphillips.herokuapp.com/')],
-           href = 'https://skewedphillips.herokuapp.com/'),
+    html.A([html.P('https://skewedphillips.herokuapp.com/sv')],
+           href = 'https://skewedphillips.herokuapp.com/sv'),
     
     ])
