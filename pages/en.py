@@ -2369,13 +2369,13 @@ def en_update_slider_div(averaging):
                            marks = {
                                     # -30:{'label':'-30%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
                                     #                                       }},
-                                   -10:{'label':'-10%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
+                                   -20:{'label':'-20%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
                                                                   }},
                                     # 3:{'label':'3 kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
                                     0:{'label':'0%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
                                                               }},
                                     # 9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
-                                    10:{'label':'10%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
+                                    20:{'label':'20%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
                                                                 }},
                                     # 30:{'label':'30%', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold'
                                     #                             }} 
