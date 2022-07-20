@@ -15,7 +15,7 @@ external_stylesheets = [
                           dbc_css,
                           dbc.icons.BOOTSTRAP,
                           "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
-                          'https://codepen.io/chriddyp/pen/brPBPO.css',
+                           'https://codepen.io/chriddyp/pen/brPBPO.css',
                           
                         ]
 
@@ -87,7 +87,7 @@ quick_help_button = dbc.Button("Avaa pikaohje",
               size = 'sm',
              color = 'danger',
              className="me-1",
-             # style = {'font-style':'Cadiz Semibold'}
+             style = {'font-weight': 'bold'}
              ),
 quick_help_offcanvas = dbc.Offcanvas(
       
@@ -107,7 +107,8 @@ theme_changer = ThemeChangerAIO(aio_id="theme",
                                                  'size':'sm',
                                               'children' : 'Vaihda väriteemaa',
                                               'outline':False,
-                                              'color':'warning'},
+                                              'style':{'font-weight': 'bold'},
+                                              'color':'success'},
                                 offcanvas_props={'title':"Valitse jokin alla olevista väriteemoista",
                                                  
                                                   'scrollable':True},
