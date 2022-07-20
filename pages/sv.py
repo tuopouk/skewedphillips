@@ -139,7 +139,7 @@ config_plots_sv = {'locale':'sv',
 spinners = ['graph', 'cube', 'circle', 'dot' ,'default']
 
 p_font_size = 22
-graph_height = 800
+graph_height = 750
 
 p_style = {
         # #'font-family':'Messina Modern Book',
@@ -1182,7 +1182,7 @@ def layout():
                              style=h1_style
                             ),
                   
-                    html.H2('Prognos för arbetslösheten i Finland med prisförändringar',
+                    html.H2('Prognos för arbetslösheten i Finland med förändringar i konsumentpriser',
                             style=h2_style),
                     
                     html.P('Välj önskad flik genom att klicka på rubrikerna nedan. '
@@ -1760,7 +1760,7 @@ def layout():
                      dbc.Row([
                          
                          dbc.Col([
-                             html.Br(),
+                             
                               html.Br(),
                               html.P("I det här avsnittet kan du se arbetslöshetstalet och förhållandet mellan de utvalda varugrupperna i konsumentprisindexet och förändringen över tiden. Nedan kan du se hur prisindexet för olika varugrupper korrelerar med varandra och med arbetslöshetstalet. Du kan också se tidsserier av index, inflation och arbetslöshetstal. Korrelationen beskrivs i s baserat på Pearson korrelationskoefficient. ",
                                      style = p_style),
@@ -2079,7 +2079,7 @@ def layout():
                         dbc.Row([
                             dbc.Col([   
                                         # html.H3('Testa din metod', style = h3_style),
-                                        html.Br(),
+                                        # html.Br(),
                                         html.P("I det här avsnittet kan du testa hur väl den valda metoden skulle ha kunnat förutsäga arbetslösheten under de senaste månaderna med hjälp av de valda funktionerna. Vid testning lämnas det valda antalet månader kvar som testdata, vilket metoden syftar till att förutsäga.",
                                                style = p_style),
                                         html.P("Här antas indexvärdena vara som de var i verkligheten.",
@@ -2170,7 +2170,7 @@ def layout():
                             
                             dbc.Col([
                                         # html.H3('Prognoser',style=h3_style),
-                                        html.Br(),
+                                        # html.Br(),
                                         html.P("I det här avsnittet kan du göra en prognos för den valda tiden. När du förutspår aktiveras inställningarna på fliken Metodval. Prognosen bygger på antaganden som gjorts på fliken Produktval om den relativa prisutvecklingen på råvaror.",
                                               style=p_style),
                                         html.P("När du har gjort prognosen kan du visa den intilliggande prognosgrafen eller exportera resultatdata från knappen nedan till Excel.",

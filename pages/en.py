@@ -141,7 +141,7 @@ config_plots_en = {'locale':'en',
 spinners = ['graph', 'cube', 'circle', 'dot' ,'default']
 
 p_font_size = 22
-graph_height = 800
+graph_height = 750
 
 p_style = {
         # #'font-family':'Messina Modern Book',
@@ -1185,7 +1185,7 @@ def layout():
                              style=h1_style
                             ),
                   
-                    html.H2('Forecasting Finnish Unemployment Rate with Price Changes',
+                    html.H2('Forecasting Finnish Unemployment Rate with Consumer Price Changes',
                             style=h2_style),
                     
                     html.P('Select the desired tab by clicking on the titles below.' 
@@ -1763,7 +1763,7 @@ def layout():
                      dbc.Row([
                          
                          dbc.Col([
-                             html.Br(),
+                             
                               html.Br(),
                               html.P("In this section you can view the unemployment rate and the relationship between the selected commodity groups in the Consumer Price Index and the change over time. Below you can see how the price indices of different commodity groups correlate with each other and with the unemployment rate. You can also observe time series of indices, inflation and unemployment rates. The correlation described is based on Pearson's correlation coefficient.",
                                      style = p_style),
@@ -2082,7 +2082,7 @@ def layout():
                         dbc.Row([
                             dbc.Col([   
                                         # html.H3('Test your method', style = h3_style),
-                                        html.Br(),
+                                        # html.Br(),
                                         html.P('In this section you can test how well the chosen method would have been able to predict the unemployment rate of the past months using the selected features. When testing, the selected number of months is left as test data, which the method seeks to predict.',
                                                style = p_style),
                                         html.P('At this point, commodity indices are assumed to materialise as they stand.',
@@ -2173,7 +2173,7 @@ def layout():
                             
                             dbc.Col([
                                         # html.H3('Forecasting',style=h3_style),
-                                        html.Br(),
+                                        # html.Br(),
                                         
                                         html.P('In this section you can make a forecast for the selected time. When predicting, the settings made on the Method Selection tab are enabled. The forecast is based on the assumptions made in the Product Selection tab about the relative price development of commodities.',
                                               style=p_style),

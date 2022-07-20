@@ -146,7 +146,7 @@ config_plots = {'locale':'fi',
 spinners = ['graph', 'cube', 'circle', 'dot' ,'default']
 
 p_font_size = 22
-graph_height = 800
+graph_height = 750
 
 p_style = {
         # #'font-family':'Messina Modern Book',
@@ -1199,7 +1199,7 @@ def layout():
                              style=h1_style
                             ),
                   
-                    html.H2('Työttömyyden ennustaminen hintatason muutoksilla',
+                    html.H2('Työttömyyden ennustaminen kuluttajahintojen muutoksilla',
                             style=h2_style),
                     
                     html.P('Valitse haluamasi välilehti alla olevia otsikoita klikkaamalla. ' 
@@ -1776,7 +1776,7 @@ def layout():
                      dbc.Row([
                          
                          dbc.Col([
-                             html.Br(),
+                             
                               html.Br(),
                               html.P('Tässä osiossa voit tarkastella työttömyysastetta sekä valittujen kuluttajahintaindeksin hyödykeryhmien keskinäistä suhdetta sekä muutosta ajassa. Alla voit nähdä kuinka eri hyödykeryhmien hintaindeksit korreloivat keskenään sekä työttömyysasteen kanssa. Voit myös havainnoida indeksien, inflaation sekä sekä työttömyysasteen aikasarjoja. Kuvattu korrelaatio perustuu Pearsonin korrelaatiokertoimeen.',
                                      style = p_style),
@@ -2097,7 +2097,7 @@ def layout():
                         dbc.Row([
                             dbc.Col([   
                                         # html.H3('Menetelmän testaaminen', style = h3_style),
-                                        html.Br(),
+                                        # html.Br(),
                                         html.P('Tässä osiossa voit testata kuinka hyvin valittu menetelmä olisi onnistunut ennustamaan menneiden kuukausien työttömyysasteen hyödyntäen valittuja piirteitä. Testattaessa valittu määrä kuukausia jätetään testidataksi, jota menetelmä pyrkii ennustamaan.',
                                                style = p_style),
                                         html.P('Tässä kohtaa hyödykeindeksien oletetaan toteutuvan sellaisinaan.',
@@ -2188,7 +2188,7 @@ def layout():
                             
                             dbc.Col([
                                         # html.H3('Ennusteen tekeminen',style=h3_style),
-                                        html.Br(),
+                                        # html.Br(),
                                         html.P('Tässä osiossa voit tehdä ennusteen valitulle ajalle. Ennustettaessa on käytössä Menetelmän valinta -välilehdellä tehdyt asetukset. Ennusteen tekemisessä hyödynnetään Hyödykkeiden valinta -välilehdellä tehtyjä oletuksia hyödykkeiden suhteellisesta hintakehityksestä.',
                                               style=p_style),
                                         html.P('Tehtyäsi ennusteen voit tarkastella viereistä ennusteen kuvaajaa tai viedä tulosdatan alle ilmestyvästä painikeesta Exceliin.',
