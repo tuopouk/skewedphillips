@@ -2623,6 +2623,10 @@ def sv_update_test_results(n_clicks,
     
     if n_clicks > 0:
     
+        try:
+            locale.setlocale(locale.LC_ALL, 'sv-FI')
+        except:
+            locale.setlocale(locale.LC_ALL, 'sv_FI')
         
         
         features = sorted(list(features_values.keys()))
@@ -2774,6 +2778,11 @@ def sv_update_forecast_results(n_clicks,
     
     if n_clicks > 0:
         
+        try:
+            locale.setlocale(locale.LC_ALL, 'sv-FI')
+        except:
+            locale.setlocale(locale.LC_ALL, 'sv_FI')
+        
         features = sorted(list(weights_dict.keys()))
         
         
@@ -2908,7 +2917,7 @@ def sv_update_shap_results(n_clicks, shap):
                                 ],xs =12, sm=12, md=12, lg=3, xl=3)
                         ]),
                     html.Br(),
-                    html.Div(id = 'shap_graph_div_sv'),
+                    html.Div(dcc.Loading(id = 'shap_graph_div_sv', type = random.choice(spinners))),
                     html.Br()
        
             

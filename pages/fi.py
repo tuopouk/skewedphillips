@@ -48,7 +48,7 @@ try:
 except:
     locale.setlocale(locale.LC_ALL, 'fi-FI')
 
-in_dev = True
+
 
 MODELS = {
     
@@ -2642,6 +2642,12 @@ def update_test_results(n_clicks,
     if n_clicks > 0:
     
         
+        try:
+            locale.setlocale(locale.LC_ALL, 'fi_FI')
+        except:
+            locale.setlocale(locale.LC_ALL, 'fi-FI')
+
+    
         
         features = sorted(list(features_values.keys()))
         
@@ -2792,6 +2798,11 @@ def update_forecast_results(n_clicks,
     
     if n_clicks > 0:
         
+        try:
+            locale.setlocale(locale.LC_ALL, 'fi_FI')
+        except:
+            locale.setlocale(locale.LC_ALL, 'fi-FI')
+        
         features = sorted(list(weights_dict.keys()))
         
         
@@ -2896,7 +2907,7 @@ def update_shap_results(n_clicks, shap):
         
         
          
-        return html.Div([
+        return html.Div( children = [
             
                     html.H3('Mitkä ennustepiirteet vaikuttivat eniten?',
                            style = h3_style),
@@ -2926,7 +2937,7 @@ def update_shap_results(n_clicks, shap):
                                 ],xs =12, sm=12, md=12, lg=3, xl=3)
                         ]),
                     html.Br(),
-                    html.Div(id = 'shap_graph_div'),
+                    html.Div(dcc.Loading(id = 'shap_graph_div', type = random.choice(spinners))),
                     html.Br()
                     
                     
