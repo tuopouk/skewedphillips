@@ -3810,7 +3810,7 @@ def en_update_commodity_unemployment_graph(values, label):
                          showlegend=True,
                          marker = dict(size=10),
                          marker_symbol = random.choice(symbols),
-                         hovertemplate = "<b>{}</b>:".format(value)+" %{x}"+"<br><b>"+label_str+"</b>: %{y}"+"<br>(Korrelaatio: {:.2f})".format(sorted(data_en[[label, value]].corr()[value].values)[0])) for value in values]
+                         hovertemplate = "<b>{}</b>:".format(value)+" %{x}"+"<br><b>"+label_str+"</b>: %{y}"+"<br>(Correlation: {:.2f})".format(sorted(data_en[[label, value]].corr()[value].values)[0])) for value in values]
     
     return [dcc.Graph(figure = go.Figure(data = traces,
           layout = go.Layout(title = dict(text = 'Selected commodities vs.<br>'+label_str, 
