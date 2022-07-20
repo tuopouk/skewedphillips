@@ -286,28 +286,35 @@ def en_get_inflation_percentage():
 
   return df.set_index('Aika') 
   
-def en_get_data():
 
+
+
+def en_get_data():
   unemployment_df = en_get_unemployment()
   inflation_df = en_get_inflation()
-
 
   inflation_df = pd.pivot_table(inflation_df.reset_index(), columns = 'Hyödyke', index = 'Aika' )
   inflation_df.columns = [c[-1] for c in inflation_df.columns]
 
-  data = pd.merge(left = unemployment_df.drop('Tiedot',axis=1).reset_index(), right = inflation_df.reset_index(), how = 'inner', on = 'Aika').set_index('Aika')
+  data = pd.merge(left = unemployment_df.drop('Tiedot',axis=1).reset_index(), right = inflation_df.reset_index(), how = 'outer', on = 'Aika').set_index('Aika')
+  data.Työttömyysaste = data.Työttömyysaste.fillna(-1)
   data = data.dropna(axis=1)
-  data =data.loc[:,~data.apply(lambda x: x.duplicated(),axis=1).all()].copy()
-  data['prev'] = data['Työttömyysaste'].shift(1)
-  data.dropna(axis=0, inplace=True)
-  data['month'] = data.index.month
-  data['change'] = data.Työttömyysaste - data.prev
-  
+
   inflation_percentage_df = en_get_inflation_percentage()
 
-  data = pd.merge(left = data.reset_index(), right = inflation_percentage_df.reset_index(), how = 'left', on = 'Aika').set_index('Aika')
-  
+  data = pd.merge(left = data.reset_index(), right = inflation_percentage_df.reset_index(), how = 'inner', on = 'Aika').set_index('Aika').sort_index()
+
+  data.Työttömyysaste = data.Työttömyysaste.replace(-1, np.nan)
+
+  data['prev'] = data['Työttömyysaste'].shift(1)
+
+  data['month'] = data.index.month
+  data['change'] = data.Työttömyysaste - data.prev
+
   return data
+
+
+data_en = en_get_data()
 
 
 def en_draw_phillips_curve():
@@ -316,15 +323,18 @@ def en_draw_phillips_curve():
       locale.setlocale(locale.LC_ALL, 'en_US')
   except:
       locale.setlocale(locale.LC_ALL, 'en-US')  
+     
+  data_ = data_en[(data_en.Työttömyysaste.notna())&(data_en.Inflaatio.notna())].copy()
     
-  max_date = data_en.index.values[-1]
-  max_date_str = data_en.index.strftime('%B %Y').values[-1]
+  max_date = data_.index.values[-1]
+  max_date_str = data_.index.strftime('%B %Y').values[-1]
+  
+  
+  a, b = np.polyfit(np.log(data_.Työttömyysaste), data_.Inflaatio, 1)
 
-  a, b = np.polyfit(np.log(data_en.Työttömyysaste), data_en.Inflaatio, 1)
+  y = a * np.log(data_.Työttömyysaste) +b 
 
-  y = a * np.log(data_en.Työttömyysaste) +b 
-
-  df = data_en.copy()
+  df = data_.copy()
   df['log_inflation'] = y
   df = df.sort_values(by = 'log_inflation')
   
@@ -953,9 +963,14 @@ def en_test(model, features, test_size, explainer, use_pca = False, n_components
   feat.append('month')
   
   cols = feat
+  
+  data_ = data_en.iloc[1:,:].copy()
+  
+  
+  data_ = data_[data_.Työttömyysaste.notna()]
 
-  train_df = data_en.iloc[:-test_size,:].copy()
-  test_df = data_en.iloc[-test_size:,:].copy()
+  train_df = data_.iloc[:-test_size,:].copy()
+  test_df = data_.iloc[-test_size:,:].copy()
 
 
   scl = StandardScaler()
@@ -1035,6 +1050,8 @@ def en_test(model, features, test_size, explainer, use_pca = False, n_components
 def en_predict(model, features, feature_changes, length, use_pca = False, n_components=.99):
   
   df = data_en.copy()
+  df = df.iloc[1:,:]
+  df = df[df.Työttömyysaste.notna()]
   
   feat = features.copy()
   feat.append('prev')
@@ -1062,15 +1079,18 @@ def en_predict(model, features, feature_changes, length, use_pca = False, n_comp
     
   model.fit(X,y)
   
+  if data_en.Työttömyysaste.isna().sum() > 0:
+      last_row = data_en.iloc[-1:,:].copy()
+  else:
 
-  last_row = df.iloc[-1:,:].copy()
-
-  last_row.index = last_row.index + pd.DateOffset(months=1)
-  last_row.month = last_row.index.month
-
-  last_row.prev = last_row.Työttömyysaste
-  last_row.Työttömyysaste = np.nan
-  last_row[features] = last_row[features] * (1 + feature_changes/100)
+      last_row = df.iloc[-1:,:].copy()
+    
+      last_row.index = last_row.index + pd.DateOffset(months=1)
+      last_row.month = last_row.index.month
+    
+      last_row.prev = last_row.Työttömyysaste
+      last_row.Työttömyysaste = np.nan
+      last_row[features] = last_row[features] * (1 + feature_changes/100)
 
   scaled_features = scl.transform(last_row[feat])
 
@@ -1113,7 +1133,6 @@ def en_predict(model, features, feature_changes, length, use_pca = False, n_comp
   return result
 
 
-data_en = en_get_data()
 
 def en_apply_average(features, length = 4):
 
@@ -1221,7 +1240,7 @@ def layout():
                          
                                   html.Br(),
                                   
-                                  html.P('“The world is its own best model.”', 
+                                  html.Blockquote('“The world is its own best model.”', 
                                         style = {
                                             'text-align':'center',
                                             'font-style': 'italic', 
@@ -1299,14 +1318,14 @@ def layout():
                                                                                                    'font-weight': 'bold', 
                                                                                                    'font-size':'34px'}),
                                           
-                                          html.P('There is a conflict between unemployment and inflation in the short term. Full employment and stable price levels are difficult to achieve at the same time.', 
+                                          html.Blockquote('There is a conflict between unemployment and inflation in the short term. Full employment and stable price levels are difficult to achieve at the same time.', 
                                                 style = {
                                                     'text-align':'center',
                                                     'font-style': 'italic', 
                                                     #'font-family':'Messina Modern Book', 
                                                       'font-size':p_font_size
                                                     }),
-                                          html.P('(Matti Pohjola, 2019, Taloustieteen oppikirja, page 250, ISBN:978-952-63-5298-5)', 
+                                          html.P('Matti Pohjola, 2019, Taloustieteen oppikirja, page 250, ISBN:978-952-63-5298-5', 
                                                 style={
                                                     'textAlign':'center',
                                                     #'font-family':'Messina Modern Book', 
@@ -1820,10 +1839,12 @@ def layout():
                                                                                y = data_en.Työttömyysaste,
                                                                                name = 'Unemployment Rate',
                                                                                mode = 'lines',
+                                                                               hovertemplate = '%{x}'+'<br>%{y}',
                                                                                marker = dict(color ='red')),
                                                                     go.Scatter(x = data_en.index,
                                                                                y = data_en.Inflaatio,
                                                                                name = 'Inflation',
+                                                                               hovertemplate = '%{x}'+'<br>%{y}',
                                                                                mode ='lines',
                                                                                marker = dict(color = 'purple'))],
                                                               layout = go.Layout(title = dict(text = 'Unemployment Rate and Inflation per Month<br>{} - {}'.format(data_en.index.strftime('%B %Y').values[0],data_en.index.strftime('%B %Y').values[-1]),
@@ -3446,7 +3467,8 @@ def en_update_time_series(values):
     
     traces = [go.Scatter(x = data_en.index, 
                          y = data_en[value],
-                         showlegend=True,                         
+                         showlegend=True,   
+                         hovertemplate = '%{x}'+'<br>%{y}',
                          name = ' '.join(value.split()[1:]),
                          mode = 'lines+markers') for value in values]
     return html.Div([dcc.Graph(figure=go.Figure(data=traces,
@@ -3752,35 +3774,6 @@ def en_update_feature_correlation_plot(value1, value2):
 
 
 
-# @callback(
-
-#     Output('eda_div_en', 'children'),
-#     [Input('features_values_en','data')]    
-    
-# )
-# def en_update_eda_div(features_values):
-        
-
-    
-
-#     selector = dbc.RadioItems(id = 'eda_y_axis_en', 
-#                 options = [{'label':'Unemployment rate (%)','value':'Työttömyysaste'},
-#                           {'label':'Monthly unemployment rate change (% units)','value':'change'}],
-#                 labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
-#                             #'font-family':'Cadiz Book'
-#                             },
-#                 className="btn-group",
-#                 inputClassName="btn-check",
-#                 labelClassName="btn btn-outline-warning",
-#                 labelCheckedClassName="active",
-              
-#                 value = 'Työttömyysaste'
-#               )    
-        
-  
-    
-#     return [html.Div([selector],style={'textAlign':'center'}), html.Div(id = 'commodity_unemployment_div_en')]
-
 
 @callback(
     
@@ -3902,7 +3895,7 @@ def en_update_selections(*args):
     
     
     if not ctx.triggered:
-        return corr_abs_asc_options_en, "Absolute correlation (descending)"#,[f['value'] for f in corr_abs_asc_options[:4]]
+        return feature_options_en, "Alphabetical order"#,[f['value'] for f in corr_abs_asc_options[:4]]
     else:
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
