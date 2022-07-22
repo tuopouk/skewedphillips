@@ -1158,11 +1158,12 @@ correlations_desc = data[data.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].
 correlations_asc = data[data.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].sort_values(ascending=True)
 correlations_abs_desc = data[data.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].abs().sort_values(ascending=False)
 correlations_abs_asc = data[data.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].abs().sort_values(ascending=True)
+
 main_classes = sorted([c for c in data.columns[:-4] if len(c.split()[0])==2])
-second_classes = sorted([c for c in data.columns[:-4] if len(c.split()[0])==4])
-third_classes = sorted([c for c in data.columns[:-4] if len(c.split()[0])==6])
-fourth_classes = sorted([c for c in data.columns[:-4] if len(c.split()[0])==8])
-fifth_classes = sorted([c for c in data.columns[:-4] if len(c.split()[0])==10])
+second_classes = sorted([c for c in data.columns[:-4] if c.split()[0].count('.')==1])
+third_classes = sorted([c for c in data.columns[:-4] if c.split()[0].count('.')==2])
+fourth_classes = sorted([c for c in data.columns[:-4] if c.split()[0].count('.')==3])
+fifth_classes = sorted([c for c in data.columns[:-4] if c.split()[0].count('.')==4])
 
 feature_options = [{'label':c, 'value':c} for c in data.columns[1:-4]]
 corr_desc_options = [{'label':c, 'value':c} for c in correlations_desc.index]

@@ -1148,11 +1148,12 @@ correlations_desc_en = data_en[data_en.columns[:-4]].corr()['Työttömyysaste'].
 correlations_asc_en = data_en[data_en.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].sort_values(ascending=True)
 correlations_abs_desc_en = data_en[data_en.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].abs().sort_values(ascending=False)
 correlations_abs_asc_en = data_en[data_en.columns[:-4]].corr()['Työttömyysaste'].iloc[1:].abs().sort_values(ascending=True)
+
 main_classes_en = sorted([c for c in data_en.columns[:-4] if len(c.split()[0])==2])
-second_classes_en = sorted([c for c in data_en.columns[:-4] if len(c.split()[0])==4])
-third_classes_en = sorted([c for c in data_en.columns[:-4] if len(c.split()[0])==6])
-fourth_classes_en = sorted([c for c in data_en.columns[:-4] if len(c.split()[0])==8])
-fifth_classes_en = sorted([c for c in data_en.columns[:-4] if len(c.split()[0])==10])
+second_classes_en = sorted([c for c in data_en.columns[:-4] if c.split()[0].count('.')==1])
+third_classes_en = sorted([c for c in data_en.columns[:-4] if c.split()[0].count('.')==2])
+fourth_classes_en = sorted([c for c in data_en.columns[:-4] if c.split()[0].count('.')==3])
+fifth_classes_en = sorted([c for c in data_en.columns[:-4] if c.split()[0].count('.')==4])
 
 feature_options_en = [{'label':c, 'value':c} for c in data_en.columns[1:-4]]
 corr_desc_options_en = [{'label':c, 'value':c} for c in correlations_desc_en.index]
@@ -1450,7 +1451,7 @@ def layout():
                                                       ],style=p_style),
                                               html.Br(),
                                               html.Label(['Wikipedia: ', 
-                                                        html.A('Pearsonin correlation coefficient', href = "https://en.wikipedia.org/wiki/Pearson_correlation_coefficient",target="_blank")
+                                                        html.A("Pearson's correlation coefficient", href = "https://en.wikipedia.org/wiki/Pearson_correlation_coefficient",target="_blank")
                                                       ],style=p_style),
                                               html.Br(),
                                                 html.Label(['Scikit-learn: ', 
