@@ -845,6 +845,109 @@ def sv_plot_forecast_data(df, chart_type):
                                                               )),
     
                                        ))
+    
+    elif chart_type == 'area':
+    
+    
+        return go.Figure(data=[go.Scatter(x=data_sv.index, 
+                                          y = data_sv.Työttömyysaste, 
+                                          name = 'Sant',
+                                          showlegend=True,
+                                          fill = 'tozeroy',
+                                          mode="lines", 
+                                          hovertemplate =  hover_true,##'<b>%{x}</b>: %{y}%',
+                                          marker = dict(color='green')),
+                    go.Scatter(x=df.index, 
+                               y = np.round(df.Työttömyysaste,1), 
+                               name = 'Förutsägt',
+                               showlegend=True,
+                               fill = 'tozeroy',
+                               mode="lines", 
+                               hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
+                               marker = dict(color='red'))
+                    ],layout=go.Layout(xaxis = dict(title = dict(text = 'Tid',font=dict(
+                         size=20, 
+                        family = 'Cadiz Semibold'
+                        )),
+                        automargin=True,
+                
+                                                    tickfont = dict(family = 'Cadiz Semibold', 
+                                                                     size = 18
+                                                                    ),
+                                                    rangeslider=dict(visible=True),
+                                                    rangeselector=dict(
+                buttons=list([
+                    dict(count=3,
+                         label="3m",
+                         step="month",
+                         stepmode="backward"),
+                    dict(count=6,
+                         label="6m",
+                         step="month",
+                         stepmode="backward"),
+                    dict(count=1,
+                         label="YTD",
+                         step="year",
+                         stepmode="todate"),
+                    dict(count=1,
+                         label="1å",
+                         step="year",
+                         stepmode="backward"),
+                    dict(count=3,
+                         label="3å",
+                         step="year",
+                         stepmode="backward"),
+                    dict(count=5,
+                         label="5å",
+                         step="year",
+                         stepmode="backward"),
+                    dict(step="all",
+                         label='MAX')
+                ])
+            ),
+                                                    
+                                                    ),
+                                       height=graph_height,
+                                       margin=dict(
+                                            l=10,
+                                           r=10,
+                                           # b=100,
+                                            # t=120,
+                                            # pad=4
+                                       ),
+                                      hoverlabel = dict(
+                                            font_size = 20, 
+                                                         font_family = 'Cadiz Book'
+                                                         ),
+                                       legend = dict(orientation='h',
+                                                     x=.5,
+                                                     y=.01,
+                                                     xanchor='center',
+                                                      yanchor='bottom',
+                                                     font=dict(
+                                                    size=14,
+                                                   family = 'Cadiz Semibold'
+                                                   )),
+                                       template = 'seaborn',
+                                       yaxis = dict(title=dict(text = 'Arbetslöshet (%)',
+                                                     font=dict(
+                                                          size=20, 
+                                                         family = 'Cadiz Semibold'
+                                                         )),
+                                                    automargin=True,
+                                                    rangemode='tozero',
+                                                     tickfont = dict(
+                                                         family = 'Cadiz Book', 
+                                                                      size = 18
+                                                                     )),
+                                       title = dict(text = 'Arbetslöshetstal och prognos per månad<br>{} - {}'.format(data_sv.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
+                                                    x=.5,
+                                                    font=dict(
+                                                         family='Cadiz Semibold',
+                                                               size=20
+                                                              )),
+    
+                                       ))
 
 
     else:
@@ -1785,12 +1888,13 @@ def layout():
                                                      html.Div([dbc.RadioItems(id = 'eda_y_axis_sv', 
                                                                  options = [{'label':'Arbetslöshet (%)','value':'Työttömyysaste'},
                                                                            {'label':'Förändring av månadsarbetslösheten (% enheter)','value':'change'}],
-                                                                 labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
+                                                                 labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
                                                                              #'font-family':'Cadiz Book'
+                                                                             'font-weight': 'bold'
                                                                              },
                                                                  className="btn-group",
                                                                  inputClassName="btn-check",
-                                                                 labelClassName="btn btn-outline-warning",
+                                                                 labelClassName="btn btn-outline-secondary",
                                                                  labelCheckedClassName="active",
                                                                
                                                                  value = 'Työttömyysaste'
@@ -2680,12 +2784,13 @@ def sv_update_test_results(n_clicks,
                                           options = [{'label':'stapeldiagram','value':'bars'},
                                                     {'label':'linjediagram','value':'lines'},
                                                     {'label':'stapel- och linjediagram','value':'lines+bars'}],
-                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
+                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
                                                       #'font-family':'Cadiz Book'
+                                                      'font-weight': 'bold'
                                                       },
                                           className="btn-group",
                                           inputClassName="btn-check",
-                                          labelClassName="btn btn-outline-warning",
+                                          labelClassName="btn btn-outline-secondary",
                                           labelCheckedClassName="active",
                                         
                                           value = 'lines+bars'
@@ -2831,13 +2936,15 @@ def sv_update_forecast_results(n_clicks,
                       html.Div([
                       dbc.RadioItems(id = 'chart_type_sv', 
                         options = [{'label':'stapeldiagram','value':'bars'},
-                                  {'label':'linjediagram','value':'lines'}],
-                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
+                                  {'label':'linjediagram','value':'lines'},
+                                  {'label':'områdesdiagram','value':'area'}],
+                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
                                     #'font-family':'Cadiz Book'
+                                    'font-weight': 'bold'
                                     },
                         className="btn-group",
                         inputClassName="btn-check",
-                        labelClassName="btn btn-outline-warning",
+                        labelClassName="btn btn-outline-secondary",
                         labelCheckedClassName="active",                        
                         value = 'lines'
                       )

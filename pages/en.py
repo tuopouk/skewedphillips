@@ -849,6 +849,108 @@ def en_plot_forecast_data(df, chart_type):
                                                               )),
     
                                        ))
+    elif chart_type == 'area':
+    
+    
+        return go.Figure(data=[go.Scatter(x=data_en.index, 
+                                          y = data_en.Työttömyysaste, 
+                                          name = 'True',
+                                          showlegend=True,
+                                          fill = 'tozeroy',
+                                          mode="lines", 
+                                          hovertemplate =  hover_true,##'<b>%{x}</b>: %{y}%',
+                                          marker = dict(color='green')),
+                    go.Scatter(x=df.index, 
+                               y = np.round(df.Työttömyysaste,1), 
+                               name = 'Predicted',
+                               showlegend=True,
+                               fill = 'tozeroy',
+                               mode="lines", 
+                               hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
+                               marker = dict(color='red'))
+                    ],layout=go.Layout(xaxis = dict(title = dict(text = 'Time',font=dict(
+                         size=20, 
+                        family = 'Cadiz Semibold'
+                        )),
+                        automargin=True,
+                
+                                                    tickfont = dict(family = 'Cadiz Semibold', 
+                                                                     size = 18
+                                                                    ),
+                                                    rangeslider=dict(visible=True),
+                                                    rangeselector=dict(
+                buttons=list([
+                    dict(count=3,
+                         label="3m",
+                         step="month",
+                         stepmode="backward"),
+                    dict(count=6,
+                         label="6m",
+                         step="month",
+                         stepmode="backward"),
+                    dict(count=1,
+                         label="YTD",
+                         step="year",
+                         stepmode="todate"),
+                    dict(count=1,
+                         label="1y",
+                         step="year",
+                         stepmode="backward"),
+                    dict(count=3,
+                         label="3y",
+                         step="year",
+                         stepmode="backward"),
+                    dict(count=5,
+                         label="5y",
+                         step="year",
+                         stepmode="backward"),
+                    dict(step="all",
+                         label='MAX')
+                ])
+            ),
+                                                    
+                                                    ),
+                                       height=graph_height,
+                                       margin=dict(
+                                            l=10,
+                                           r=10,
+                                           # b=100,
+                                            # t=120,
+                                            # pad=4
+                                       ),
+                                      hoverlabel = dict(
+                                            font_size = 20, 
+                                                         font_family = 'Cadiz Book'
+                                                         ),
+                                       legend = dict(orientation='h',
+                                                     x=.5,
+                                                     y=.01,
+                                                     xanchor='center',
+                                                      yanchor='bottom',
+                                                     font=dict(
+                                                    size=14,
+                                                   family = 'Cadiz Semibold'
+                                                   )),
+                                       template = 'seaborn',
+                                       yaxis = dict(title=dict(text = 'Unemployment Rate (%)',
+                                                     font=dict(
+                                                          size=20, 
+                                                         family = 'Cadiz Semibold'
+                                                         )),
+                                                    rangemode='tozero',
+                                                    automargin=True,
+                                                     tickfont = dict(
+                                                         family = 'Cadiz Book', 
+                                                                      size = 18
+                                                                     )),
+                                       title = dict(text = 'Unemployment Rate and Forecast per Month<br>{} - {}'.format(data_en.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
+                                                    x=.5,
+                                                    font=dict(
+                                                         family='Cadiz Semibold',
+                                                               size=20
+                                                              )),
+    
+                                       ))
 
 
     else:
@@ -1186,7 +1288,7 @@ def layout():
                              style=h1_style
                             ),
                   
-                    html.H2('Forecasting Finnish Unemployment Rate with Consumer Price Changes',
+                    html.H2("Forecasting Finland's Unemployment Rate with Consumer Price Changes",
                             style=h2_style),
                     
                     html.P('Select the desired tab by clicking on the titles below.' 
@@ -1787,12 +1889,13 @@ def layout():
                                                      html.Div([dbc.RadioItems(id = 'eda_y_axis_en', 
                                                                  options = [{'label':'Unemployment rate (%)','value':'Työttömyysaste'},
                                                                            {'label':'Monthly unemployment rate change (% units)','value':'change'}],
-                                                                 labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
+                                                                 labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
                                                                              #'font-family':'Cadiz Book'
+                                                                             'font-weight': 'bold'
                                                                              },
                                                                  className="btn-group",
                                                                  inputClassName="btn-check",
-                                                                 labelClassName="btn btn-outline-warning",
+                                                                 labelClassName="btn btn-outline-secondary",
                                                                  labelCheckedClassName="active",
                                                                
                                                                  value = 'Työttömyysaste'
@@ -2683,12 +2786,13 @@ def en_update_test_results(n_clicks,
                                           options = [{'label':'bars','value':'bars'},
                                                     {'label':'lines','value':'lines'},
                                                     {'label':'lines and bars','value':'lines+bars'}],
-                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
+                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
                                                       #'font-family':'Cadiz Book'
+                                                      'font-weight': 'bold'
                                                       },
                                           className="btn-group",
                                           inputClassName="btn-check",
-                                          labelClassName="btn btn-outline-warning",
+                                          labelClassName="btn btn-outline-secondary",
                                           labelCheckedClassName="active",
                                         
                                           value = 'lines+bars'
@@ -2834,13 +2938,15 @@ def en_update_forecast_results(n_clicks,
                       html.Div([
                       dbc.RadioItems(id = 'chart_type_en', 
                         options = [{'label':'bars','value':'bars'},
-                                  {'label':'lines','value':'lines'}],
-                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':15,
+                                  {'label':'lines','value':'lines'},
+                                  {'label':'area','value':'area'}],
+                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
                                     #'font-family':'Cadiz Book'
+                                    'font-weight': 'bold'
                                     },
                         className="btn-group",
                         inputClassName="btn-check",
-                        labelClassName="btn btn-outline-warning",
+                        labelClassName="btn btn-outline-secondary",
                         labelCheckedClassName="active",                        
                         value = 'lines'
                       )
