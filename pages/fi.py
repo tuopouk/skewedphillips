@@ -265,11 +265,11 @@ def get_inflation():
 
   df['Pisteluku'] = data['value']
   
-  df['name'] = [' '.join(c.split()[1:]) for c in df.Hyödyke]
-  df =df .reset_index()
-  df =df.drop_duplicates(subset=['Aika','name'],keep='first')
-  df = df.set_index('Aika')
-  df = df.drop('name',axis=1)
+  # df['name'] = [' '.join(c.split()[1:]) for c in df.Hyödyke]
+  # df =df .reset_index()
+  # df =df.drop_duplicates(subset=['Aika','name'],keep='first')
+  # df = df.set_index('Aika')
+  # df = df.drop('name',axis=1)
 
   return df
 

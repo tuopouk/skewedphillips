@@ -256,11 +256,11 @@ def sv_get_inflation():
   df = pd.merge(left = pd.merge(left = kuukausi_df, right = hyödyke_df, on = 'index', how = 'outer'), right = tiedot_df, on = 'index', how ='outer').drop('index',axis=1).set_index('Aika')
 
   df['Pisteluku'] = data['value']
-  df['name'] = [' '.join(c.split()[1:]) for c in df.Hyödyke]
-  df =df .reset_index()
-  df =df.drop_duplicates(subset=['Aika','name'],keep='first')
-  df = df.set_index('Aika')
-  df = df.drop('name',axis=1)
+  # df['name'] = [' '.join(c.split()[1:]) for c in df.Hyödyke]
+  # df =df .reset_index()
+  # df =df.drop_duplicates(subset=['Aika','name'],keep='first')
+  # df = df.set_index('Aika')
+  # df = df.drop('name',axis=1)
 
   return df
 
