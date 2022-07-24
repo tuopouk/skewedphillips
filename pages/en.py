@@ -2839,7 +2839,7 @@ def en_update_test_results(n_clicks,
                         
                         ),
                     html.Br(),
-                    html.P('The mean absolute percentage error (MAPE) is the average of the relative errors of all forecast values. The accuracy in this case is calculated by formula 1 - MAPE.', 
+                    html.P('The mean absolute percentage error (MAPE) is the average of the relative errors of all forecast values. The accuracy in this case is calculated by the formula: 1 - MAPE.', 
                            style = p_style,
                            className="card-text"),
                     html.Br(),
@@ -3272,7 +3272,7 @@ def en_download_forecast_data(n_clicks, df, method_selection_results, weights_di
         
         output = xlsx_io.getvalue()
 
-        return dcc.send_bytes(output, 'Forecast data with {} features '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
+        return dcc.send_bytes(output, 'Forecast data with {} commodities '.format(len(features)).replace(' 1 commodities',' one commodity')+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
         
 @callback(
     Output("test_download_en", "data"),
@@ -3366,7 +3366,7 @@ def en_download_test_data(n_clicks,
         
         output = xlsx_io.getvalue()
 
-        return dcc.send_bytes(output, 'Test results with {} features '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
+        return dcc.send_bytes(output, 'Test results with {} commodities '.format(len(features)).replace(' 1 commodities',' one commodity')+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
 
 
 @callback(

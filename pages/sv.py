@@ -3269,7 +3269,7 @@ def sv_download_forecast_data(n_clicks, df, method_selection_results, weights_di
         
         output = xlsx_io.getvalue()
 
-        return dcc.send_bytes(output, 'Prognosdata med {} funktioner '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
+        return dcc.send_bytes(output, 'Prognosdata med {} råvaror '.format(len(features)).replace(' 1 råvaror', ' en råvara')+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
         
 @callback(
     Output("test_download_sv", "data"),
@@ -3363,7 +3363,7 @@ def sv_download_test_data(n_clicks,
         
         output = xlsx_io.getvalue()
 
-        return dcc.send_bytes(output, 'Testresultat med {} funktioner '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
+        return dcc.send_bytes(output, 'Testresultat med {} råvaror '.format(len(features)).replace(' 1 råvaror', ' en råvara')+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
 
 
 @callback(

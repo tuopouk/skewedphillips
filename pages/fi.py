@@ -3295,7 +3295,7 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
         
         output = xlsx_io.getvalue()
 
-        return dcc.send_bytes(output, 'Ennustedata {} hyödykkeellä '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
+        return dcc.send_bytes(output, 'Ennustedata {} hyödykkeellä '.format(len(features)).replace(' 1 hyödykkeellä', ' yhdellä hyödykkeellä')+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
         
 @callback(
     Output("test_download", "data"),
@@ -3383,7 +3383,7 @@ def download_test_data(n_clicks,
         
         output = xlsx_io.getvalue()
 
-        return dcc.send_bytes(output, 'Testitulokset {} hyödykkeellä '.format(len(features))+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
+        return dcc.send_bytes(output, 'Testitulokset {} hyödykkeellä '.format(len(features)).replace(' 1 hyödykkeellä', ' yhdellä hyödykkeellä')+datetime.now().strftime('%d_%m_%Y')+'.xlsx')
 
 
 @callback(
