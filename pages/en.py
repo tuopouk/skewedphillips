@@ -1491,6 +1491,11 @@ def layout():
                                           
                                           html.P("The site and its contents are provided free of charge and as available. This is a service provided by a private person, not an official service or an application made for commercial purposes. The use of the information obtained from the site is the responsibility of decision-makers. The Service Provider shall not be liable for any loss, litigation, claim, cost or damage, whatever or in any way, arising directly or indirectly from the use of the Service. Please note that this page is still under development.",
                                                   style=p_style),
+                                          html.P("This website uses only crucial necessary cookies and users' personal data is not collected for any purpose.",
+                                                  style=p_style),
+                                          html.A([html.P('See a third-party report on GDPR compliance.', style = p_style)],
+                                                 href = '/assets/report-skewedphillipsherokuappcom-11629005.pdf',
+                                                 target = '_blank'),
                                           html.Br(),
                                           html.H3('Supported browsers and technical limitations',
                                                   style=h3_style),
@@ -1499,11 +1504,7 @@ def layout():
                                                   style=p_style),
                                           html.P("The application can also be downloaded so-called. standalone version, so it can be started without a browser e.g. Windows or Android. For example, in Google Chrome, on the right side of the browser's address bar, there should be an icon from which to download the app. After downloading the app, you can find it on your own device.",
                                                   style=p_style),
-                                          html.P("This website uses only crucial necessary cookies and users' personal data is not collected for any purpose.",
-                                                  style=p_style),
-                                          html.A([html.P('See a third-party report on GDPR compliance.', style = p_style)],
-                                                 href = '/assets/report-skewedphillipsherokuappcom-11629005.pdf',
-                                                 target = '_blank'),
+                                       
                                           html.Br(),
                                           html.Div(style={'text-align':'center'},children = [
                                               html.H3('References', 

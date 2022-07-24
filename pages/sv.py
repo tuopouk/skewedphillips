@@ -1490,6 +1490,11 @@ def layout():
                                           
                                           html.P("Webbplatsen och dess innehåll tillhandahålls kostnadsfritt och i mån av tillgång. Detta är en tjänst som tillhandahålls av en privat person, inte en officiell tjänst eller en ansökan gjord för kommersiella ändamål. Användningen av informationen som erhållits från webbplatsen är beslutsfattarnas ansvar. Tjänsteleverantören ansvarar inte för förlust, tvister, anspråk, kostnad eller skada, oavsett eller på något sätt, direkt eller indirekt från användningen av Tjänsten. Observera att denna sida fortfarande är under utveckling. ",
                                                   style=p_style),
+                                          html.P("Denna webbplats använder endast nödvändiga cookies och användares personuppgifter samlas inte in för något ändamål.",
+                                                  style=p_style),
+                                          html.A([html.P("Se en tredjepartsrapport om efterlevnad av GDPR.", style = p_style)],
+                                                 href = '/assets/report-skewedphillipsherokuappcom-11629005.pdf',
+                                                 target = '_blank'),
                                           html.Br(),
                                           html.H3("Webbläsare som stöds och tekniska begränsningar",
                                                   style=h3_style),
@@ -1498,11 +1503,7 @@ def layout():
                                                   style=p_style),
                                           html.P("Applikationen kan också laddas ner så kallad fristående version, så att den kan startas utan en webbläsare, t.ex. Windows eller Android. I Google Chrome, till höger om webbläsarens adressfält, bör det finnas en ikon som du kan ladda ner appen från. När du har laddat ner appen kan du hitta den på din egen enhet.",
                                                   style=p_style),
-                                          html.P("Denna webbplats använder endast nödvändiga cookies och användares personuppgifter samlas inte in för något ändamål.",
-                                                  style=p_style),
-                                          html.A([html.P("Se en tredjepartsrapport om efterlevnad av GDPR.", style = p_style)],
-                                                 href = '/assets/report-skewedphillipsherokuappcom-11629005.pdf',
-                                                 target = '_blank'),
+                                         
                                           html.Div(style={'text-align':'center'},children = [
                                               html.H3('Referenser', 
                                                       style = h3_style),
