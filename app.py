@@ -1,5 +1,5 @@
 import dash  
-from dash import Dash, Input, Output, html, State
+from dash import Dash, Input, Output, html, dcc, State
 import dash_bootstrap_components as dbc 
 from flask import Flask
 import os
@@ -195,7 +195,8 @@ navbar = dbc.Navbar(
 
 
 app.layout = dbc.Container(
-    [navbar,
+    [dcc.Location(id='location'),
+     navbar,
      quick_help_offcanvas,
      html.Br(),
      html.Br(),
@@ -235,48 +236,33 @@ def update_label(*args):
 
 @dash.callback(
     Output('quick_help_button','children'), 
-    [Input('fi','n_clicks'),
-     Input('en','n_clicks'),
-      Input('sv','n_clicks')
-     
-     ]
+    [Input('location','pathname')]
+
 )
-def update_quick_help_button_label(*args):
+def update_quick_help_button_label(pathname):
     
-    ctx = dash.callback_context
 
-    if not ctx.triggered:
-        button_id = "fi"
-    else:
-        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
-    if button_id == 'fi':
+    if pathname == '/':
         return 'Avaa pikaohje'
-    elif button_id == 'en':
+    elif pathname == '/en':
         return 'Open Quick Help'
-    else:
+    elif pathname == '/sv':
         return 'Öppna snabbhjälp'
+    else:
+        return 'Avaa pikaohje'
     
     
 @dash.callback(
     [Output('quick_help_offcanvas','title'),
      Output('quick_help_offcanvas','children')], 
-    [Input('fi','n_clicks'),
-     Input('en','n_clicks'),
-      Input('sv','n_clicks')
-     
-     ]
+    [Input('location','pathname')]
 )
-def update_quick_help_offcanvas(*args):
+def update_quick_help_offcanvas(pathname):
     
-    ctx = dash.callback_context
 
-    if not ctx.triggered:
-        button_id = "fi"
-    else:
-        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
-    if button_id == 'fi':
+    if pathname == '/':
         return 'Pikaohje',[
                     
                 html.H3('Tässä on lyhyt ohjeistus sovelluksen käyttöön. Yksityiskohtaisempaa informaatiota löytyy Ohje ja esittely -välilehdeltä sekä jokaisen toiminnon omalta välilehdeltään.', 
@@ -396,7 +382,7 @@ def update_quick_help_offcanvas(*args):
                 
                 
               ]
-    elif button_id == 'en':
+    elif pathname == '/en':
         return "Quick Help", [
             
         html.H3('For more detailed information, see the Help and Introduction tab and the separate tab for each action.', 
@@ -516,7 +502,7 @@ def update_quick_help_offcanvas(*args):
         
         
       ]
-    else:
+    elif pathname == '/sv':
         return "Snabbhjälp", [
             
         html.H3('Mer detaljerad information finns i fliken Hjälp och Introduktion och den separata fliken för varje åtgärd.', 
@@ -635,7 +621,127 @@ def update_quick_help_offcanvas(*args):
         
         
         
-      ]    
+      ]
+    else:
+        return 'Pikaohje',[
+                    
+                html.H3('Tässä on lyhyt ohjeistus sovelluksen käyttöön. Yksityiskohtaisempaa informaatiota löytyy Ohje ja esittely -välilehdeltä sekä jokaisen toiminnon omalta välilehdeltään.', 
+                        style = {
+                            # #'font-family':'Cadiz Semibold',
+                                  'text-align':'left',
+                                  
+                                  'font-size':22,
+                                  'margin-bottom':'30px'
+                                  }
+                        ),
+                    
+                html.H3('1. Valitse hyödykkeitä Hyödykkeiden valinta -välilehdellä', 
+                        style = {
+                            # #'font-family':'Cadiz Semibold',
+                                  'text-align':'left',
+                                  'font-size':20,
+                                  'margin-bottom':'30px'
+                                  }
+                        ),
+                
+                html.P(
+                    "Valitse haluamasi hyödykkeet alasvetovalikosta. "
+                    "Voit lajitella hyödykkeet haluamallasi tavalla. "
+                    "Valitse käytetäänkö edellisten kuukausien muutoskeskiarvoja "
+                    "tai vakiomuutosta kaikille valitsinta klikkaamalla. "
+                    "Säädä olettu muutos liutin -valinnalla. "
+                    "Hienosäädä yksittäisten hyödykkeiden muutoksia muokkaamalla laatikoiden arvoja.",
+                     style = {
+                         # #'font-family':'Cadiz Book',
+                              'font-size':p_font_size-2,
+                               'text-align':'left'}
+                ),
+                html.Br(),
+                html.H3('2. Tutki valitsemiasi hyödykkeitä Tutkiva analyysi -välilehdellä', 
+                         style = {
+                             # #'font-family':'Cadiz Semibold',
+                                  'margin-bottom':'30px',
+                                  'font-size':20,
+                                    'text-align':'left',
+                                    
+                                    }
+                        ),
+                
+                html.P(
+                    "Tarkastele kuvaajien avulla valittujen hyödykkeiden suhdetta työttömyysasteeseen "
+                    "tai hyödykkeiden suhteita toisiinsa. "
+                    "Voit myös tarkastella indeksien, työttömyysasteen ja inflaation aikasarjoja.",
+                     style = {
+                         # #'font-family':'Cadiz Book',
+                              'font-size':p_font_size-2,
+                                'text-align':'left'}
+                ),
+                html.Br(),
+                html.H3('3. Valitse menetelmä Menetelmän valinta -välilehdellä', 
+                         style = {
+                             # #'font-family':'Cadiz Semibold',
+                                  'margin-bottom':'30px',
+                                  'font-size':20,
+                                    'text-align':'left'}
+                        ),
+                html.P(
+                    "Valitse haluamasi koneoppimisalgoritmi alasvetovalikosta. "
+                    "Säädä algoritmin hyperparametrit. "
+                    "Valitse painikkeesta käytetäänkö pääkomponenttianalyysiä "
+                    "ja niin tehtäessä valitse säilötyn variaation määrä liutin-valinnalla.",
+                     style = {
+                         # #'font-family':'Cadiz Book',
+                              'font-size':p_font_size-2,
+                                'text-align':'left'}
+                ),
+                html.Br(),
+                html.H3('4. Testaa menetelmää Testaaminen-välilehdellä', 
+                         style = {
+                             # #'font-family':'Cadiz Semibold',
+                                   'text-align':'left',
+                                   'font-size':20,
+                                   'margin-bottom':'30px'
+                                   }
+                        ),
+                
+                html.P(
+                    "Valitse testin pituus ja klikkaa testaa nappia. "
+                    "Tarkastele testin kuvaajaa tai viedä tulokset Exceliin "
+                    "klikkaamalla 'Lataa testitulokset koneelle -nappia'. "
+                    "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä."
+                    " "
+                    " Voit myös tutkia Shapley-arvojen avulla mitkä piirteet ja hyödykkeet vaikuttivat eniten ennustetulokseen.",
+                    style = {
+                        # #'font-family':'Cadiz Book',
+                             'font-size':p_font_size-2,
+                              'text-align':'left'}
+                ),
+                html.Br(),
+                html.H3('5. Tee ennuste Ennustaminen-välilehdellä', 
+                         style = {
+                             # #'font-family':'Cadiz Semibold',
+                                   'text-align':'left',
+                                   'font-size':20,
+                                   'margin-bottom':'30px'
+                                   
+                                   }
+                        ),
+                
+                html.P(
+                    "Valitse ennusteen pituus ja klikkaa ennusta nappia. "
+                    "Tarkastele ennusteen kuvaajaa tai viedä tulokset Exceliin "
+                    "klikkaamalla 'Lataa ennustedata koneelle -nappia'. "
+                    "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä. "
+                    "Voit myös säätää hyödykeindeksien oletettuja kuukausimuutoksia ja kokeilla uudestaan.",
+                    style = {
+                        # #'font-family':'Cadiz Book',   
+                             'font-size':p_font_size-2,
+                               'text-align':'left'}
+                ),
+                
+                
+                
+              ]
 
     
 @dash.callback(
@@ -644,26 +750,22 @@ def update_quick_help_offcanvas(*args):
      Output(ThemeChangerAIO.ids.button("theme"), "children"),
       Output(ThemeChangerAIO.ids.offcanvas("theme"), "title")
       ],
-    [Input('fi','n_clicks'),
-     Input('en','n_clicks'),
-      Input('sv','n_clicks')]
+     [Input('location','pathname')]
+
     
 )
-def change_theme_changer_language(*args):
+def change_theme_changer_language(pathname):
     
-    ctx = dash.callback_context
 
-    if not ctx.triggered:
-        button_id = "fi"
-    else:
-        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
-    if button_id == 'fi':
+    if pathname == '/':
         return 'Vaihda väriteemaa', 'Vaihda väriteemaa', "Valitse jokin alla olevista väriteemoista"
-    elif button_id == 'en':
+    elif pathname == '/en':
         return 'Change Color Theme', 'Change Color Theme', "Select a Color Theme"
-    else:
+    elif pathname == '/sv':
         return "Ändra färgtema", "Ändra färgtema", "Välj ett färgtema"
+    else:
+        return 'Vaihda väriteemaa', 'Vaihda väriteemaa', "Valitse jokin alla olevista väriteemoista"
    
     
 @dash.callback(
@@ -678,16 +780,17 @@ def toggle_offcanvas(n1, is_open):
 
 @dash.callback(
     Output('email','children'),
-    [Input('dd_menu','label')]
+    [Input('location','pathname')]
+    
     )
 def update_email_topic(label):
         
 
-    if label == 'FI':
+    if label == '/':
         return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Phillipsin vinouma",external_link=True, target='_blank')]
-    elif label == 'EN':
+    elif label == '/en':
         return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skewed Phillips",external_link=True, target='_blank')]
-    elif label == 'SV':
+    elif label == '/sv':
         return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skev Phillips",external_link=True, target='_blank')]
     else:
        return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=https://skewedphillips.herokuapp.com/",external_link=True, target='_blank')] 
