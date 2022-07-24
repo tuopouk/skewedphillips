@@ -1498,9 +1498,11 @@ def layout():
                                                   style=p_style),
                                           html.P("Applikationen kan också laddas ner så kallad fristående version, så att den kan startas utan en webbläsare, t.ex. Windows eller Android. I Google Chrome, till höger om webbläsarens adressfält, bör det finnas en ikon som du kan ladda ner appen från. När du har laddat ner appen kan du hitta den på din egen enhet.",
                                                   style=p_style),
-                                          html.P("Den här webbplatsen använder endast funktionella cookies.",
+                                          html.P("Denna webbplats använder endast nödvändiga cookies och användares personuppgifter samlas inte in för något ändamål.",
                                                   style=p_style),
-                                          html.Br(),
+                                          html.A([html.P("Se en tredjepartsrapport om efterlevnad av GDPR.", style = p_style)],
+                                                 href = '/assets/report-skewedphillipsherokuappcom-11629005.pdf',
+                                                 target = '_blank'),
                                           html.Div(style={'text-align':'center'},children = [
                                               html.H3('Referenser', 
                                                       style = h3_style),

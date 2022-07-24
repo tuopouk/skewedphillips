@@ -1499,8 +1499,11 @@ def layout():
                                                   style=p_style),
                                           html.P("The application can also be downloaded so-called. standalone version, so it can be started without a browser e.g. Windows or Android. For example, in Google Chrome, on the right side of the browser's address bar, there should be an icon from which to download the app. After downloading the app, you can find it on your own device.",
                                                   style=p_style),
-                                          html.P("This site uses only functional cookies.",
+                                          html.P("This website uses only crucial necessary cookies and users' personal data is not collected for any purpose.",
                                                   style=p_style),
+                                          html.A([html.P('See a third-party report on GDPR compliance.', style = p_style)],
+                                                 href = '/assets/report-skewedphillipsherokuappcom-11629005.pdf',
+                                                 target = '_blank'),
                                           html.Br(),
                                           html.Div(style={'text-align':'center'},children = [
                                               html.H3('References', 

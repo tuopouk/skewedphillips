@@ -1514,8 +1514,11 @@ def layout():
                                                   style=p_style),
                                           html.P("Sovelluksesta voi myös ladata ns. standalone-version, joten sen voi käynnistää ilman selainta esim. Windowsilla tai Androidilla. Esimerkiksi Google Chromessa selaimen osoiterivin oikealla puolella pitäisi olla ikoni, josta klikkaamalla sovelluksen voi ladata. Lataamisen jälkeen sovellus löytyy omalta laitteelta.",
                                                   style=p_style),
-                                          html.P("Sivu käyttää vain toiminnallisia evästeitä.",
+                                          html.P("Tämä sivusto hyödyntää vain välttämättömiä toiminnallisia evästeitä eikä käyttäjien henkilötietoja kerätä mihinkään tarkoitukseen.",
                                                   style=p_style),
+                                          html.A([html.P('Katso kolmannen osapuolen tuottama raportti GDPR-yhteensopivuudesta.', style = p_style)],
+                                                 href = '/assets/report-skewedphillipsherokuappcom-11629005.pdf',
+                                                 target = '_blank'),
                                           html.Br(),
                                           html.Div(style={'text-align':'center'},children = [
                                               html.H3('Lähteet', 
