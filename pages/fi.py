@@ -265,6 +265,9 @@ def get_inflation():
 
   df['Pisteluku'] = data['value']
   
+  # Osalla hyödykkeistä on sama nimi kuin yläluokallaan, esim. polkupyörät ovat 3., 4. ja 5. luokassa.
+  # Arvot saattavat vaihdella, vaikka nimi on sama, joten sarakkeita ei voi poistaa.
+  
   # df['name'] = [' '.join(c.split()[1:]) for c in df.Hyödyke]
   # df =df .reset_index()
   # df =df.drop_duplicates(subset=['Aika','name'],keep='first')
@@ -320,6 +323,13 @@ def get_data():
 
   data['month'] = data.index.month
   data['change'] = data.Työttömyysaste - data.prev
+  
+  # Näin poistetaan duplikaattisarakkeet arvojen perusteella.
+  # Jos näin tehdään niin saatetaan kuitenkin poistaa sarake, jolla on
+  # täsmälleen samat arvot kuin jollain toisella hyödykkeellä.
+  # Esim. 04.2.1 Uuden asunnon hankinta ja 04.2.1.1 Osakehuoneistot ja kiinteistöt.
+  
+  # data = data.T.drop_duplicates().T
 
   return data
 
@@ -449,7 +459,7 @@ def get_shap_values(model, explainer, X_train, X_test):
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
-        shap_importance.index = [' '.join(i.split()[1:]) if i not in ['prev','month'] else i for i in shap_importance.index]
+        shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
         return shap_importance
@@ -463,7 +473,7 @@ def get_shap_values(model, explainer, X_train, X_test):
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
-        shap_importance.index = [' '.join(i.split()[1:]) if i not in ['prev','month'] else i for i in shap_importance.index]
+        shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
     
@@ -478,7 +488,7 @@ def get_shap_values(model, explainer, X_train, X_test):
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
-        shap_importance.index = [' '.join(i.split()[1:]) if i not in ['prev','month'] else i for i in shap_importance.index]
+        shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
         return shap_importance
@@ -1288,8 +1298,57 @@ fifth_class_options = [{'label':c, 'value':c} for c in fifth_classes]
 
 
 
-initial_options = corr_abs_desc_options
-initial_features = [[list(f.values())[0] for f in corr_abs_desc_options][i] for i in random.sample(range(len(corr_abs_desc_options)),6)]
+initial_options = feature_options
+initial_features = ['01.1.2.1.1 Naudanliha',
+ '01.1.2.8.1 Muut prosessoidut lihat ja lihavalmisteet',
+ '01.1.3 Kala ja äyriäiset',
+ '01.1.3.1 Tuoreet, jäähdytetyt tai pakastetut kalat',
+ '01.1.3.3 Kuivattu, savustettu tai suolattu kala ja äyriäiset',
+ '01.1.3.3.1 Savustettu kala',
+ '01.1.4 Maitotuotteet, juusto ja kananmunat',
+ '01.1.4.4.1 Kypsytetyt juustot',
+ '01.1.5.2 Margariinit ja muut kasvisrasvat',
+ '01.1.5.2.4 Muut rasvaseokset',
+ '01.1.6.3.1 Pakastetut hedelmät ja marjat',
+ '01.1.6.4 Pähkinät',
+ '01.1.9.3 Vauvanruoat',
+ '01.1.9.3.1 Vauvanruoat',
+ '01.1.9.5.1 Muut ruokavalmisteet, muualla luokittelemattomat',
+ '02.1.2.1.1 Rypäleviinit',
+ '03 VAATETUS JA JALKINEET',
+ '03.1 Vaatetus',
+ '03.1.2.2 Naisten vaatteet',
+ '03.1.2.2.1 Naisten päällystakit',
+ '03.1.2.2.2 Naisten puvut, mekot, hameet ja housut',
+ '03.1.2.4 Vauvojen vaatteet (0-2 vuotiaat)',
+ '03.2.1.3 Lasten jalkineet',
+ '03.2.1.3.2 Lasten jalkineet',
+ '04.1.1.1.1 Asuinkäyttöön vuokratut asunnot',
+ '04.1.2.2.2 Muut vuokrat sisältäen maan vuokran',
+ '04.5 Sähkö, kaasu ja muut polttoaineet',
+ '05.2.0.2.3 Lakanat, tyynyliinat ja pussilakanat',
+ '05.2.0.3 Pöytäliinat ja pyyhkeet',
+ '05.3.1.3.3 Liedet',
+ '05.4 Lasitavarat, astiat ja kotitaloustarvikkeet',
+ '05.5.2.2.1 Kodin ja puutarhan metalliesineet',
+ '05.6 Taloudenhoitoon liittyvät tavarat ja palvelut',
+ '05.6.1.1.1 Pesuaineet',
+ '06.1.3 Hoitolaitteet ja -välineet',
+ '06.1.3.1 Silmälasit ja piilolinssit',
+ '07.2.1.3 Yksityisajoneuvojen tarvikkeet',
+ '07.2.2 Yksityisajoneuvojen polttoaineet ja voiteluöljyt',
+ '07.2.2.4 Voiteluaineet',
+ '07.3.1.1.1 Kotimaan junaliikenne',
+ '08.2.0.2 Matkapuhelimet',
+ '09 KULTTUURI JA VAPAA-AIKA',
+ '09.2.1 Vapaa-aikaan liittyvät kestokulutustavarat ulkokäyttöön',
+ '09.4.2.3.3 Kaapeli ja maksu-TV tilausmaksut',
+ '09.5.1.3.1 Tietokirjat',
+ '09.5.2.2.1 Aikakauslehtien irtonumero',
+ '09.6 Valmismatkat',
+ '09.6.0 Valmismatkat',
+ '10.2.0.1 Toisen asteen koulutus',
+ '12.1.3.3.3 Vartalo-, käsi- ja hiusvoiteet']
 
 
 def layout():

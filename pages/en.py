@@ -315,6 +315,10 @@ def en_get_data():
 
   data['month'] = data.index.month
   data['change'] = data.Työttömyysaste - data.prev
+  
+  
+  
+  # data = data.T.drop_duplicates().T
 
   return data
 
@@ -443,7 +447,7 @@ def en_get_shap_values(model, explainer, X_train, X_test):
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
-        shap_importance.index = [' '.join(i.split()[1:]) if i not in ['prev','month'] else i for i in shap_importance.index]
+        shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
         return shap_importance
@@ -457,7 +461,7 @@ def en_get_shap_values(model, explainer, X_train, X_test):
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
-        shap_importance.index = [' '.join(i.split()[1:]) if i not in ['prev','month'] else i for i in shap_importance.index]
+        shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
     
@@ -472,7 +476,7 @@ def en_get_shap_values(model, explainer, X_train, X_test):
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
-        shap_importance.index = [' '.join(i.split()[1:]) if i not in ['prev','month'] else i for i in shap_importance.index]
+        shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
         return shap_importance
@@ -1275,8 +1279,57 @@ fifth_class_options_en = [{'label':c, 'value':c} for c in fifth_classes_en]
 
 
 
-initial_options_en = corr_abs_desc_options_en
-initial_features_en = [[list(f.values())[0] for f in corr_abs_desc_options_en][i] for i in random.sample(range(len(corr_abs_desc_options_en)),6)]
+initial_options_en = feature_options_en
+initial_features_en = ['01.1.2.1.1 Beef',
+ '01.1.2.8.1 Other preserved or processed meat and meat-based preparations',
+ '01.1.3 Fish and seafood',
+ '01.1.3.1 Fresh, chilled or frozen fish',
+ '01.1.3.3 Dried, smoked or salted fish and seafood',
+ '01.1.3.3.1 Smoked fish',
+ '01.1.4 Milk, cheese and eggs',
+ '01.1.4.4.1 Mature cheese',
+ '01.1.5.2 Margarine and other vegetable fats',
+ '01.1.5.2.4 Other edible mixtures of fat',
+ '01.1.6.3.1 Frozen fruit and berries',
+ '01.1.6.4 Nuts',
+ '01.1.9.3 Baby food',
+ '01.1.9.3.1 Baby food',
+ '01.1.9.5.1 Other food products n.e.c.',
+ '02.1.2.1.1 Wine from grapes',
+ '03 CLOTHING AND FOOTWEAR',
+ '03.1 Clothing',
+ '03.1.2.2 Garments for women',
+ "03.1.2.2.1 Women's overcoats and jackets",
+ "03.1.2.2.2 Women's suits, dresses, skirts and trousers",
+ '03.1.2.4 Garments for infants (0 to 2 years)',
+ '03.2.1.3 Footwear for children',
+ '03.2.1.3.2 Footwear for children',
+ '04.1.1.1.1 Actual rentals paid by tenants in the private sector',
+ '04.1.2.2.2 Other rentals including land rental',
+ '04.5 Electricity, gas and other fuels',
+ '05.2.0.2.3 Sheets, pillowcases and quilt covers',
+ '05.2.0.3 Table linen and bathroom linen',
+ '05.3.1.3.3 Cooker',
+ '05.4 Glassware, tableware and household utensils',
+ '05.5.2.2.1 Metal articles for the house or for the garden',
+ '05.6 Goods and services for routine household maintenance',
+ '05.6.1.1.1 Detergents',
+ '06.1.3 Therapeutic appliances and equipment',
+ '06.1.3.1 Spectacles and contact lenses',
+ '07.2.1.3 Accessories for personal transport equipment',
+ '07.2.2 Fuels and lubricants for personal transport equipment',
+ '07.2.2.4 Lubricants',
+ '07.3.1.1.1 Domestic rail transport',
+ '08.2.0.2 Mobile telephones',
+ '09 RECREATION AND CULTURE',
+ '09.2.1 Major durables for outdoor recreation',
+ '09.4.2.3.3 Subscription to cable TV  and pay-TV',
+ '09.5.1.3.1 Non-fiction books',
+ '09.5.2.2.1 Single copy of a magazines',
+ '09.6 Package holidays',
+ '09.6.0 Package holidays',
+ '10.2.0.1 Lower secondary education',
+ '12.1.3.3.3 Body, hand and hair lotions']
 
 
 def layout():
