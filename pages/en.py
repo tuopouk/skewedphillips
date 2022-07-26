@@ -3122,7 +3122,8 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                      html.Br(),
                         dcc.Loading([dbc.Row(id = 'shap_graph_div_en', justify = 'center')], type = random.choice(spinners))],
                 
-                    [html.H3('Select a month', style =h3_style),
+                    [html.Br(),
+                        html.H3('Select a month', style =h3_style),
                                         dcc.Dropdown(id = 'local_shap_month_selection_en',
                                                       options = options, 
                                                       style = {'font-size':16},
