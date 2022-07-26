@@ -186,7 +186,7 @@ def set_color(x,y):
     elif y < 0:
         return '#E34234'
     elif y >= 0:
-        return '#3F00FF'
+        return '#32CD32'
 
 
 
