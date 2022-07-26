@@ -3061,7 +3061,7 @@ def update_shap_results(n_clicks, shap):
             
                     html.H3('Mitkä ennustepiirteet vaikuttivat eniten?',
                            style = h3_style),
-                    html.P('Oheisessa kuvaajassa on esitetty hyödynnettyjen ennustepiirteiden keskimääräisen absoluuttiset SHAP-arvot, jotka kuvaavat kuinka suuri kontribuutio on kullakin piirteellä ennusteeseen. Niillä ei ole viitearvoja, vaan yksinkertaisesti suurempi SHAP-arvo kertoo piirteen suuremmasta kontribuutiosta ennusteeseen. Ennustepiirteisiin kuuluvat valittujen hyödykeindeksien lisäksi edellisen kuukauden työttömyysaste sekä kuukausi.',
+                    html.P('Oheisessa kuvaajassa on esitetty käytettyjen ennustepiirteiden globaalit tärkeydet ennusteelle. Niiden on tarkoitus kuvata kuinka suuri kontribuutio kullakin piirteellä on keskimäärin kuukausittaisiin ennusteisiin. Arvot on laskettu ennusteiden absoluuttisten SHAP-arvojen keskiarvoina. Niillä ei ole viitearvoja, vaan yksinkertaisesti suurempi arvo kertoo piirteen suuremmasta kontribuutiosta ennusteeseen. Ennustepiirteisiin kuuluvat valittujen hyödykeindeksien lisäksi edellisen kuukauden työttömyysaste sekä kuukausi.',
                            style = p_style),
                     html.A([html.P('Katso lyhyt esittely SHAP -arvojen merkityksestä mallin selittämisessä.',
                                    style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
@@ -3180,7 +3180,7 @@ def update_shap_graph(cut_off, only_commodities, shap):
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 20))],
-         layout=go.Layout(title = dict(text = 'Piirteiden merkitykset ennusteelle<br>SHAP - arvot',
+         layout=go.Layout(title = dict(text = 'Piirteiden kokonaismerkitykset<br>Keskimääräiset |SHAP - arvot|',
                                                                      x=.5,
                                                                      font=dict(
                                                                           family='Cadiz Semibold',
@@ -3208,7 +3208,7 @@ def update_shap_graph(cut_off, only_commodities, shap):
                                                             )),
                                                         
                                                         height=height,#graph_height+200,
-                                                        xaxis = dict(title=dict(text = 'Keskimääräinen SHAP - arvo',
+                                                        xaxis = dict(title=dict(text = 'Keskimääräinen |SHAP - arvo|',
                                                                                 font=dict(
                                                                                     size=18, 
                                                                                     family = 'Cadiz Semibold'

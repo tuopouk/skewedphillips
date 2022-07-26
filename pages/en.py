@@ -3034,7 +3034,7 @@ def en_update_shap_results(n_clicks, shap):
             
                     html.H3('Which features were the most important?',
                            style = h3_style),
-                    html.P("The graph below shows the absolute SHAP values of the average of the utilized forecast features, which describe how much each feature contributes to the forecast. They do not have reference values, but simply a higher SHAP value indicates the feature's greater contribution to the forecast. In addition to selected commodity indices, the forecast features include the unemployment rate of the previous month and the current month.",
+                    html.P("The graph below shows the global importance of the used forecast features. They are intended to describe how much each feature contributes on average to monthly forecasts. The values are calculated as averages of absolute SHAP values. They do not have reference values, but simply a higher value indicates the feature's greater contribution to the forecast. In addition to selected commodity indices, the forecast features include the unemployment rate of the previous month and the month itself.",
                            style = p_style),
                     html.A([html.P('See a short introduction video of the importance of SHAP values in explaining a model.',
                                    style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
@@ -3152,7 +3152,7 @@ def en_update_shap_graph(cut_off, only_commodities, shap):
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 20))],
-         layout=go.Layout(title = dict(text = 'Feature importances<br>SHAP - values',
+         layout=go.Layout(title = dict(text = 'Global Feature Importances<br>Mean |SHAP values|',
                                                                      x=.5,
                                                                      font=dict(
                                                                           family='Cadiz Semibold',
@@ -3180,7 +3180,7 @@ def en_update_shap_graph(cut_off, only_commodities, shap):
                                                             )),
                                                         
                                                         height=height,#graph_height+200,
-                                                        xaxis = dict(title=dict(text = 'Average SHAP value',
+                                                        xaxis = dict(title=dict(text = 'Mean |SHAP value|',
                                                                                 font=dict(
                                                                                     size=18, 
                                                                                     family = 'Cadiz Semibold'

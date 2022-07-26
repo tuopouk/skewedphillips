@@ -3028,7 +3028,7 @@ def sv_update_shap_results(n_clicks, shap):
             
                     html.H3('Vilka funktioner var de viktigaste?',
                            style = h3_style),
-                    html.P("Diagrammet nedan visar de absoluta SHAP-värdena för genomsnittet av de använda prognosfunktionerna, som beskriver hur mycket varje funktion bidrar till prognosen. De har inga referensvärden, utan helt enkelt ett högre SHAP-värde indikerar att funktionen i högre grad bidrar till prognosen. Förutom utvalda råvaruindex inkluderar prognosfunktionerna arbetslösheten för föregående prognos. och innevarande månad. ",
+                    html.P("Diagrammet nedan visar den globala betydelsen av de använda prognosfunktionerna. De är avsedda att beskriva hur mycket varje funktion i genomsnitt bidrar till månatliga prognoser. Värdena beräknas som medelvärden för absoluta SHAP-värden. De har inga referensvärden, men helt enkelt ett högre värde indikerar funktionen större bidrag till prognosen. Förutom utvalda råvaruindex inkluderar prognosfunktionerna arbetslösheten föregående månad och månaden själv.",
                            style = p_style),
                     html.A([html.P("Se en kort introduktionsvideo om betydelsen av SHAP-värden för att förklara en modell.",
                                    style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
@@ -3146,7 +3146,7 @@ def sv_update_shap_graph(cut_off, only_commodities, shap):
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 20))],
-         layout=go.Layout(title = dict(text = 'Funktionsimporter<br>SHAP - värden',
+         layout=go.Layout(title = dict(text = 'Globala funktionsviktigheter<br>Genomsnittliga |SHAP - värden|',
                                                                      x=.5,
                                                                      font=dict(
                                                                           family='Cadiz Semibold',
@@ -3174,7 +3174,7 @@ def sv_update_shap_graph(cut_off, only_commodities, shap):
                                                             )),
                                                         
                                                         height=height,#graph_height+200,
-                                                        xaxis = dict(title=dict(text = 'Genomsnittligt SHAP-värde',
+                                                        xaxis = dict(title=dict(text = 'Genomsnittligt |SHAP-värde|',
                                                                                 font=dict(
                                                                                     size=18, 
                                                                                     family = 'Cadiz Semibold'
