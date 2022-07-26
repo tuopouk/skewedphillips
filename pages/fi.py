@@ -181,7 +181,7 @@ h1_style = {
 def set_color(x,y):
     
     
-    if 'yöttömyys' in x or x=='Kuukausi':
+    if 'yöttömyys' in x or x=='Kuluva kuukausi':
         return 'black'
     elif y < 0:
         
@@ -3346,11 +3346,11 @@ def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
     
   
     
-    dff.index  = dff.index.str.replace('month','Kuukausi').str.replace('prev',prev_str)
+    dff.index  = dff.index.str.replace('month','Kuluva kuukausi').str.replace('prev',prev_str)
           
     
     if only_commodities:
-        dff = dff.loc[[i for i in dff.index if i not in ['Kuukausi', prev_str]]]
+        dff = dff.loc[[i for i in dff.index if i not in ['Kuluva kuukausi', prev_str]]]
     
     
     dff = dff.sort_values(ascending = False)

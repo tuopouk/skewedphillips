@@ -177,7 +177,7 @@ h1_style = {
 def sv_set_color(x,y):
     
     
-    if 'rbetslöshet' in x or x=='Månad':
+    if 'rbetslöshet' in x or x=='Nuvarande månad':
         return 'black'
     elif y < 0:
         
@@ -3168,11 +3168,11 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     
   
     
-    dff.index  = dff.index.str.replace('month','Månad').str.replace('prev',prev_str)
+    dff.index  = dff.index.str.replace('month','Nuvarande månad').str.replace('prev',prev_str)
           
     
     if only_commodities:
-        dff = dff.loc[[i for i in dff.index if i not in ['Månad', prev_str]]]
+        dff = dff.loc[[i for i in dff.index if i not in ['Nuvarande månad', prev_str]]]
     
     
     dff = dff.sort_values(ascending = False)

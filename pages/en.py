@@ -180,7 +180,7 @@ h1_style = {
 def en_set_color(x,y):
     
     
-    if 'nemployment' in x or x=='Month':
+    if 'nemployment' in x or x=='Current Month':
         return 'black'
     elif y < 0:
         
@@ -3176,11 +3176,11 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     
   
     
-    dff.index  = dff.index.str.replace('month','Month').str.replace('prev',prev_str)
+    dff.index  = dff.index.str.replace('month','Current Month').str.replace('prev',prev_str)
           
     
     if only_commodities:
-        dff = dff.loc[[i for i in dff.index if i not in ['Month', prev_str]]]
+        dff = dff.loc[[i for i in dff.index if i not in ['Current Month', prev_str]]]
     
     
     dff = dff.sort_values(ascending = False)
