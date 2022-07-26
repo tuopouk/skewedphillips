@@ -24,14 +24,10 @@ from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.decomposition import PCA
 import dash_daq
-
 import io
 import math
 import shap
-
-
 from dash import html, dcc, callback, callback_context ,ALL, Output, Input, State
-# from dash_extensions.enrich import callback_context,Dash  ,ALL, Output,dcc,html, Input, State
 from dash.exceptions import PreventUpdate
 import random
 import dash_bootstrap_components as dbc
@@ -182,6 +178,15 @@ h1_style = {
 
 
 
+def set_color(x,y):
+    
+    
+    if 'yöttömyys' in x or x=='Kuukausi':
+        return 'black'
+    elif y < 0:
+        return '#E34234'
+    elif y >= 0:
+        return '#3F00FF'
 
 
 
@@ -462,7 +467,7 @@ def get_shap_values(model, explainer, X_train, X_test):
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
-        return shap_importance
+        return shap_importance,shap_df
     
     elif explainer.__name__ == 'Tree':
         explainer = explainer(model)
@@ -477,7 +482,7 @@ def get_shap_values(model, explainer, X_train, X_test):
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
     
-        return shap_importance
+        return shap_importance,shap_df
     else:
         explainer = explainer(model,X_train)
         shap_values = explainer(X_test)
@@ -491,7 +496,7 @@ def get_shap_values(model, explainer, X_train, X_test):
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
-        return shap_importance
+        return shap_importance,shap_df
         
 
 def get_param_options(model_name):
@@ -1156,21 +1161,23 @@ def test(model, features, test_size, explainer, use_pca = False, n_components=.9
   
   
 
-  shap_df = get_shap_values(model, explainer, X_train = pd.DataFrame(X, columns = cols), X_test = pd.concat(scaled_features))
+  shap_df, local_shap_df = get_shap_values(model, explainer, X_train = pd.DataFrame(X, columns = cols), X_test = pd.concat(scaled_features))
 
   result = pd.concat(results)
   result['n_feat'] = n_feat
   result.Ennuste = np.round(result.Ennuste,1)
   result['mape'] = mean_absolute_percentage_error(result.Työttömyysaste, result.Ennuste)
   
-
+  local_shap_df.index = result.index
+  
   
   result.index.name ='Aika'
     
   result = result[['Työttömyysaste', 'Ennuste', 'change', 'Ennustettu muutos', 'prev','n_feat','mape','month']+features]
   
 
-  return result, shap_df                                                      
+  return result, shap_df, local_shap_df         
+                                          
 
                                                 
 
@@ -1357,6 +1364,7 @@ def layout():
                     dcc.Store(id = 'change_weights'), 
                     dcc.Store(id = 'method_selection_results'),
                     dcc.Store(id ='shap_data'),
+                    dcc.Store(id ='local_shap_data'),
                     dcc.Store(id = 'test_data'),
                     dcc.Store(id = 'forecast_data'),
                     dcc.Download(id='forecast_download'),
@@ -1994,7 +2002,7 @@ def layout():
                                  html.H3('Alla olevassa kuvaajassa on esitetty inflaatio ja työttömyys Suomessa kuukausittain.',
                                         style = h3_style),
                                  
-                                 html.Div(id = 'employement_inflation_div',
+                                 html.Div(id = 'unemployment_inflation_div',
                                           
                                           children=[dcc.Graph(id ='employement_inflation',
                                                      figure = go.Figure(data=[go.Scatter(x = data.index,
@@ -2026,7 +2034,7 @@ def layout():
                                                                                  ),
                                                                                  hoverlabel=dict(font=dict(
                                                                                       family='Cadiz Book',
-                                                                                     size=14)),
+                                                                                     size=20)),
                                                                                  legend = dict(orientation = 'h',
                                                                                                 xanchor='center',
                                                                                                 yanchor='top',
@@ -2251,6 +2259,8 @@ def layout():
                                                style = p_style),
                                         html.P('Tehtyäsi testin voit tarkastella viereistä tuloskuvaajaa tai viedä testidatan alle ilmestyvästä painikeesta Exceliin.',
                                               style=p_style),
+                                        html.P('Testitulosten alapuolella olevista kuvaajista voit tarkastella kuinka valitsemasi hyödykkeet vaikuttivat testattuun ennusteeseen.',
+                                                style=p_style),
                                         html.Br(),
                                         html.H3('Valitse testidatan pituus',style = h3_style),
                                         dcc.Slider(id = 'test_slider',
@@ -2302,10 +2312,20 @@ def layout():
                             ),
                         html.Br(),
                         dbc.Row(children = [
-                            dbc.Col([html.Div(id = 'test_results_div')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
-                            dbc.Col([html.Div(id = 'shap_results_div'),],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            dbc.Col([html.Div(id = 'test_results_div')],xs = 12, sm = 12, md = 12, lg = 9, xl = 9),
+                            
                             
                             ], justify = 'center', 
+                            
+                            ),
+                        html.Br(),
+                        dbc.Row([dbc.Col([html.Div(id = 'shap_selections_div')],xs = 12, sm = 12, md = 12, lg = 9, xl = 9)],justify = 'center'),
+                        dbc.Row(children = [
+                            
+                            dbc.Col([html.Div(id = 'shap_results_div')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            dbc.Col([html.Div(id = 'local_shap_results_div')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            
+                            ], justify = 'center', align='center', 
                             
                             ),
                  
@@ -2770,7 +2790,8 @@ def store_method_selection_results(model_name, hyperparams, hyperparam_values,pc
       [Output('test_data','data'),
        Output('test_results_div','children'),
        Output('test_download_button_div','children'),
-       Output('shap_data','data')],
+       Output('shap_data','data'),
+       Output('local_shap_data','data')],
       [Input('test_button','n_clicks')],
       [State('test_slider', 'value'),
        State('features_values','data'),
@@ -2819,9 +2840,15 @@ def update_test_results(n_clicks,
         explainer = MODELS[model_name]['explainer']
         
         
-        test_result, shap_results = test(model, features, explainer = explainer, test_size=test_size, use_pca=pca,n_components=explained_variance)
+        test_result, shap_results, local_shap_df = test(model, features, explainer = explainer, test_size=test_size, use_pca=pca,n_components=explained_variance)
 
         mape = test_result.mape.values[0]
+        
+        local_shap_df.index = test_result.index
+        
+        shap_data  = shap_results.reset_index().to_dict('records') 
+        local_shap_data = local_shap_df.reset_index().to_dict('records')
+        
         
         led_color = 'red'
         
@@ -2917,9 +2944,11 @@ def update_test_results(n_clicks,
                                        color = 'info'
                                        )
         
-        return test_result[feat].reset_index().to_dict('records'), test_plot, button_children, shap_results.reset_index().to_dict('records')
+       
+        
+        return test_result[feat].reset_index().to_dict('records'),test_plot, button_children,shap_data, local_shap_data
     else:
-        return [html.Div(),html.Div(),html.Div(),html.Div()]
+        return [html.Div(),html.Div(),html.Div(),html.Div(),html.Div()]
 
 
         
@@ -3039,32 +3068,61 @@ def update_forecast_results(n_clicks,
     
 @callback(
 
-    Output('shap_results_div','children'),
+    [Output('shap_selections_div','children'),
+     Output('shap_results_div','children'),
+     Output('local_shap_results_div','children')
+     ],
     [Input('test_button','n_clicks'),
-     State('shap_data','data')]    
+     Input('shap_data','data'),
+     State('local_shap_data','data')]    
     
 )
-def update_shap_results(n_clicks, shap):
-    
-    if shap is None:
+def update_shap_results(n_clicks, shap, local_shap_data):
+        
+    if shap is None or local_shap_data is None:
         raise PreventUpdate
         
     if n_clicks > 0:
+        
+        try:
+            locale.setlocale(locale.LC_ALL, 'fi_FI')
+        except:
+            locale.setlocale(locale.LC_ALL, 'fi-FI')
+        
     
         shap_df = pd.DataFrame(shap)
         
         shap_df = shap_df.set_index(shap_df.columns[0])
         
         
+        local_shap_df = pd.DataFrame(local_shap_data)
+        local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+        local_shap_df.index = pd.to_datetime(local_shap_df.index)
+        
+        options = [{'label':c.strftime('%B %Y'), 'value': c} for c in list(local_shap_df.index)]
+
          
-        return html.Div( children = [
+        return [[
             
                     html.H3('Mitkä ennustepiirteet vaikuttivat eniten?',
                            style = h3_style),
-                    html.P('Oheisessa kuvaajassa on esitetty käytettyjen ennustepiirteiden globaalit tärkeydet ennusteelle. Niiden on tarkoitus kuvata kuinka suuri kontribuutio kullakin piirteellä on keskimäärin kuukausittaisiin ennusteisiin. Arvot on laskettu ennusteiden absoluuttisten SHAP-arvojen keskiarvoina. Niillä ei ole viitearvoja, vaan yksinkertaisesti suurempi arvo kertoo piirteen suuremmasta kontribuutiosta ennusteeseen. Ennustepiirteisiin kuuluvat valittujen hyödykeindeksien lisäksi edellisen kuukauden työttömyysaste sekä kuukausi.',
+                    html.P('Oheisissa kuvaajissa on esitetty käytettyjen ennustepiirteiden globaalit ja lokaalit tärkeydet ennusteelle. '
+                           'Globaaleilla merkitysarvoilla voidaan tarkastella magnitudia, joka jokaisella ennustepiirteellä on keskimäärin ennusteeseen. '
+                           'Sen sijaan lokaaleilla arvoilla voidaan tarkastella kuinka kukin ennustepiirre vaikutti kuhunkin esimerkin, eli tässä tapauksessa kunkin kuukauden ennusteeseen. '
+                           'Merkitysarvot on esitetty ns. Shapley-arvoina, jotka on laskettu jokaiselle piirteelle joka kuukaudelle erikseen. '
+                           'Ne kuvaavat piirteiden marginaalista kontribuutiota ennusteelle. '
+                           'Lokaalit arvot ovat absoluuttisia arvoja, ja niitä voi tarkastella kuukausittain. '
+                           'Niillä pyritään selittämään ennustepiirteiden tärkeyttä yksittäisille ennusteille. '
+                           'Globaalit arvot on laskettu kuukausittaisten absoluuttisten arvojen keskiarvoina. '
+                           'Niiden avulla on tarkoitus selittää mitkä ennustepiirteet vaikuttavat eniten ennusteeseen. '
+                           'Globaalit arvot on laskettu ennusteiden absoluuttisten Shapley-arvojen keskiarvoina. '
+                           'Shapley-arvoilla ei ole viitearvoja, vaan yksinkertaisesti suurempi arvo kertoo piirteen suuremmasta kontribuutiosta ennusteeseen. '
+                           'Ennustepiirteisiin kuuluvat valittujen hyödykeindeksien lisäksi edellisen kuukauden työttömyysaste sekä kuukausi.',
                            style = p_style),
                     html.A([html.P('Katso lyhyt esittely SHAP -arvojen merkityksestä mallin selittämisessä.',
                                    style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
+                    html.A([html.P('Katso myös ei-tekninen selittävä blogi Shapley - arvoista.',
+                                   style = p_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
                     html.P('Kuvaajan SHAP-arvot on kerrottu sadalla visualisoinnin parantamiseksi. ',
                            style = p_style),
                     html.Br(),
@@ -3086,15 +3144,32 @@ def update_shap_results(n_clicks, shap):
                                                         color = 'red')
                                 ],xs =12, sm=12, md=12, lg=3, xl=3)
                         ]),
-                    html.Br(),
-                    html.Div(dcc.Loading(id = 'shap_graph_div', type = random.choice(spinners))),
                     html.Br()
+                    ],
                     
-                    
-                    
-                    
-            
-            ])
+                    [html.P("Alla olevassa kuvaajassa on esitetty keskimääräiset absoluuttiset Shapley-arvot. "
+                           "Ne kuvaavat magnitudia, joilla valitut ennustepiirteet keskimäärin vaikuttavat työttömyysasteen kuukausimuutokseen.",
+                           style =p_style),
+                     html.Br(),
+                     dcc.Loading([dbc.Row(id = 'shap_graph_div', justify = 'center')], type = random.choice(spinners))],
+                
+                    [html.H3('Valitse kuukausi', style =h3_style),
+                                        dcc.Dropdown(id = 'local_shap_month_selection',
+                                                      options = options, 
+                                                      style = {'font-size':16},
+                                                      value = list(local_shap_df.index)[-1],
+                                                      multi=False ),
+                                        html.Br(),
+                                        html.P("Alla olevassa kuvaajassa on esitetty piirteiden Shapley-arvot valitulle kuukaudelle. "
+                                               "Ne kuvaavat suuntaa ja voimakkuutta, joka piirteillä oli valitun kuukauden ennusteeseen.",
+                                               style =p_style),
+                                         html.Br(),
+                                        html.Div(dcc.Loading(id = 'local_shap_graph_div',
+                                                              type = random.choice(spinners))),
+                                    html.Br()]]
+
+    else:
+        return [html.Div(),html.Div(),html.Div()]
     
 @callback(
 
@@ -3180,7 +3255,7 @@ def update_shap_graph(cut_off, only_commodities, shap):
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 20))],
-         layout=go.Layout(title = dict(text = 'Piirteiden kokonaismerkitykset<br>Keskimääräiset |SHAP - arvot|',
+         layout=go.Layout(title = dict(text = 'Piirteiden globaalit merkitykset<br>Keskimääräiset |SHAP - arvot|',
                                                                      x=.5,
                                                                      font=dict(
                                                                           family='Cadiz Semibold',
@@ -3206,7 +3281,10 @@ def update_shap_graph(cut_off, only_commodities, shap):
                                                              size=12,
                                                              family='Cadiz Book'
                                                             )),
-                                                        
+                                                        hoverlabel = dict(font=dict(
+                                                 size=18,
+                                                 family='Cadiz Book'
+                                                )),
                                                         height=height,#graph_height+200,
                                                         xaxis = dict(title=dict(text = 'Keskimääräinen |SHAP - arvo|',
                                                                                 font=dict(
@@ -3232,7 +3310,136 @@ def update_shap_graph(cut_off, only_commodities, shap):
                                                                         ))
                                                         )))
     
+@callback(
 
+    Output('local_shap_graph_div', 'children'),
+    [Input('cut_off', 'value'),
+     Input('shap_features_switch','on'),
+     Input('local_shap_month_selection','value'),
+     Input('local_shap_data','data')]
+    
+)
+def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
+    
+    if local_shap_data is None:
+        raise PreventUpdate
+    
+    try:
+        locale.setlocale(locale.LC_ALL, 'fi_FI')
+    except:
+        locale.setlocale(locale.LC_ALL, 'fi-FI')    
+    
+    local_shap_df = pd.DataFrame(local_shap_data)
+    local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+    local_shap_df.index = pd.to_datetime(local_shap_df.index)
+    
+    date = pd.to_datetime(date)
+    
+    
+    date_str = date.strftime('%B %Y')
+    prev_date = date - pd.DateOffset(months=1)
+    prev_str = prev_date.strftime('%B %Y') + ' työttömyysaste'
+    
+    dff = local_shap_df.loc[date,:].copy()
+    
+  
+    
+    dff.index  = dff.index.str.replace('month','Kuukausi').str.replace('prev',prev_str)
+          
+    
+    if only_commodities:
+        dff = dff.loc[[i for i in dff.index if i not in ['Kuukausi', prev_str]]]
+    
+    
+    dff = dff.sort_values(ascending = False)
+    
+   
+    df = pd.Series(dff.iloc[cut_off+1:].copy().sum())
+    
+    
+    
+    # df.index = df.index.astype(str).str.replace('0', 'Muut {} piirrettä'.format(len(dff.iloc[cut_off+1:,:])))
+    df.index = ['Muut {} piirrettä'.format(len(dff.iloc[cut_off+1:]))]
+    
+    
+    dff = pd.concat([dff.head(cut_off).copy(),df])
+    dff = dff.loc[dff.index != 'Muut 0 piirrettä']
+    
+
+    height = graph_height +200 + 10*len(dff)
+    
+    dff = np.round(dff*100,2)
+   
+    dff = dff.sort_values()
+
+    
+    return dcc.Graph(id = 'local_shap_graph',
+                     config = config_plots,
+                         figure = go.Figure(data=[go.Bar(y =dff.index, 
+                      x = dff.values,
+                      orientation='h',
+                      name = '',
+                      # marker_color = ['cyan' if i not in ['Kuukausi',prev_str] else 'black' for i in dff.index],
+                      marker = dict(color = list(map(set_color,dff.index,dff.values))),
+                      text = dff.values,
+                      hovertemplate = '<b>%{y}</b>: %{x}',
+                          textfont = dict(
+                               family='Cadiz Semibold', 
+                              size = 20))],
+         layout=go.Layout(title = dict(text = 'Lokaalit piirteiden tärkeydet<br>SHAP arvot: '+date_str,
+                                                                     x=.5,
+                                                                     font=dict(
+                                                                          family='Cadiz Semibold',
+                                                                          size=20
+                                                                         )),
+                                                      
+                                                        
+                                                        template = 'seaborn',
+                                                        margin=dict(
+                                                             l=10,
+                                                            r=10,
+                                                            # b=100,
+                                                             # t=120,
+                                                             # pad=4
+                                                        ),
+                                                        legend=dict(
+                                                             orientation = 'h',
+                                                                     # x=.1,
+                                                                     # y=1,
+                                                                     # xanchor='center',
+                                                                     # yanchor='top',
+                                                                    font=dict(
+                                                             size=12,
+                                                             family='Cadiz Book'
+                                                            )),
+                                                        hoverlabel = dict(font=dict(
+                                                 size=18,
+                                                 family='Cadiz Book'
+                                                )),
+                                                        height=height,#graph_height+200,
+                                                        xaxis = dict(title=dict(text = 'SHAP - arvo',
+                                                                                font=dict(
+                                                                                    size=18, 
+                                                                                    family = 'Cadiz Semibold'
+                                                                                    )),
+                                                                     automargin=True,
+                                                                     # tickformat = ' ',
+                                                                      # categoryorder='total descending',
+                                                                     tickfont = dict(
+                                                                         family = 'Cadiz Semibold', 
+                                                                          size = 16
+                                                                         )),
+                                                        yaxis = dict(title=dict(text = 'Ennustepiirre',
+                                                                               font=dict(
+                                                                                    size=18, 
+                                                                                   family = 'Cadiz Semibold'
+                                                                                   )),
+                                                                    automargin=True,
+                                                                    tickfont = dict(
+                                                                        family = 'Cadiz Semibold', 
+                                                                         size = 16
+                                                                        ))
+                                                        )))
 
 
 @callback(
@@ -3338,7 +3545,8 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
     State('test_data','data'),
     State('method_selection_results','data'),
     State('change_weights','data'),
-    State('shap_data','data')
+    State('shap_data','data'),
+    State('local_shap_data','data')
     ]
     
 )
@@ -3346,7 +3554,8 @@ def download_test_data(n_clicks,
                        df, 
                        method_selection_results, 
                         weights_dict, 
-                       shap_data):
+                       shap_data,
+                       local_shap_data):
     
     if n_clicks > 0:
         
@@ -3403,6 +3612,16 @@ def download_test_data(n_clicks,
         shap_df.index.name = 'Piirre'
         shap_df.SHAP = np.round(100*shap_df.SHAP,2)
         
+        local_shap_df = pd.DataFrame(local_shap_data)
+        local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+        local_shap_df.index = pd.to_datetime(local_shap_df.index)
+        local_shap_df.index.name = 'Aika'
+        local_shap_df = local_shap_df.rename(columns = {'month':'Kuukausi',
+                                  'prev': 'Edellisen kuukauden työttömyysaste'})
+        local_shap_df = local_shap_df.multiply(100, axis=1)
+        
+        
+        
         xlsx_io = io.BytesIO()
         writer = pd.ExcelWriter(xlsx_io, engine='xlsxwriter')
         
@@ -3411,6 +3630,7 @@ def download_test_data(n_clicks,
         metadata.to_excel(writer, sheet_name= 'Metadata')
         hyperparam_df.to_excel(writer, sheet_name= 'Mallin hyperparametrit')
         shap_df.to_excel(writer, sheet_name= 'Mallin piirteiden vaikuttavuus')
+        local_shap_df.to_excel(writer, sheet_name= 'Vaikuttavuus kuukausittain')
 
         writer.save()
         
@@ -3672,6 +3892,9 @@ def update_time_series(values):
                                                               size=14,
                                                               family='Cadiz Book'
                                                              )),
+                                                         hoverlabel=dict(font=dict(
+                                                              family='Cadiz Book',
+                                                             size=20)),
                                                          xaxis = dict(title=dict(text = 'Aika',
                                                                                  font=dict(
                                                                                      size=18, 

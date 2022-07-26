@@ -174,7 +174,15 @@ h1_style = {
 
 
 
-
+def sv_set_color(x,y):
+    
+    
+    if 'rbetslöshet' in x or x=='Månad':
+        return 'black'
+    elif y < 0:
+        return '#E34234'
+    elif y >= 0:
+        return '#3F00FF'
 
 
 
@@ -443,7 +451,7 @@ def sv_get_shap_values(model, explainer, X_train, X_test):
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
-        return shap_importance
+        return shap_importance, shap_df
     
     elif explainer.__name__ == 'Tree':
         explainer = explainer(model)
@@ -458,7 +466,7 @@ def sv_get_shap_values(model, explainer, X_train, X_test):
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
     
-        return shap_importance
+        return shap_importance, shap_df
     else:
         explainer = explainer(model,X_train)
         shap_values = explainer(X_test)
@@ -472,7 +480,7 @@ def sv_get_shap_values(model, explainer, X_train, X_test):
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
-        return shap_importance
+        return shap_importance, shap_df
         
 
 def sv_get_param_options(model_name):
@@ -1134,7 +1142,7 @@ def sv_test(model, features, test_size, explainer, use_pca = False, n_components
   
   
 
-  shap_df = sv_get_shap_values(model, explainer, X_train = pd.DataFrame(X, columns = cols), X_test = pd.concat(scaled_features))
+  shap_df, local_shap_df  = sv_get_shap_values(model, explainer, X_train = pd.DataFrame(X, columns = cols), X_test = pd.concat(scaled_features))
 
   result = pd.concat(results)
   result['n_feat'] = n_feat
@@ -1148,7 +1156,7 @@ def sv_test(model, features, test_size, explainer, use_pca = False, n_components
   result = result[['Työttömyysaste', 'Ennuste', 'change', 'Ennustettu muutos', 'prev','n_feat','mape','month']+features]
   
 
-  return result, shap_df                                                      
+  return result, shap_df, local_shap_df                                                    
 
                                                 
 
@@ -1330,6 +1338,7 @@ def layout():
                     dcc.Store(id = 'change_weights_sv'), 
                     dcc.Store(id = 'method_selection_results_sv'),
                     dcc.Store(id ='shap_data_sv'),
+                    dcc.Store(id ='local_shap_data_sv'),
                     dcc.Store(id = 'test_data_sv'),
                     dcc.Store(id = 'forecast_data_sv'),
                     dcc.Download(id='forecast_download_sv'),
@@ -1995,7 +2004,7 @@ def layout():
                                                                                  ),
                                                                                  hoverlabel=dict(font=dict(
                                                                                       family='Cadiz Book',
-                                                                                     size=14)),
+                                                                                     size=20)),
                                                                                  legend = dict(orientation = 'h',
                                                                                                 xanchor='center',
                                                                                                 yanchor='top',
@@ -2220,6 +2229,7 @@ def layout():
                                                style = p_style),
                                         html.P("När du har slutfört testet kan du visa nästa resultatdiagram eller exportera testdata från knappen nedan till Excel.",
                                               style=p_style),
+                                        html.P("Från graferna nedan kan du se hur varorna du valde påverkade den testade prognosen.",style=p_style),
                                         html.Br(),
                                         html.H3('Välj testlängd',style = h3_style),
                                         dcc.Slider(id = 'test_slider_sv',
@@ -2271,10 +2281,20 @@ def layout():
                             ),
                         html.Br(),
                         dbc.Row(children = [
-                            dbc.Col([html.Div(id = 'test_results_div_sv')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
-                            dbc.Col([html.Div(id = 'shap_results_div_sv'),],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            dbc.Col([html.Div(id = 'test_results_div_sv')],xs = 12, sm = 12, md = 12, lg = 9, xl = 9),
+                            
                             
                             ], justify = 'center', 
+                            
+                            ),
+                        html.Br(),
+                        dbc.Row([dbc.Col([html.Div(id = 'shap_selections_div_sv')],xs = 12, sm = 12, md = 12, lg = 9, xl = 9)],justify = 'center'),
+                        dbc.Row(children = [
+                            
+                            dbc.Col([html.Div(id = 'shap_results_div_sv')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            dbc.Col([html.Div(id = 'local_shap_results_div_sv')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            
+                            ], justify = 'center', align='center', 
                             
                             ),
                  
@@ -2739,7 +2759,8 @@ def sv_store_method_selection_results(model_name, hyperparams, hyperparam_values
       [Output('test_data_sv','data'),
        Output('test_results_div_sv','children'),
        Output('test_download_button_div_sv','children'),
-       Output('shap_data_sv','data')],
+       Output('shap_data_sv','data'),
+       Output('local_shap_data_sv','data')],
       [Input('test_button_sv','n_clicks')],
       [State('test_slider_sv', 'value'),
        State('features_values_sv','data'),
@@ -2786,9 +2807,14 @@ def sv_update_test_results(n_clicks,
         explainer = MODELS_sv[model_name]['explainer']
         
         
-        test_result, shap_results = sv_test(model, features, explainer = explainer, test_size=test_size, use_pca=pca,n_components=explained_variance)
+        test_result, shap_results, local_shap_df = sv_test(model, features, explainer = explainer, test_size=test_size, use_pca=pca,n_components=explained_variance)
 
         mape = test_result.mape.values[0]
+        
+        local_shap_df.index = test_result.index
+        
+        shap_data  = shap_results.reset_index().to_dict('records') 
+        local_shap_data = local_shap_df.reset_index().to_dict('records')
         
         led_color = 'red'
         
@@ -2884,9 +2910,9 @@ def sv_update_test_results(n_clicks,
                                        color = 'info'
                                        )
         
-        return test_result[feat].reset_index().to_dict('records'), test_plot, button_children, shap_results.reset_index().to_dict('records')
+        return test_result[feat].reset_index().to_dict('records'), test_plot, button_children, shap_data, local_shap_data
     else:
-        return [html.Div(),html.Div(),html.Div(),html.Div()]
+        return [html.Div(),html.Div(),html.Div(),html.Div(),html.Div()]
 
 
         
@@ -3006,32 +3032,58 @@ def sv_update_forecast_results(n_clicks,
     
 @callback(
 
-    Output('shap_results_div_sv','children'),
+    [Output('shap_selections_div_sv','children'),
+     Output('shap_results_div_sv','children'),
+     Output('local_shap_results_div_sv','children')
+     ],
     [Input('test_button_sv','n_clicks'),
-     State('shap_data_sv','data')]    
+     Input('shap_data_sv','data'),
+     State('local_shap_data_sv','data')]    
     
 )
-def sv_update_shap_results(n_clicks, shap):
+def sv_update_shap_results(n_clicks, shap, local_shap_data):
     
-    if shap is None:
+    if shap is None or local_shap_data is None:
         raise PreventUpdate
         
     if n_clicks > 0:
+        
+        try:
+            locale.setlocale(locale.LC_ALL, 'sv_FI')
+        except:
+            locale.setlocale(locale.LC_ALL, 'sv-FI')
     
         shap_df = pd.DataFrame(shap)
         
         shap_df = shap_df.set_index(shap_df.columns[0])
         
+        local_shap_df = pd.DataFrame(local_shap_data)
+        local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+        local_shap_df.index = pd.to_datetime(local_shap_df.index)
         
-         
-        return html.Div([
+        options = [{'label':c.strftime('%B %Y'), 'value': c} for c in list(local_shap_df.index)]
+        
+        return [[
             
                     html.H3('Vilka funktioner var de viktigaste?',
                            style = h3_style),
-                    html.P("Diagrammet nedan visar den globala betydelsen av de använda prognosfunktionerna. De är avsedda att beskriva hur mycket varje funktion i genomsnitt bidrar till månatliga prognoser. Värdena beräknas som medelvärden för absoluta SHAP-värden. De har inga referensvärden, men helt enkelt ett högre värde indikerar funktionen större bidrag till prognosen. Förutom utvalda råvaruindex inkluderar prognosfunktionerna arbetslösheten föregående månad och månaden själv.",
+                    html.P("Följande diagram visar den globala och lokala betydelsen av prognosfunktionerna som används för prognosen. "
+                            "Globala signifikansvärden kan användas för att undersöka storleken som varje prognosfunktion har i genomsnitt i prognosen. "
+                            "I stället kan lokala värden användas för att titta på hur varje prognosfunktion påverkade varje exempel, det vill säga prognosen för varje månad."
+                            "Betydande värden presenteras i de så kallade Shapley-värdena som beräknats för varje funktion separat för varje månad."
+                            "De beskriver det marginella bidraget av funktioner till prognosen. "
+                            "Lokala värden är absoluta värden och kan visas varje månad. "
+                            "De syftar till att förklara betydelsen av prognosfunktioner för enskilda prognoser. "
+                            "Globala värden beräknas som genomsnitt av månatliga absoluta värden."
+                            "De är avsedda att förklara vilka prognosfunktioner som har störst inverkan på prognosen."
+                            "Globala värden beräknas som genomsnitt av absoluta Shapley-värden i prognoser."
+                            "Shapley-värden har inga vvit-värden, men helt enkelt ett högre värde indikerar en funktion av ett större bidrag till prognosen. "
+                            "Förutom de utvalda råvaruindexen inkluderar prognosfunktionerna arbetslösheten föregående månad och månaden.",
                            style = p_style),
                     html.A([html.P("Se en kort introduktionsvideo om betydelsen av SHAP-värden för att förklara en modell.",
                                    style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
+                    html.A([html.P('Se även en icke-teknisk guide för tolkning av SHAP-analyser',
+                                   style = p_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
                     html.P("Grafens SHAP-värden multipliceras med 100 för att förbättra visualiseringen.",
                            style = p_style),
                     html.Br(),
@@ -3053,12 +3105,164 @@ def sv_update_shap_results(n_clicks, shap):
                                                         color = 'red')
                                 ],xs =12, sm=12, md=12, lg=3, xl=3)
                         ]),
-                    html.Br(),
-                    html.Div(dcc.Loading(id = 'shap_graph_div_sv', type = random.choice(spinners))),
                     html.Br()
-       
-            
-            ])
+                    ],
+                    [html.P("Diagrammet nedan visar medelvärdet av absoluta Shapley-värden."
+                            "De representerar storleken på den valda prognosen i genomsnitt påverkar den månatliga förändringen av arbetslösheten.",
+                           style =p_style),
+                     html.Br(),
+                        dcc.Loading([dbc.Row(id = 'shap_graph_div_sv', justify = 'center')], type = random.choice(spinners))],
+                
+                    [html.H3('Välj en månad', style =h3_style),
+                                        dcc.Dropdown(id = 'local_shap_month_selection_sv',
+                                                      options = options, 
+                                                      style = {'font-size':16},
+                                                      value = list(local_shap_df.index)[-1],
+                                                      multi=False ),
+                                        html.Br(),
+                                        html.P("Diagrammet nedan visar Shapley-värdena för den valda månaden."
+                                               "De representerar riktningen och intensiteten i den valda månadens prognos.",
+                                               style =p_style),
+                                         html.Br(),
+                                        html.Div(dcc.Loading(id = 'local_shap_graph_div_sv',
+                                                              type = random.choice(spinners))),
+                                    html.Br()]]
+
+    else:
+        return [html.Div(),html.Div(),html.Div()]
+
+
+@callback(
+
+    Output('local_shap_graph_div_sv', 'children'),
+    [Input('cut_off_sv', 'value'),
+     Input('shap_features_switch_sv','on'),
+     Input('local_shap_month_selection_sv','value'),
+     Input('local_shap_data_sv','data')]
+    
+)
+def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
+    
+    if local_shap_data is None:
+        raise PreventUpdate
+    
+    try:
+        locale.setlocale(locale.LC_ALL, 'sv_FI')
+    except:
+        locale.setlocale(locale.LC_ALL, 'sv-FI')    
+    
+    local_shap_df = pd.DataFrame(local_shap_data)
+    local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+    local_shap_df.index = pd.to_datetime(local_shap_df.index)
+    
+    date = pd.to_datetime(date)
+    
+    
+    date_str = date.strftime('%B %Y')
+    prev_date = date - pd.DateOffset(months=1)
+    prev_str = prev_date.strftime('%B %Y') + ' arbetslöshet'
+    
+    dff = local_shap_df.loc[date,:].copy()
+    
+  
+    
+    dff.index  = dff.index.str.replace('month','Månad').str.replace('prev',prev_str)
+          
+    
+    if only_commodities:
+        dff = dff.loc[[i for i in dff.index if i not in ['Månad', prev_str]]]
+    
+    
+    dff = dff.sort_values(ascending = False)
+    
+   
+    df = pd.Series(dff.iloc[cut_off+1:].copy().sum())
+    
+    
+    
+    # df.index = df.index.astype(str).str.replace('0', 'Muut {} piirrettä'.format(len(dff.iloc[cut_off+1:,:])))
+    df.index = ['Andra {} funktioner'.format(len(dff.iloc[cut_off+1:]))]
+    
+    
+    dff = pd.concat([dff.head(cut_off).copy(),df])
+    dff = dff.loc[dff.index != 'Andra 0 funktioner']
+    
+
+    height = graph_height +200 + 10*len(dff)
+    
+    dff = np.round(dff*100,2)
+   
+    dff = dff.sort_values()
+
+    
+    return dcc.Graph(id = 'local_shap_graph_sv',
+                     config = config_plots_sv,
+                         figure = go.Figure(data=[go.Bar(y =dff.index, 
+                      x = dff.values,
+                      orientation='h',
+                      name = '',
+                      
+                      # marker_color = ['cyan' if i not in ['Month',prev_str] else 'black' for i in dff.index],
+                       marker = dict(color = list(map(sv_set_color,dff.index,dff.values))),
+                      text = dff.values,
+                      hovertemplate = '<b>%{y}</b>: %{x}',
+                          textfont = dict(
+                               family='Cadiz Semibold', 
+                              size = 20))],
+         layout=go.Layout(title = dict(text = 'Lokala funktionsbetydelser<br>SHAP värden: '+date_str,
+                                                                     x=.5,
+                                                                     font=dict(
+                                                                          family='Cadiz Semibold',
+                                                                          size=20
+                                                                         )),
+                                                      
+                                                        
+                                                        template = 'seaborn',
+                                                        margin=dict(
+                                                             l=10,
+                                                            r=10,
+                                                            # b=100,
+                                                             # t=120,
+                                                             # pad=4
+                                                        ),
+                                                        legend=dict(
+                                                             orientation = 'h',
+                                                                     # x=.1,
+                                                                     # y=1,
+                                                                     # xanchor='center',
+                                                                     # yanchor='top',
+                                                                    font=dict(
+                                                             size=12,
+                                                             family='Cadiz Book'
+                                                            )),
+                                                        hoverlabel = dict(font=dict(
+                                                             size=18,
+                                                             family='Cadiz Book'
+                                                            )),
+                                                        height=height,#graph_height+200,
+                                                        xaxis = dict(title=dict(text = 'SHAP värde',
+                                                                                font=dict(
+                                                                                    size=18, 
+                                                                                    family = 'Cadiz Semibold'
+                                                                                    )),
+                                                                     automargin=True,
+                                                                     # tickformat = ' ',
+                                                                      # categoryorder='total descending',
+                                                                     tickfont = dict(
+                                                                         family = 'Cadiz Semibold', 
+                                                                          size = 16
+                                                                         )),
+                                                        yaxis = dict(title=dict(text = 'Funktion',
+                                                                               font=dict(
+                                                                                    size=18, 
+                                                                                   family = 'Cadiz Semibold'
+                                                                                   )),
+                                                                    automargin=True,
+                                                                    tickfont = dict(
+                                                                        family = 'Cadiz Semibold', 
+                                                                         size = 16
+                                                                        ))
+                                                        )))        
     
 @callback(
 
@@ -3302,7 +3506,8 @@ def sv_download_forecast_data(n_clicks, df, method_selection_results, weights_di
     State('test_data_sv','data'),
     State('method_selection_results_sv','data'),
     State('change_weights_sv','data'),
-    State('shap_data_sv','data')
+    State('shap_data_sv','data'),
+    State('local_shap_data_sv','data')
     ]
     
 )
@@ -3310,7 +3515,8 @@ def sv_download_test_data(n_clicks,
                        df, 
                        method_selection_results, 
                         weights_dict, 
-                       shap_data):
+                       shap_data,
+                       local_shap_data):
     
     if n_clicks > 0:
         
@@ -3373,6 +3579,15 @@ def sv_download_test_data(n_clicks,
         shap_df.index = shap_df.index.str.replace('Kuukausi', 'Månad')
         shap_df.index = shap_df.index.str.replace('Edellisen kuukauden työttömyysaste', 'Arbetslöshet föregående månad')
         
+        local_shap_df = pd.DataFrame(local_shap_data)
+        local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+        local_shap_df.index = pd.to_datetime(local_shap_df.index)
+        local_shap_df.index.name = 'Tid'
+        local_shap_df = local_shap_df.rename(columns = {'month':'Månad',
+                                  'prev': 'Arbetslöshet föregående månad'})
+        local_shap_df = local_shap_df.multiply(100, axis=1)
+        
+        
         xlsx_io = io.BytesIO()
         writer = pd.ExcelWriter(xlsx_io, engine='xlsxwriter')
         
@@ -3380,7 +3595,8 @@ def sv_download_test_data(n_clicks,
         df.to_excel(writer, sheet_name= 'Provningsdata')
         metadata.to_excel(writer, sheet_name= 'Metadata')
         hyperparam_df.to_excel(writer, sheet_name= 'Modellhyperparametrar')
-        shap_df.to_excel(writer, sheet_name= 'Egenskapsimporter')
+        shap_df.to_excel(writer, sheet_name= 'Funktion betydelser')
+        local_shap_df.to_excel(writer, sheet_name= 'Månatliga betydelser')
 
         writer.save()
         
@@ -3622,6 +3838,9 @@ def sv_update_time_series(values):
                                                                           )),
                                                          
                                                          height=graph_height,
+                                                         hoverlabel=dict(font=dict(
+                                                              family='Cadiz Book',
+                                                             size=20)),
                                                          template = 'seaborn',
                                                          margin=dict(
                                                               l=10,

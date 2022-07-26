@@ -177,7 +177,15 @@ h1_style = {
 
 
 
-
+def en_set_color(x,y):
+    
+    
+    if 'nemployment' in x or x=='Month':
+        return 'black'
+    elif y < 0:
+        return '#E34234'
+    elif y >= 0:
+        return '#3F00FF'
 
 
 def en_get_unemployment():
@@ -450,7 +458,7 @@ def en_get_shap_values(model, explainer, X_train, X_test):
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
-        return shap_importance
+        return shap_importance,shap_df
     
     elif explainer.__name__ == 'Tree':
         explainer = explainer(model)
@@ -465,7 +473,7 @@ def en_get_shap_values(model, explainer, X_train, X_test):
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
     
-        return shap_importance
+        return shap_importance,shap_df
     else:
         explainer = explainer(model,X_train)
         shap_values = explainer(X_test)
@@ -479,7 +487,7 @@ def en_get_shap_values(model, explainer, X_train, X_test):
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
-        return shap_importance
+        return shap_importance,shap_df
         
 
 def en_get_param_options(model_name):
@@ -1140,7 +1148,7 @@ def en_test(model, features, test_size, explainer, use_pca = False, n_components
   
   
 
-  shap_df = en_get_shap_values(model, explainer, X_train = pd.DataFrame(X, columns = cols), X_test = pd.concat(scaled_features))
+  shap_df, local_shap_df = en_get_shap_values(model, explainer, X_train = pd.DataFrame(X, columns = cols), X_test = pd.concat(scaled_features))
 
   result = pd.concat(results)
   result['n_feat'] = n_feat
@@ -1154,7 +1162,7 @@ def en_test(model, features, test_size, explainer, use_pca = False, n_components
   result = result[['Työttömyysaste', 'Ennuste', 'change', 'Ennustettu muutos', 'prev','n_feat','mape','month']+features]
   
 
-  return result, shap_df                                                      
+  return result, shap_df, local_shap_df                                                    
 
                                                 
 
@@ -1334,6 +1342,7 @@ def layout():
                     dcc.Store(id = 'change_weights_en'), 
                     dcc.Store(id = 'method_selection_results_en'),
                     dcc.Store(id ='shap_data_en'),
+                    dcc.Store(id ='local_shap_data_en'),
                     dcc.Store(id = 'test_data_en'),
                     dcc.Store(id = 'forecast_data_en'),
                     dcc.Download(id='forecast_download_en'),
@@ -2000,7 +2009,7 @@ def layout():
                                                                                  ),
                                                                                  hoverlabel=dict(font=dict(
                                                                                       family='Cadiz Book',
-                                                                                     size=14)),
+                                                                                     size=20)),
                                                                                  legend = dict(orientation = 'h',
                                                                                                 xanchor='center',
                                                                                                 yanchor='top',
@@ -2225,6 +2234,7 @@ def layout():
                                                style = p_style),
                                         html.P('After you have completed the test, you can view the next result graph or export the test data from the button below to Excel.',
                                               style=p_style),
+                                        html.P("From the graphs below the test results, you can see how the commodities you selected affected the tested forecast.",style=p_style),
                                         html.Br(),
                                         html.H3('Select test length',style = h3_style),
                                         dcc.Slider(id = 'test_slider_en',
@@ -2276,10 +2286,20 @@ def layout():
                             ),
                         html.Br(),
                         dbc.Row(children = [
-                            dbc.Col([html.Div(id = 'test_results_div_en')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
-                            dbc.Col([html.Div(id = 'shap_results_div_en'),],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            dbc.Col([html.Div(id = 'test_results_div_en')],xs = 12, sm = 12, md = 12, lg = 9, xl = 9),
+                            
                             
                             ], justify = 'center', 
+                            
+                            ),
+                        html.Br(),
+                        dbc.Row([dbc.Col([html.Div(id = 'shap_selections_div_en')],xs = 12, sm = 12, md = 12, lg = 9, xl = 9)],justify = 'center'),
+                        dbc.Row(children = [
+                            
+                            dbc.Col([html.Div(id = 'shap_results_div_en')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            dbc.Col([html.Div(id = 'local_shap_results_div_en')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            
+                            ], justify = 'center', align='center', 
                             
                             ),
                  
@@ -2745,7 +2765,8 @@ def en_store_method_selection_results(model_name, hyperparams, hyperparam_values
       [Output('test_data_en','data'),
        Output('test_results_div_en','children'),
        Output('test_download_button_div_en','children'),
-       Output('shap_data_en','data')],
+       Output('shap_data_en','data'),
+       Output('local_shap_data_en','data')],
       [Input('test_button_en','n_clicks')],
       [State('test_slider_en', 'value'),
        State('features_values_en','data'),
@@ -2792,9 +2813,14 @@ def en_update_test_results(n_clicks,
         explainer = MODELS_en[model_name]['explainer']
         
         
-        test_result, shap_results = en_test(model, features, explainer = explainer, test_size=test_size, use_pca=pca,n_components=explained_variance)
+        test_result, shap_results, local_shap_df = en_test(model, features, explainer = explainer, test_size=test_size, use_pca=pca,n_components=explained_variance)
 
         mape = test_result.mape.values[0]
+        
+        local_shap_df.index = test_result.index
+        
+        shap_data  = shap_results.reset_index().to_dict('records') 
+        local_shap_data = local_shap_df.reset_index().to_dict('records')
         
         led_color = 'red'
         
@@ -2890,9 +2916,9 @@ def en_update_test_results(n_clicks,
                                        color = 'info'
                                        )
         
-        return test_result[feat].reset_index().to_dict('records'), test_plot, button_children, shap_results.reset_index().to_dict('records')
+        return test_result[feat].reset_index().to_dict('records'), test_plot, button_children, shap_data, local_shap_data
     else:
-        return [html.Div(),html.Div(),html.Div(),html.Div()]
+        return [html.Div(),html.Div(),html.Div(),html.Div(),html.Div()]
 
 
         
@@ -3012,32 +3038,61 @@ def en_update_forecast_results(n_clicks,
     
 @callback(
 
-    Output('shap_results_div_en','children'),
+    [Output('shap_selections_div_en','children'),
+     Output('shap_results_div_en','children'),
+     Output('local_shap_results_div_en','children')
+     ],
     [Input('test_button_en','n_clicks'),
-     State('shap_data_en','data')]    
+     Input('shap_data_en','data'),
+     State('local_shap_data_en','data')]    
     
 )
-def en_update_shap_results(n_clicks, shap):
-    
-    if shap is None:
+def en_update_shap_results(n_clicks, shap, local_shap_data):
+        
+    if shap is None or local_shap_data is None:
         raise PreventUpdate
         
     if n_clicks > 0:
+        
+        try:
+            locale.setlocale(locale.LC_ALL, 'en_US')
+        except:
+            locale.setlocale(locale.LC_ALL, 'en-US')
+        
     
         shap_df = pd.DataFrame(shap)
         
         shap_df = shap_df.set_index(shap_df.columns[0])
         
         
+        local_shap_df = pd.DataFrame(local_shap_data)
+        local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+        local_shap_df.index = pd.to_datetime(local_shap_df.index)
+        
+        options = [{'label':c.strftime('%B %Y'), 'value': c} for c in list(local_shap_df.index)]
+
          
-        return html.Div([
+        return [[
             
                     html.H3('Which features were the most important?',
                            style = h3_style),
-                    html.P("The graph below shows the global importance of the used forecast features. They are intended to describe how much each feature contributes on average to monthly forecasts. The values are calculated as averages of absolute SHAP values. They do not have reference values, but simply a higher value indicates the feature's greater contribution to the forecast. In addition to selected commodity indices, the forecast features include the unemployment rate of the previous month and the month itself.",
+                    html.P("The following graphs show the global and local importance of the forecast features used for the forecast. "
+                            "Global significance values can be used to examine the magnitude that each prediction feature has on average in the forecast. "
+                            "Instead, local values can be used to look at how each forecast feature affected each example, that is, in this case, the forecast for each month. "
+                            "Significant values are presented in the so-called Shapley values calculated for each feature separately for each month. "
+                            "They describe the marginal contribution of features to the forecast. "
+                            "Local values are absolute values and can be viewed monthly. "
+                            "They aim to explain the importance of forecasting features to individual forecasts. "
+                            "Global values are calculated as averages of monthly absolute values. "
+                            "They are intended to explain which forecasting features have the greatest impact on the forecast. "
+                            "Global values are calculated as averages of absolute Shapley values in forecasts. "
+                            "Shapley values have no vvit values, but simply a higher value indicates a feature of a greater contribution to the forecast. "
+                            "In addition to the selected commodity indices, the forecast features include the unemployment rate of the previous month and the month.",
                            style = p_style),
-                    html.A([html.P('See a short introduction video of the importance of SHAP values in explaining a model.',
+                    html.A([html.P('Watch a short introduction video about the importance of SHAP values in machine learning.',
                                    style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
+                    html.A([html.P('See also a Non-Technical Guide to Interpreting SHAP Analyses',
+                                   style = p_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
                     html.P("The graph's SHAP values are multiplied by 100 to improve visualization.",
                            style = p_style),
                     html.Br(),
@@ -3059,12 +3114,163 @@ def en_update_shap_results(n_clicks, shap):
                                                         color = 'red')
                                 ],xs =12, sm=12, md=12, lg=3, xl=3)
                         ]),
-                    html.Br(),
-                    html.Div(dcc.Loading(id = 'shap_graph_div_en', type = random.choice(spinners))),
                     html.Br()
-       
-            
-            ])
+                    ],
+                    [html.P("The graph below shows the mean absolute Shapley values."
+                            "They represent the magnitude at which the selected forecast features, on average, affect the monthly change in the unemployment rate.",
+                           style =p_style),
+                     html.Br(),
+                        dcc.Loading([dbc.Row(id = 'shap_graph_div_en', justify = 'center')], type = random.choice(spinners))],
+                
+                    [html.H3('Select a month', style =h3_style),
+                                        dcc.Dropdown(id = 'local_shap_month_selection_en',
+                                                      options = options, 
+                                                      style = {'font-size':16},
+                                                      value = list(local_shap_df.index)[-1],
+                                                      multi=False ),
+                                        html.Br(),
+                                        html.P("The graph below shows the Shapley values for the selected month."
+                                               "They represent the direction and intensity of the selected month's forecast.",
+                                               style =p_style),
+                                         html.Br(),
+                                        html.Div(dcc.Loading(id = 'local_shap_graph_div_en',
+                                                              type = random.choice(spinners))),
+                                    html.Br()]]
+
+    else:
+        return [html.Div(),html.Div(),html.Div()]
+
+@callback(
+
+    Output('local_shap_graph_div_en', 'children'),
+    [Input('cut_off_en', 'value'),
+     Input('shap_features_switch_en','on'),
+     Input('local_shap_month_selection_en','value'),
+     Input('local_shap_data_en','data')]
+    
+)
+def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
+    
+    if local_shap_data is None:
+        raise PreventUpdate
+    
+    try:
+        locale.setlocale(locale.LC_ALL, 'en_US')
+    except:
+        locale.setlocale(locale.LC_ALL, 'en-US')    
+    
+    local_shap_df = pd.DataFrame(local_shap_data)
+    local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+    local_shap_df.index = pd.to_datetime(local_shap_df.index)
+    
+    date = pd.to_datetime(date)
+    
+    
+    date_str = date.strftime('%B %Y')
+    prev_date = date - pd.DateOffset(months=1)
+    prev_str = prev_date.strftime('%B %Y') + ' unemployment rate'
+    
+    dff = local_shap_df.loc[date,:].copy()
+    
+  
+    
+    dff.index  = dff.index.str.replace('month','Month').str.replace('prev',prev_str)
+          
+    
+    if only_commodities:
+        dff = dff.loc[[i for i in dff.index if i not in ['Month', prev_str]]]
+    
+    
+    dff = dff.sort_values(ascending = False)
+    
+   
+    df = pd.Series(dff.iloc[cut_off+1:].copy().sum())
+    
+    
+    
+    # df.index = df.index.astype(str).str.replace('0', 'Muut {} piirrettä'.format(len(dff.iloc[cut_off+1:,:])))
+    df.index = ['Other {} features'.format(len(dff.iloc[cut_off+1:]))]
+    
+    
+    dff = pd.concat([dff.head(cut_off).copy(),df])
+    dff = dff.loc[dff.index != 'Other 0 features']
+    
+
+    height = graph_height +200 + 10*len(dff)
+    
+    dff = np.round(dff*100,2)
+   
+    dff = dff.sort_values()
+
+    
+    return dcc.Graph(id = 'local_shap_graph_en',
+                     config = config_plots_en,
+                         figure = go.Figure(data=[go.Bar(y =dff.index, 
+                      x = dff.values,
+                      orientation='h',
+                      name = '',
+                      
+                      # marker_color = ['cyan' if i not in ['Month',prev_str] else 'black' for i in dff.index],
+                       marker = dict(color = list(map(en_set_color,dff.index,dff.values))),
+                      text = dff.values,
+                      hovertemplate = '<b>%{y}</b>: %{x}',
+                          textfont = dict(
+                               family='Cadiz Semibold', 
+                              size = 20))],
+         layout=go.Layout(title = dict(text = 'Locale Feature Importances<br>SHAP values: '+date_str,
+                                                                     x=.5,
+                                                                     font=dict(
+                                                                          family='Cadiz Semibold',
+                                                                          size=20
+                                                                         )),
+                                                      
+                                                        
+                                                        template = 'seaborn',
+                                                        margin=dict(
+                                                             l=10,
+                                                            r=10,
+                                                            # b=100,
+                                                             # t=120,
+                                                             # pad=4
+                                                        ),
+                                                        legend=dict(
+                                                             orientation = 'h',
+                                                                     # x=.1,
+                                                                     # y=1,
+                                                                     # xanchor='center',
+                                                                     # yanchor='top',
+                                                                    font=dict(
+                                                             size=12,
+                                                             family='Cadiz Book'
+                                                            )),
+                                                        hoverlabel = dict(font=dict(
+                                                             size=18,
+                                                             family='Cadiz Book'
+                                                            )),
+                                                        height=height,#graph_height+200,
+                                                        xaxis = dict(title=dict(text = 'SHAP value',
+                                                                                font=dict(
+                                                                                    size=18, 
+                                                                                    family = 'Cadiz Semibold'
+                                                                                    )),
+                                                                     automargin=True,
+                                                                     # tickformat = ' ',
+                                                                      # categoryorder='total descending',
+                                                                     tickfont = dict(
+                                                                         family = 'Cadiz Semibold', 
+                                                                          size = 16
+                                                                         )),
+                                                        yaxis = dict(title=dict(text = 'Feature',
+                                                                               font=dict(
+                                                                                    size=18, 
+                                                                                   family = 'Cadiz Semibold'
+                                                                                   )),
+                                                                    automargin=True,
+                                                                    tickfont = dict(
+                                                                        family = 'Cadiz Semibold', 
+                                                                         size = 16
+                                                                        ))
+                                                        )))
     
 @callback(
 
@@ -3178,7 +3384,10 @@ def en_update_shap_graph(cut_off, only_commodities, shap):
                                                              size=12,
                                                              family='Cadiz Book'
                                                             )),
-                                                        
+                                                        hoverlabel = dict(font=dict(
+                                                 size=18,
+                                                 family='Cadiz Book'
+                                                )),
                                                         height=height,#graph_height+200,
                                                         xaxis = dict(title=dict(text = 'Mean |SHAP value|',
                                                                                 font=dict(
@@ -3308,7 +3517,8 @@ def en_download_forecast_data(n_clicks, df, method_selection_results, weights_di
     State('test_data_en','data'),
     State('method_selection_results_en','data'),
     State('change_weights_en','data'),
-    State('shap_data_en','data')
+    State('shap_data_en','data'),
+    State('local_shap_data_en','data')
     ]
     
 )
@@ -3316,7 +3526,8 @@ def en_download_test_data(n_clicks,
                        df, 
                        method_selection_results, 
                         weights_dict, 
-                       shap_data):
+                       shap_data,
+                       local_shap_data):
     
     if n_clicks > 0:
         
@@ -3377,7 +3588,15 @@ def en_download_test_data(n_clicks,
         shap_df.index.name = 'Feature'
         shap_df.SHAP = np.round(100*shap_df.SHAP,2)
         shap_df.index = shap_df.index.str.replace('Kuukausi', 'Month')
-        shap_df.index = shap_df.index.str.replace('Edellisen kuukauden työttömyysaste', 'Unemployment rate in the previous month')
+        shap_df.index = shap_df.index.str.replace('Edellisen kuukauden työttömyysaste', 'Previous Unemployment Rate')
+        
+        local_shap_df = pd.DataFrame(local_shap_data)
+        local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+        local_shap_df.index = pd.to_datetime(local_shap_df.index)
+        local_shap_df.index.name = 'Time'
+        local_shap_df = local_shap_df.rename(columns = {'month':'Month',
+                                  'prev': 'Previous Unemployment Rate'})
+        local_shap_df = local_shap_df.multiply(100, axis=1)
         
         xlsx_io = io.BytesIO()
         writer = pd.ExcelWriter(xlsx_io, engine='xlsxwriter')
@@ -3387,6 +3606,7 @@ def en_download_test_data(n_clicks,
         metadata.to_excel(writer, sheet_name= 'Metadata')
         hyperparam_df.to_excel(writer, sheet_name= 'Model hyperparameters')
         shap_df.to_excel(writer, sheet_name= 'Feature importances')
+        local_shap_df.to_excel(writer, sheet_name= 'Monthly importances')
 
         writer.save()
         
@@ -3646,6 +3866,9 @@ def en_update_time_series(values):
                                                               size=14,
                                                               family='Cadiz Book'
                                                              )),
+                                                         hoverlabel = dict(font=dict(size=20,
+                                                                                      family='Cadiz Book'
+                                                                                     )),
                                                          xaxis = dict(title=dict(text = 'Time',
                                                                                  font=dict(
                                                                                      size=18, 
@@ -3987,6 +4210,7 @@ def en_update_commodity_unemployment_graph(values, label):
                                  # pad=4
                             ),
                             height = graph_height,
+                            
                             legend = dict(
                                  orientation = 'h',
                                          # x=.1,
