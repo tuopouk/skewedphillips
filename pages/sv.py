@@ -180,9 +180,10 @@ def sv_set_color(x,y):
     if 'rbetslöshet' in x or x=='Månad':
         return 'black'
     elif y < 0:
-        return '#E34234'
-    elif y >= 0:
+        
         return '#32CD32'
+    elif y >= 0:
+        return '#E34234'
 
 
 

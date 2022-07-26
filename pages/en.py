@@ -183,9 +183,10 @@ def en_set_color(x,y):
     if 'nemployment' in x or x=='Month':
         return 'black'
     elif y < 0:
-        return '#E34234'
-    elif y >= 0:
+        
         return '#32CD32'
+    elif y >= 0:
+        return '#E34234'
 
 
 def en_get_unemployment():

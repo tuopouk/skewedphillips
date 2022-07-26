@@ -184,9 +184,10 @@ def set_color(x,y):
     if 'yöttömyys' in x or x=='Kuukausi':
         return 'black'
     elif y < 0:
-        return '#E34234'
-    elif y >= 0:
+        
         return '#32CD32'
+    elif y >= 0:
+        return '#E34234'
 
 
 
