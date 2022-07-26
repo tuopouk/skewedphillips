@@ -3219,7 +3219,7 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 20))],
-         layout=go.Layout(title = dict(text = 'Locale Feature Importances<br>SHAP values: '+date_str,
+         layout=go.Layout(title = dict(text = 'Local Feature Importances<br>SHAP values: '+date_str,
                                                                      x=.5,
                                                                      font=dict(
                                                                           family='Cadiz Semibold',
