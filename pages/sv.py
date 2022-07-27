@@ -446,12 +446,14 @@ def sv_get_shap_values(model, explainer, X_train, X_test):
         feature_names = X_test.columns
         shap_df = pd.DataFrame(shap_values, columns=feature_names)
         vals = np.abs(shap_df.values).mean(0)
+        base_value = explainer.expected_value
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
+        shap_df['base'] = base_value
         return shap_importance, shap_df
     
     elif explainer.__name__ == 'Tree':
@@ -460,13 +462,14 @@ def sv_get_shap_values(model, explainer, X_train, X_test):
         feature_names = shap_values.feature_names
         shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
         vals = np.abs(shap_df.values).mean(0)
+        base_value = explainer.expected_value[0]
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
-    
+        shap_df['base'] = base_value
         return shap_importance, shap_df
     else:
         explainer = explainer(model,X_train)
@@ -475,12 +478,14 @@ def sv_get_shap_values(model, explainer, X_train, X_test):
         feature_names = shap_values.feature_names
         shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
         vals = np.abs(shap_df.values).mean(0)
+        base_value = explainer.expected_value
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
+        shap_df['base'] = base_value
         return shap_importance, shap_df
         
 
@@ -1119,7 +1124,7 @@ def sv_test(model, features, test_size, explainer, use_pca = False, n_components
   df['Ennustettu muutos'] = model.predict(X)
   df['Ennuste'] = np.maximum(0, df.prev + df['Ennustettu muutos'])
 
-  results.append(df[feat+['Työttömyysaste', 'Ennuste','change', 'Ennustettu muutos','change']])
+  results.append(df[feat+['Työttömyysaste', 'Ennuste','change', 'Ennustettu muutos']])
 
   scaled_features.append(pd.DataFrame(X, columns = cols))
 
@@ -1128,6 +1133,7 @@ def sv_test(model, features, test_size, explainer, use_pca = False, n_components
     df = pd.DataFrame(test_df.loc[i,feat]).T
     df['Työttömyysaste'] = test_df.loc[i,'Työttömyysaste']
     df['change'] = test_df.loc[i,'change']
+    df['prev'] = results[-1].Ennuste.values[0]
     # df['month'] = test_df.loc[i,'month']
     X = scl.transform(df[feat])
 
@@ -1137,7 +1143,7 @@ def sv_test(model, features, test_size, explainer, use_pca = False, n_components
     df['Ennustettu muutos'] = model.predict(X)
     df['Ennuste'] = np.maximum(0, df.prev + df['Ennustettu muutos'])
 
-    results.append(df[feat+['Työttömyysaste', 'Ennuste','change', 'Ennustettu muutos','change']])
+    results.append(df[feat+['Työttömyysaste', 'Ennuste','change', 'Ennustettu muutos']])
 
     scaled_features.append(pd.DataFrame(X, columns = cols))
   
@@ -1404,7 +1410,7 @@ def layout():
                                 
                                   html.H3("Månatlig Phillipskurva i Finlands ekonomi", 
                                           style=h3_style),
-                                  html.H4("(Källa: Statistikcentralen)", 
+                                  html.H4("Källa: Statistikcentralen", 
                                           style=h4_style)
                                   
                                   ])
@@ -2898,7 +2904,7 @@ def sv_update_test_results(n_clicks,
              
 
         feat = features.copy()
-        feat = ['Työttömyysaste','Ennuste','month','change','mape','n_feat', 'Ennustettu muutos']+feat
+        feat = ['Työttömyysaste','Ennuste','prev','month','change','mape','n_feat', 'Ennustettu muutos']+feat
         
         button_children = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Ladda ner testresultat'],
                                        id='test_download_button_sv',
@@ -3115,17 +3121,21 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                         dcc.Loading([dbc.Row(id = 'shap_graph_div_sv', justify = 'center')], type = random.choice(spinners))],
                 
                     [html.Br(),
+                     html.P("Diagrammet nedan visar Shapley-värdena för den valda månaden."
+                            "De representerar riktningen och intensiteten i den valda månadens prognos."
+                            "Grönt belyser de funktioner som minskar månadsförändringen i arbetslösheten och rött belyser de funktioner som ökar den. "
+                            "Svart visar triviala drag, det vill säga innevarande månad och arbetslösheten föregående månad. "
+                            "Den vertikala axeln visar namnen på funktionerna och deras värde vid den valda tidpunkten inom parentes.",
+                            style =p_style),
+                      html.Br(),
                         html.H3('Välj en månad', style =h3_style),
                                         dcc.Dropdown(id = 'local_shap_month_selection_sv',
                                                       options = options, 
                                                       style = {'font-size':16},
-                                                      value = list(local_shap_df.index)[-1],
+                                                      value = list(local_shap_df.index)[0],
                                                       multi=False ),
                                         html.Br(),
-                                        html.P("Diagrammet nedan visar Shapley-värdena för den valda månaden."
-                                               "De representerar riktningen och intensiteten i den valda månadens prognos.",
-                                               style =p_style),
-                                         html.Br(),
+                                        
                                         html.Div(dcc.Loading(id = 'local_shap_graph_div_sv',
                                                               type = random.choice(spinners))),
                                     html.Br()]]
@@ -3143,7 +3153,7 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
      Input('local_shap_data_sv','data')]
     
 )
-def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
+def sv_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
     
     if local_shap_data is None:
         raise PreventUpdate
@@ -3157,6 +3167,9 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
     local_shap_df.index = pd.to_datetime(local_shap_df.index)
     
+    base_value = local_shap_df['base'].values[0]
+    local_shap_df = local_shap_df.drop('base',axis=1)
+    
     date = pd.to_datetime(date)
     
     
@@ -3169,6 +3182,10 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
   
     
     dff.index  = dff.index.str.replace('month','Nuvarande månad').str.replace('prev',prev_str)
+    
+    feature_values = {f:data_sv.loc[date,f] for f in data_sv.columns if f not in ['Työttömyysaste', 'change','prev','month','Inflaatio']}
+    feature_values[prev_str] = data_sv.loc[date,'prev']
+    feature_values['Nuvarande månad'] = data_sv.loc[date,'month']
           
     
     if only_commodities:
@@ -3189,6 +3206,8 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     dff = pd.concat([dff.head(cut_off).copy(),df])
     dff = dff.loc[dff.index != 'Andra 0 funktioner']
     
+    dff.index = dff.index.str.replace('_','')
+    
 
     height = graph_height +200 + 10*len(dff)
     
@@ -3197,9 +3216,9 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     # dff = dff.sort_values()
 
     
-    return dcc.Graph(id = 'local_shap_graph_sv',
+    return html.Div([dcc.Graph(id = 'local_shap_graph_sv',
                      config = config_plots_sv,
-                         figure = go.Figure(data=[go.Bar(y =dff.index, 
+                         figure = go.Figure(data=[go.Bar(y =['{} ({})'.format(i, feature_values[i]) if i in feature_values.keys() else i for i in dff.index], 
                       x = dff.values,
                       orientation='h',
                       name = '',
@@ -3264,7 +3283,9 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                                                                         family = 'Cadiz Semibold', 
                                                                          size = 16
                                                                         ))
-                                                        )))        
+                                                        ))),
+                     html.P('f(x) ≈ [ {} + SUM( SHAP värden ) ] / 100'.format(round(100*base_value,2)))
+                     ])
     
 @callback(
 
@@ -3293,7 +3314,7 @@ def sv_update_shap_slider(shap):
                 dcc.Slider(id = 'cut_off_sv',
                    min = 1, 
                    max = len(shap_df),
-                   value = int(math.ceil(.2*len(shap_df))),
+                   value = {True:len(shap_df), False: int(math.ceil(.2*len(shap_df)))}[len(shap_df)<=25],
                    step = 1,
                    marks=None,
                    tooltip={"placement": "top", "always_visible": True},
@@ -3334,6 +3355,8 @@ def sv_update_shap_graph(cut_off, only_commodities, shap):
     
     shap_df = pd.concat([shap_df.head(cut_off),df])
     shap_df = shap_df.loc[shap_df.index != 'Andra 0 funktioner']
+    
+    shap_df.index = shap_df.index.str.replace('_','')
     
 
     height = graph_height +200 + 10*len(shap_df)
@@ -3580,6 +3603,7 @@ def sv_download_test_data(n_clicks,
         shap_df.SHAP = np.round(100*shap_df.SHAP,2)
         shap_df.index = shap_df.index.str.replace('Kuukausi', 'Månad')
         shap_df.index = shap_df.index.str.replace('Edellisen kuukauden työttömyysaste', 'Arbetslöshet föregående månad')
+        shap_df.index = shap_df.index.str.replace('_','')
         
         local_shap_df = pd.DataFrame(local_shap_data)
         local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
@@ -3588,6 +3612,8 @@ def sv_download_test_data(n_clicks,
         local_shap_df = local_shap_df.rename(columns = {'month':'Månad',
                                   'prev': 'Arbetslöshet föregående månad'})
         local_shap_df = local_shap_df.multiply(100, axis=1)
+        local_shap_df.columns = local_shap_df.columns.str.replace('_','')
+        local_shap_df.drop('base',axis=1,inplace=True)
         
         
         xlsx_io = io.BytesIO()

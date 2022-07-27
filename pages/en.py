@@ -453,12 +453,14 @@ def en_get_shap_values(model, explainer, X_train, X_test):
         feature_names = X_test.columns
         shap_df = pd.DataFrame(shap_values, columns=feature_names)
         vals = np.abs(shap_df.values).mean(0)
+        base_value = explainer.expected_value
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
+        shap_df['base'] = base_value
         return shap_importance,shap_df
     
     elif explainer.__name__ == 'Tree':
@@ -467,13 +469,14 @@ def en_get_shap_values(model, explainer, X_train, X_test):
         feature_names = shap_values.feature_names
         shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
         vals = np.abs(shap_df.values).mean(0)
+        base_value = explainer.expected_value[0]
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
-    
+        shap_df['base'] = base_value
         return shap_importance,shap_df
     else:
         explainer = explainer(model,X_train)
@@ -482,12 +485,14 @@ def en_get_shap_values(model, explainer, X_train, X_test):
         feature_names = shap_values.feature_names
         shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
         vals = np.abs(shap_df.values).mean(0)
+        base_value = explainer.expected_value
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
         shap_importance.index = [i for i in shap_importance.index]
         shap_importance.index = shap_importance.index.str.replace('prev','Edellisen kuukauden työttömyysaste')
         shap_importance.index = shap_importance.index.str.replace('month','Kuukausi')
+        shap_df['base'] = base_value
         return shap_importance,shap_df
         
 
@@ -1125,7 +1130,7 @@ def en_test(model, features, test_size, explainer, use_pca = False, n_components
   df['Ennustettu muutos'] = model.predict(X)
   df['Ennuste'] = np.maximum(0, df.prev + df['Ennustettu muutos'])
 
-  results.append(df[feat+['Työttömyysaste', 'Ennuste','change', 'Ennustettu muutos','change']])
+  results.append(df[feat+['Työttömyysaste', 'Ennuste','change', 'Ennustettu muutos']])
 
   scaled_features.append(pd.DataFrame(X, columns = cols))
 
@@ -1134,6 +1139,7 @@ def en_test(model, features, test_size, explainer, use_pca = False, n_components
     df = pd.DataFrame(test_df.loc[i,feat]).T
     df['Työttömyysaste'] = test_df.loc[i,'Työttömyysaste']
     df['change'] = test_df.loc[i,'change']
+    df['prev'] = results[-1].Ennuste.values[0]
     # df['month'] = test_df.loc[i,'month']
     X = scl.transform(df[feat])
 
@@ -1143,7 +1149,7 @@ def en_test(model, features, test_size, explainer, use_pca = False, n_components
     df['Ennustettu muutos'] = model.predict(X)
     df['Ennuste'] = np.maximum(0, df.prev + df['Ennustettu muutos'])
 
-    results.append(df[feat+['Työttömyysaste', 'Ennuste','change', 'Ennustettu muutos','change']])
+    results.append(df[feat+['Työttömyysaste', 'Ennuste','change', 'Ennustettu muutos']])
 
     scaled_features.append(pd.DataFrame(X, columns = cols))
   
@@ -1406,9 +1412,9 @@ def layout():
                                   html.P("Inflation also has a silver lining, which is a fall in unemployment in the short term. This so-called The Phillips curve is an empirical observation made in the 1950s by an economist Alban William Phillips. The observation states that there is a conflict between inflation and unemployment in the short term. This idea is presented in the graph below, which describes inflation and unemployment rate at the same time in Finland. The descending logarithmic trend line corresponds to Phillips's observation.",
                                         style = p_style),
                                 
-                                  html.H3('Monthly Phillips Curve in Finnish Economy', 
+                                  html.H3('Monthly Phillips Curve in Finland', 
                                           style=h3_style),
-                                  html.H4('(Source: Statistics Finland)', 
+                                  html.H4('Source: Statistics Finland', 
                                           style=h4_style)
                                   
                                   ])
@@ -2904,7 +2910,7 @@ def en_update_test_results(n_clicks,
              
 
         feat = features.copy()
-        feat = ['Työttömyysaste','Ennuste','month','change','mape','n_feat', 'Ennustettu muutos']+feat
+        feat = ['Työttömyysaste','Ennuste','prev','month','change','mape','n_feat', 'Ennustettu muutos']+feat
         
         button_children = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Download Test Results'],
                                        id='test_download_button_en',
@@ -3124,17 +3130,21 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                         dcc.Loading([dbc.Row(id = 'shap_graph_div_en', justify = 'center')], type = random.choice(spinners))],
                 
                     [html.Br(),
+                     html.P("The graph below shows the Shapley values for the selected month."
+                            "They represent the direction and intensity of the selected month's forecast. "
+                            "Green highlights the features that reduce the monthly change in unemployment and red highlights the features that increase it. "
+                            "Black shows trivial features, i.e. the current month and the unemployment rate of the previous month. "
+                            "The vertical axis shows the names of the features and their value at the selected time in brackets.",
+                            style =p_style),
+                      html.Br(),
                         html.H3('Select a month', style =h3_style),
                                         dcc.Dropdown(id = 'local_shap_month_selection_en',
                                                       options = options, 
                                                       style = {'font-size':16},
-                                                      value = list(local_shap_df.index)[-1],
+                                                      value = list(local_shap_df.index)[0],
                                                       multi=False ),
                                         html.Br(),
-                                        html.P("The graph below shows the Shapley values for the selected month."
-                                               "They represent the direction and intensity of the selected month's forecast.",
-                                               style =p_style),
-                                         html.Br(),
+                                        
                                         html.Div(dcc.Loading(id = 'local_shap_graph_div_en',
                                                               type = random.choice(spinners))),
                                     html.Br()]]
@@ -3165,6 +3175,9 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
     local_shap_df.index = pd.to_datetime(local_shap_df.index)
     
+    base_value = local_shap_df['base'].values[0]
+    local_shap_df = local_shap_df.drop('base',axis=1)
+    
     date = pd.to_datetime(date)
     
     
@@ -3177,6 +3190,10 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
   
     
     dff.index  = dff.index.str.replace('month','Current Month').str.replace('prev',prev_str)
+    
+    feature_values = {f:data_en.loc[date,f] for f in data_en.columns if f not in ['Työttömyysaste', 'change','prev','month','Inflaatio']}
+    feature_values[prev_str] = data_en.loc[date,'prev']
+    feature_values['Current Month'] = data_en.loc[date,'month']
           
     
     if only_commodities:
@@ -3196,6 +3213,7 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     
     dff = pd.concat([dff.head(cut_off).copy(),df])
     dff = dff.loc[dff.index != 'Other 0 features']
+    dff.index = dff.index.str.replace('_','')
     
 
     height = graph_height +200 + 10*len(dff)
@@ -3205,9 +3223,9 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     # dff = dff.sort_values()
 
     
-    return dcc.Graph(id = 'local_shap_graph_en',
+    return html.Div([dcc.Graph(id = 'local_shap_graph_en',
                      config = config_plots_en,
-                         figure = go.Figure(data=[go.Bar(y =dff.index, 
+                         figure = go.Figure(data=[go.Bar(y =['{} ({})'.format(i, feature_values[i]) if i in feature_values.keys() else i for i in dff.index], 
                       x = dff.values,
                       orientation='h',
                       name = '',
@@ -3272,7 +3290,9 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                                                                         family = 'Cadiz Semibold', 
                                                                          size = 16
                                                                         ))
-                                                        )))
+                                                        ))),
+                     html.P('f(x) ≈ [ {} + SUM( SHAP values ) ] / 100'.format(round(100*base_value,2)))
+                     ])
     
 @callback(
 
@@ -3301,7 +3321,7 @@ def en_update_shap_slider(shap):
                 dcc.Slider(id = 'cut_off_en',
                    min = 1, 
                    max = len(shap_df),
-                   value = int(math.ceil(.2*len(shap_df))),
+                   value = {True:len(shap_df), False: int(math.ceil(.2*len(shap_df)))}[len(shap_df)<=25],
                    step = 1,
                    marks=None,
                    tooltip={"placement": "top", "always_visible": True},
@@ -3342,7 +3362,7 @@ def en_update_shap_graph(cut_off, only_commodities, shap):
     
     shap_df = pd.concat([shap_df.head(cut_off),df])
     shap_df = shap_df.loc[shap_df.index != 'Other 0 features']
-    
+    shap_df.index = shap_df.index.str.replace('_','')
 
     height = graph_height +200 + 10*len(shap_df)
     
@@ -3591,6 +3611,7 @@ def en_download_test_data(n_clicks,
         shap_df.SHAP = np.round(100*shap_df.SHAP,2)
         shap_df.index = shap_df.index.str.replace('Kuukausi', 'Month')
         shap_df.index = shap_df.index.str.replace('Edellisen kuukauden työttömyysaste', 'Previous Unemployment Rate')
+        shap_df.index = shap_df.index.str.replace('_','')
         
         local_shap_df = pd.DataFrame(local_shap_data)
         local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
@@ -3599,6 +3620,8 @@ def en_download_test_data(n_clicks,
         local_shap_df = local_shap_df.rename(columns = {'month':'Month',
                                   'prev': 'Previous Unemployment Rate'})
         local_shap_df = local_shap_df.multiply(100, axis=1)
+        local_shap_df.columns = local_shap_df.columns.str.replace('_','')
+        local_shap_df.drop('base',axis=1,inplace=True)
         
         xlsx_io = io.BytesIO()
         writer = pd.ExcelWriter(xlsx_io, engine='xlsxwriter')
