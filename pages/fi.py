@@ -3372,7 +3372,7 @@ def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
     
     dff = np.round(dff*100,2)
    
-    dff = dff.sort_values()
+    # dff = dff.sort_values()
 
     
     return dcc.Graph(id = 'local_shap_graph',
