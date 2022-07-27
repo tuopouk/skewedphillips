@@ -3284,7 +3284,7 @@ def sv_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                                                                          size = 16
                                                                         ))
                                                         ))),
-                     html.P('f(x) ≈ [ {} + SUM( SHAP värden ) ] / 100'.format(round(100*base_value,2)))
+                     html.P('Prognos ≈ Föregående prognosad arbetslöshet + [ {} + SUM( SHAP värden ) ] / 100'.format(round(100*base_value,2)))
                      ])
     
 @callback(

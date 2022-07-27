@@ -3469,7 +3469,7 @@ def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
                                                                          size = 16
                                                                         ))
                                                         ))),
-                     html.P('f(x) ≈ [ {} + SUM( SHAP-arvot ) ] / 100'.format(round(100*base_value,2)))
+                     html.P('Ennuste ≈ Edeltävä ennustettu työttömyysaste + [ {} + SUM( SHAP-arvot ) ] / 100'.format(round(100*base_value,2)))
                      ])
 
 
