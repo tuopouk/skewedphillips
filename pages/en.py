@@ -3116,7 +3116,7 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                         ]),
                     html.Br()
                     ],
-                    [html.P("The graph below shows the mean absolute Shapley values. "
+                    [html.P("The graph below shows the mean absolute SHAP values. "
                             "They describe how much the features on average affected forecasts, regardless of the direction of impact. "
                             "They are calculated as the average of the absolute SHAP values of the local characteristics. "
                             "Black color indicates the trivial features which are the current month and the unemployment rate of the previous month. ",

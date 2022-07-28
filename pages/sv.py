@@ -3107,7 +3107,7 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                         ]),
                     html.Br()
                     ],
-                    [html.P("Diagrammet nedan visar medelvärdet av absoluta Shapley-värden. "
+                    [html.P("Diagrammet nedan visar medelvärdet av absoluta SHAP-värden. "
                             "De beskriver hur mycket funktionerna i genomsnitt påverkade prognoserna, oavsett vilken riktning som påverkades. "
                             "De beräknas som genomsnittet av de absoluta SHAP-värdena för de lokala egenskaperna. "
                             "Svart färg indikerar de triviala egenskaper som är den aktuella månaden och arbetslösheten föregående månad.",

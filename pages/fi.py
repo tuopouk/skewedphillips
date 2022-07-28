@@ -3151,8 +3151,8 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                     html.Br()
                     ],
                     
-                    [html.P("Alla olevassa kuvaajassa on esitetty keskimääräiset absoluuttiset Shapley-arvot. "
-                           "Ne kuvaavat kuinka paljon piirteet keskimäärin vaikuttivat ennusteisiin, riippumatta vaikutuksen suunnasta ."
+                    [html.P("Alla olevassa kuvaajassa on esitetty keskimääräiset absoluuttiset SHAP-arvot. "
+                           "Ne kuvaavat kuinka paljon piirteet keskimäärin vaikuttivat ennusteisiin, riippumatta vaikutuksen suunnasta. "
                            "Ne on laskettu piirteiden lokaalien absoluuttisten SHAP - arvojen keskiarvona. "
                            "Mustalla on merkitty triviaalit piirteet eli kuluva kuukausi ja edellisen kuukauden työttömyysaste. ",
                            style =p_style),
