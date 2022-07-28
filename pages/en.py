@@ -4194,7 +4194,8 @@ def en_update_commodity_unemployment_graph(values, label):
                  'hexagram',
                  'hourglass',
                  'bowtie',
-                 'hash']
+                 # 'hash'
+                 ]
     
     label_str = {'Työttömyysaste': 'Unemployment rate (%)',
                  'change': 'Monthly unemployment rate change (% units)'}[label]     

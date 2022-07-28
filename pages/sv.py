@@ -4186,7 +4186,8 @@ def sv_update_commodity_unemployment_graph(values, label):
                  'hexagram',
                  'hourglass',
                  'bowtie',
-                 'hash']
+                 # 'hash'
+                 ]
     
     label_str = {'Työttömyysaste': 'Arbetslöshet (%)',
                  'change': 'Förändring av månadsarbetslösheten (% enheter)'}[label]     

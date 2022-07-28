@@ -4218,20 +4218,22 @@ def update_feature_correlation_plot(value1, value2):
 def update_commodity_unemployment_graph(values, label):
     
     
-    symbols = ['circle',
-                 'square',
-                 'diamond',
-                 'cross',
-                 'x',
-                 'pentagon',
-                 'hexagon',
-                 'hexagon2',
-                 'octagon',
-                 'star',
-                 'hexagram',
-                 'hourglass',
-                 'bowtie',
-                 'hash']
+    symbols = [
+                'circle',
+                  'square',
+                  'diamond',
+                  'cross',
+                  'x',
+                  'pentagon',
+                  'hexagon',
+                  'hexagon2',
+                  'octagon',
+                  'star',
+                  'hexagram',
+                  'hourglass',
+                  'bowtie'
+                
+                 ]
     
     label_str = {'Työttömyysaste': 'Työttömyysaste (%)',
                  'change': 'Työttömyysasteen kuukausimuutos (%-yksikköä)'}[label]     
