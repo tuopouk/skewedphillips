@@ -3118,21 +3118,14 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                     html.H3('Mitkä ennustepiirteet vaikuttivat eniten?',
                            style = h3_style),
                     html.P('Oheisissa kuvaajissa on esitetty käytettyjen ennustepiirteiden globaalit ja lokaalit tärkeydet ennusteelle. '
-                           'Globaaleilla merkitysarvoilla voidaan tarkastella magnitudia, joka jokaisella ennustepiirteellä on keskimäärin ennusteeseen. '
-                           'Sen sijaan lokaaleilla arvoilla voidaan tarkastella kuinka kukin ennustepiirre vaikutti kuhunkin esimerkin, eli tässä tapauksessa kunkin kuukauden ennusteeseen. '
-                           'Merkitysarvot on esitetty ns. Shapley-arvoina, jotka on laskettu jokaiselle piirteelle joka kuukaudelle erikseen. '
-                           'Ne kuvaavat piirteiden marginaalista kontribuutiota ennusteelle. '
-                           'Lokaalit arvot ovat absoluuttisia arvoja, ja niitä voi tarkastella kuukausittain. '
-                           'Niillä pyritään selittämään ennustepiirteiden tärkeyttä yksittäisille ennusteille. '
-                           'Globaalit arvot on laskettu kuukausittaisten absoluuttisten arvojen keskiarvoina. '
-                           'Niiden avulla on tarkoitus selittää mitkä ennustepiirteet vaikuttavat eniten ennusteeseen. '
-                           'Globaalit arvot on laskettu ennusteiden absoluuttisten Shapley-arvojen keskiarvoina. '
-                           'Shapley-arvoilla ei ole viitearvoja, vaan yksinkertaisesti suurempi arvo kertoo piirteen suuremmasta kontribuutiosta ennusteeseen. '
+                           'Globaaleilla merkitysarvoilla voidaan tarkastella mitkä piirteet yleisesti ottaen ovat merkitsevimpiä ennusteelle. '
+                           'Sen sijaan lokaaleilla arvoilla voidaan arvioida, mitkä tekijät vaikuttivat ja miten jonkin yksittäisen kuukauden ennusteeseen. '
+                           'Merkitysarvot on esitetty ns. SHAP-arvoina, jotka kuvaavat piirteiden kontribuutiota ennusteelle. '
                            'Ennustepiirteisiin kuuluvat valittujen hyödykeindeksien lisäksi edellisen kuukauden työttömyysaste sekä kuukausi.',
                            style = p_style),
                     html.A([html.P('Katso lyhyt esittely SHAP -arvojen merkityksestä mallin selittämisessä.',
                                    style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
-                    html.A([html.P('Katso myös ei-tekninen selittävä blogi Shapley - arvoista.',
+                    html.A([html.P('Katso myös ei-tekninen selittävä blogi SHAP - arvoista.',
                                    style = p_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
                     html.P('Kuvaajan SHAP-arvot on kerrottu sadalla visualisoinnin parantamiseksi. ',
                            style = p_style),
@@ -3159,13 +3152,15 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                     ],
                     
                     [html.P("Alla olevassa kuvaajassa on esitetty keskimääräiset absoluuttiset Shapley-arvot. "
-                           "Ne kuvaavat magnitudia, joilla valitut ennustepiirteet keskimäärin vaikuttavat työttömyysasteen kuukausimuutokseen.",
+                           "Ne kuvaavat kuinka paljon piirteet keskimäärin vaikuttivat ennusteisiin, riippumatta vaikutuksen suunnasta ."
+                           "Ne on laskettu piirteiden lokaalien absoluuttisten SHAP - arvojen keskiarvona. "
+                           "Mustalla on merkitty triviaalit piirteet eli kuluva kuukausi ja edellisen kuukauden työttömyysaste. ",
                            style =p_style),
                      html.Br(),
                      dcc.Loading([dbc.Row(id = 'shap_graph_div', justify = 'center')], type = random.choice(spinners))],
                 
                     [html.Br(),
-                     html.P("Alla olevassa kuvaajassa on esitetty piirteiden Shapley-arvot valitulle kuukaudelle. "
+                     html.P("Alla olevassa kuvaajassa on esitetty piirteiden SHAP-arvot valitulle kuukaudelle. "
                             "Ne kuvaavat suuntaa ja voimakkuutta, joka piirteillä oli valitun kuukauden ennusteeseen. "
                             "Vihreällä värillä on korostettu työttömyyden kuukausimuutosta laskevat tekijät ja punaisella sitä nostavat piirteet. "
                             "Mustalla on merkitty triviaalit piirteet eli kuluva kuukausi ja edellisen kuukauden työttömyysaste. "

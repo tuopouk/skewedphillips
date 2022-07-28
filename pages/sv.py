@@ -3075,16 +3075,9 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                     html.H3('Vilka funktioner var de viktigaste?',
                            style = h3_style),
                     html.P("Följande diagram visar den globala och lokala betydelsen av prognosfunktionerna som används för prognosen. "
-                            "Globala signifikansvärden kan användas för att undersöka storleken som varje prognosfunktion har i genomsnitt i prognosen. "
-                            "I stället kan lokala värden användas för att titta på hur varje prognosfunktion påverkade varje exempel, det vill säga prognosen för varje månad."
-                            "Betydande värden presenteras i de så kallade Shapley-värdena som beräknats för varje funktion separat för varje månad."
-                            "De beskriver det marginella bidraget av funktioner till prognosen. "
-                            "Lokala värden är absoluta värden och kan visas varje månad. "
-                            "De syftar till att förklara betydelsen av prognosfunktioner för enskilda prognoser. "
-                            "Globala värden beräknas som genomsnitt av månatliga absoluta värden."
-                            "De är avsedda att förklara vilka prognosfunktioner som har störst inverkan på prognosen."
-                            "Globala värden beräknas som genomsnitt av absoluta Shapley-värden i prognoser."
-                            "Shapley-värden har inga vvit-värden, men helt enkelt ett högre värde indikerar en funktion av ett större bidrag till prognosen. "
+                            "Globala signifikansvärden kan användas för att undersöka vilka egenskaper som i allmänhet är mest betydelsefulla för prognosen. "
+                            "I stället kan lokala värden användas för att bedöma vilka faktorer som påverkats och hur en viss månads prognos påverkades. "
+                            "Betydande värden presenteras som SHAP-värden, som beskriver bidraget av egenskaper till prognosen. "
                             "Förutom de utvalda råvaruindexen inkluderar prognosfunktionerna arbetslösheten föregående månad och månaden.",
                            style = p_style),
                     html.A([html.P("Se en kort introduktionsvideo om betydelsen av SHAP-värden för att förklara en modell.",
@@ -3114,18 +3107,20 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                         ]),
                     html.Br()
                     ],
-                    [html.P("Diagrammet nedan visar medelvärdet av absoluta Shapley-värden."
-                            "De representerar storleken på den valda prognosen i genomsnitt påverkar den månatliga förändringen av arbetslösheten.",
+                    [html.P("Diagrammet nedan visar medelvärdet av absoluta Shapley-värden. "
+                            "De beskriver hur mycket funktionerna i genomsnitt påverkade prognoserna, oavsett vilken riktning som påverkades. "
+                            "De beräknas som genomsnittet av de absoluta SHAP-värdena för de lokala egenskaperna. "
+                            "Svart färg indikerar de triviala egenskaper som är den aktuella månaden och arbetslösheten föregående månad.",
                            style =p_style),
                      html.Br(),
                         dcc.Loading([dbc.Row(id = 'shap_graph_div_sv', justify = 'center')], type = random.choice(spinners))],
                 
                     [html.Br(),
-                     html.P("Diagrammet nedan visar Shapley-värdena för den valda månaden."
-                            "De representerar riktningen och intensiteten i den valda månadens prognos."
-                            "Grönt belyser de funktioner som minskar månadsförändringen i arbetslösheten och rött belyser de funktioner som ökar den. "
-                            "Svart visar triviala drag, det vill säga innevarande månad och arbetslösheten föregående månad. "
-                            "Den vertikala axeln visar namnen på funktionerna och deras värde vid den valda tidpunkten inom parentes.",
+                     html.P("Diagrammet nedan visar SHAP-värdena för funktionerna för en vald månad. "
+                            "De representerar den riktning och intensitet som kännetecknade prognosen för den valda månaden. "
+                            "Grönt belyser de faktorer som minskar månadsförändringen i arbetslösheten och rött belyser de egenskaper som ökar den. "
+                            "Svart färg indikerar de triviala egenskaper som är den aktuella månaden och arbetslösheten föregående månad. "
+                            "Den vertikala axeln visar namnen på funktionerna och deras värden för motsvarande tid inom parentes.",
                             style =p_style),
                       html.Br(),
                         html.H3('Välj en månad', style =h3_style),

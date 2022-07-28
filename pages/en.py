@@ -3084,16 +3084,9 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                     html.H3('Which features were the most important?',
                            style = h3_style),
                     html.P("The following graphs show the global and local importance of the forecast features used for the forecast. "
-                            "Global significance values can be used to examine the magnitude that each prediction feature has on average in the forecast. "
-                            "Instead, local values can be used to look at how each forecast feature affected each example, that is, in this case, the forecast for each month. "
-                            "Significant values are presented in the so-called Shapley values calculated for each feature separately for each month. "
-                            "They describe the marginal contribution of features to the forecast. "
-                            "Local values are absolute values and can be viewed monthly. "
-                            "They aim to explain the importance of forecasting features to individual forecasts. "
-                            "Global values are calculated as averages of monthly absolute values. "
-                            "They are intended to explain which forecasting features have the greatest impact on the forecast. "
-                            "Global values are calculated as averages of absolute Shapley values in forecasts. "
-                            "Shapley values have no vvit values, but simply a higher value indicates a feature of a greater contribution to the forecast. "
+                            "Global significance values can be used to examine which features in general are most significant for the forecast. "
+                            "Instead, local values can be used to assess which factors affected and how to a particular month's forecast. "
+                            "Significant values are presented as SHAP values, which describe the contribution of traits to the forecast. "
                             "In addition to the selected commodity indices, the forecast features include the unemployment rate of the previous month and the month.",
                            style = p_style),
                     html.A([html.P('Watch a short introduction video about the importance of SHAP values in machine learning.',
@@ -3123,18 +3116,20 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                         ]),
                     html.Br()
                     ],
-                    [html.P("The graph below shows the mean absolute Shapley values."
-                            "They represent the magnitude at which the selected forecast features, on average, affect the monthly change in the unemployment rate.",
+                    [html.P("The graph below shows the mean absolute Shapley values. "
+                            "They describe how much the features on average affected forecasts, regardless of the direction of impact. "
+                            "They are calculated as the average of the absolute SHAP values of the local characteristics. "
+                            "Black color indicates the trivial features which are the current month and the unemployment rate of the previous month. ",
                            style =p_style),
                      html.Br(),
                         dcc.Loading([dbc.Row(id = 'shap_graph_div_en', justify = 'center')], type = random.choice(spinners))],
                 
                     [html.Br(),
-                     html.P("The graph below shows the Shapley values for the selected month."
-                            "They represent the direction and intensity of the selected month's forecast. "
-                            "Green highlights the features that reduce the monthly change in unemployment and red highlights the features that increase it. "
-                            "Black shows trivial features, i.e. the current month and the unemployment rate of the previous month. "
-                            "The vertical axis shows the names of the features and their value at the selected time in brackets.",
+                     html.P("The graph below shows the SHAP values of the features for a selected month. "
+                            "They represent the direction and intensity that characterised the forecast for the selected month. "
+                            "Green highlights the factors that reduce the monthly change in unemployment and red highlights the features that increase it. "
+                            "Black color indicates the trivial features which are the current month and the unemployment rate of the previous month. "
+                            "The vertical axis shows the names of the features and their values of the corresponding time in brackets.",
                             style =p_style),
                       html.Br(),
                         html.H3('Select a month', style =h3_style),
