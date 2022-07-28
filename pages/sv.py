@@ -1291,7 +1291,7 @@ fifth_class_options_sv = [{'label':c, 'value':c} for c in fifth_classes_sv]
 
 
 initial_options_sv = feature_options_sv
-initial_features_sv = ['01.1.3 Fisk och skaldjur',
+initial_features_sv = [c for c in ['01.1.3 Fisk och skaldjur',
  '01.1.3.3 Torkad, rökt eller saltad fisk och skaldjur',
  '01.1.6.3.1 Frysta frukter och bär',
  '01.1.9.3.1 Babymat',
@@ -1310,7 +1310,7 @@ initial_features_sv = ['01.1.3 Fisk och skaldjur',
  '09 REKREATION OCH KULTUR',
  '09.4.2.3.3 Kabel- och betal-TV-avgifter',
  '09.6.0 Paketresor',
- '12.1.3.3.3 Kropps-, hand- och hårkrämer']
+ '12.1.3.3.3 Kropps-, hand- och hårkrämer'] if c in data_sv.columns]
 
 def layout():
     

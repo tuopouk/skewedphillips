@@ -1317,7 +1317,7 @@ fifth_class_options = [{'label':c, 'value':c} for c in fifth_classes]
 
 
 initial_options = feature_options
-initial_features = ['01.1.3 Kala ja äyriäiset',
+initial_features = [c for c in ['01.1.3 Kala ja äyriäiset',
  '01.1.3.3 Kuivattu, savustettu tai suolattu kala ja äyriäiset',
  '01.1.6.3.1 Pakastetut hedelmät ja marjat',
  '01.1.9.3.1 Vauvanruoat',
@@ -1336,7 +1336,7 @@ initial_features = ['01.1.3 Kala ja äyriäiset',
  '09 KULTTUURI JA VAPAA-AIKA',
  '09.4.2.3.3 Kaapeli ja maksu-TV tilausmaksut',
  '09.6.0 Valmismatkat',
- '12.1.3.3.3 Vartalo-, käsi- ja hiusvoiteet']
+ '12.1.3.3.3 Vartalo-, käsi- ja hiusvoiteet'] if c in data.columns]
 
 
 def layout():

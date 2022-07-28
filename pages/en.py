@@ -1295,7 +1295,7 @@ fifth_class_options_en = [{'label':c, 'value':c} for c in fifth_classes_en]
 
 
 initial_options_en = feature_options_en
-initial_features_en = ['01.1.3 Fish and seafood',
+initial_features_en = [c for c in ['01.1.3 Fish and seafood',
  '01.1.3.3 Dried, smoked or salted fish and seafood',
  '01.1.6.3.1 Frozen fruit and berries',
  '01.1.9.3.1 Baby food',
@@ -1314,7 +1314,7 @@ initial_features_en = ['01.1.3 Fish and seafood',
  '09 RECREATION AND CULTURE',
  '09.4.2.3.3 Subscription to cable TV  and pay-TV',
  '09.6.0 Package holidays',
- '12.1.3.3.3 Body, hand and hair lotions']
+ '12.1.3.3.3 Body, hand and hair lotions'] if c in data_en.columns]
 
 
 def layout():
