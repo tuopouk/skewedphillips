@@ -91,6 +91,7 @@ MODELS_sv = {
                            'constant_hyperparameters': {
                                                         'n_jobs':-1,
                                                         'booster':'gbtree',
+                                                        'nthread':1,
                                                         'random_state':42}
                            }
         # 'Stokastinen gradientin pudotus':{'model':SGDRegressor,
@@ -2670,10 +2671,10 @@ def sv_update_hyperparameter_selections(model_name):
                # 'missing': np.nan,
                # 'monotone_constraints': None,
                'n_estimators': 50,
-               'n_jobs': -1,
+               # 'n_jobs': -1,
                # 'num_parallel_tree': 1,
                # 'predictor': 'auto',
-               'random_state': 42,
+               # 'random_state': 42,
                'reg_alpha': 0,
                'reg_lambda': 1,
                'scale_pos_weight': 1,
