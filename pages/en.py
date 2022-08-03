@@ -20,11 +20,10 @@ from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.decomposition import PCA
 import dash_daq
-
+from xgboost import XGBRegressor
 import io
 import math
 import shap
-
 from dash import html, dcc, callback, callback_context ,ALL, Output, Input, State
 from dash.exceptions import PreventUpdate
 import random
@@ -85,6 +84,15 @@ MODELS_en = {
                           'constant_hyperparameters': {'random_state':42
                                                        }
                           },
+        'XGBoost': {'model':XGBRegressor,
+                           'doc': 'https://xgboost.readthedocs.io/en/stable/parameter.html',
+                           'video':"https://www.youtube.com/embed/TyvYZ26alZs",
+                           'explainer':shap.TreeExplainer,
+                           'constant_hyperparameters': {
+                                                        'n_jobs':-1,
+                                                        'booster':'gbtree',
+                                                        'random_state':42}
+                           }
         # 'Stokastinen gradientin pudotus':{'model':SGDRegressor,
         #                   'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDRegressor.html',
         #                   'video':"https://www.youtube.com/embed/TyvYZ26alZs",
@@ -96,12 +104,17 @@ MODELS_en = {
     
     }
 UNWANTED_PARAMS = ['verbose',
+                   'verbosity',
                    #'cache_size', 
+                   'random_state',
                    'max_iter',
                    'warm_start',
                     'max_features',
                    'tol',
-                   'subsample',
+                   'enable_categorical',
+                   'n_jobs',
+                    # 'subsample',
+                    'booster'
                    # 'alpha',
                    # 'l1_ratio'
                 
@@ -111,6 +124,12 @@ LESS_THAN_ONE = [
         
                    'alpha',
                    'validation_fraction',
+                   'colsample_bylevel',
+                   'colsample_bynode',
+                   'colsample_bytree',
+                   'learning_rate',
+                   'subsample'
+                   # 'subsample',
                    
     
     ]
@@ -469,7 +488,10 @@ def en_get_shap_values(model, explainer, X_train, X_test):
         feature_names = shap_values.feature_names
         shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
         vals = np.abs(shap_df.values).mean(0)
-        base_value = explainer.expected_value[0]
+        try:
+            base_value = explainer.expected_value[0]
+        except:
+            base_value = explainer.expected_value
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
@@ -497,7 +519,43 @@ def en_get_shap_values(model, explainer, X_train, X_test):
         
 
 def en_get_param_options(model_name):
-
+    
+  if model_name == 'XGBoost':
+        
+      return {'objective': ['reg:squarederror',
+                 # 'reg:squaredlogerror',
+                 'reg:pseudohubererror'
+                            ],
+                'eval_metric':['rmse','mae','mape','mphe'],
+               'base_score': 'float',
+               'booster': ['gbtree', 'gblinear', 'dart'],
+               'colsample_bylevel': 'float',
+               'colsample_bynode': 'float',
+               'colsample_bytree': 'float',
+               # 'enable_categorical': 'bool',
+               'gamma': 'int',
+               # 'gpu_id': None,
+               # 'importance_type': None,
+               # 'interaction_constraints': None,
+               'learning_rate': 'float',
+               # 'max_delta_step': 'int',
+               # 'max_depth': 'int',
+                'min_child_weight': 'int',
+               # 'missing': np.nan,
+               # 'monotone_constraints': None,
+               'n_estimators': 'int',
+               'n_jobs': 'int',
+               # 'num_parallel_tree': 'int',
+               # 'predictor': ['auto','cpu_predictor','gpu_predictor'],
+               'random_state': 'int',
+               'reg_alpha': 'int',
+               'reg_lambda': 'int',
+               'scale_pos_weight': 'int',
+               'subsample': 'int',
+               'tree_method': ['auto', 'exact', 'approx', 'hist', 'gpu_hist'],
+               'validate_parameters': 'bool',
+               'verbosity': 'int'}
+        
   model = MODELS_en[model_name]['model']
 
   dict_list = {}
@@ -1334,7 +1392,7 @@ def layout():
                     html.H2("Forecasting Finland's Unemployment Rate with Consumer Price Changes",
                             style=h2_style),
                     
-                    html.P('Select the desired tab by clicking on the titles below.' 
+                    html.P('Select the desired tab by clicking on the titles below. ' 
                            'The buttons in the upper left corner show quick help '
                            'and you can also change the color scheme of the page.',
                            style = p_style)
@@ -2121,7 +2179,7 @@ def layout():
                                 html.Br(),
                                 html.P('In this section you can select the machine learning algorithm, adjust its hyperparameters and, if you wish, utilize principal component analysis as you choose.',
                                         style = p_style),
-                                html.P('First select the algorithm, then below will appear its specific hyperparameters, which you can adjust to fit. Hyperparameters are dynamically read directly from Scikit-learn library documentation and therefore there is no Finnish translation for them. Under the control menus you will find a link to the documentation page of the selected algorithm, where you can read more about the topic. There is not one single way to adjust hyperparameters, but different values must be tested iteratively.',
+                                html.P('First select the algorithm, then below will appear its specific hyperparameters, which you can adjust to fit. Hyperparameters are read automatically from Scikit-learn library documentation or referenced from XGBoost documentation. Under the control menus you will find a link to the documentation page of the selected algorithm, where you can read more about the topic. There is not one single way to adjust hyperparameters, but different values must be tested iteratively.',
                                         style = p_style),
                                 html.Br(),
                                 html.P('In addition, you can choose whether to utilize principal component analysis to minimize features. The main component analysis is a statistical and technical noise reduction method aimed at improving the quality of the forecast. Linear combinations of the selected features are formed in such a way that the variation in the original data remains by a certain ratio in the modified data. You can adjust this explained variance to your liking. As in the case of hyperparameters, this definition is purely empirical.',
@@ -2595,6 +2653,42 @@ def en_update_hyperparameter_selections(model_name):
         
     hyperparameters = model().get_params()
     
+    if model_name == 'XGBoost':
+        
+        hyperparameters = {'objective': 'reg:squarederror',
+               'base_score': .5,
+               'eval_metric':'rmse',
+               'booster': 'gbtree',
+               'colsample_bylevel': .99,
+               'colsample_bynode': .99,
+               'colsample_bytree': .99,
+               # 'enable_categorical': False,
+               'gamma': 0,
+               # 'gpu_id': None,
+               # 'importance_type': None,
+               # 'interaction_constraints': None,
+               'learning_rate': .3,
+               # 'max_delta_step': 0,
+               # 'max_depth': 0,
+                'min_child_weight': 1,
+               # 'missing': np.nan,
+               # 'monotone_constraints': None,
+               'n_estimators': 100,
+               'n_jobs': -1,
+               # 'num_parallel_tree': 1,
+               # 'predictor': 'auto',
+               'random_state': 42,
+               'reg_alpha': 0,
+               'reg_lambda': 1,
+               'scale_pos_weight': 1,
+               'subsample': .99,
+               'tree_method': 'auto',
+               'validate_parameters': False,
+               'verbosity': 0}
+    
+    elif model_name=='Gradient Boost':
+        hyperparameters.update({'subsample':.99})
+    
     type_dict ={}
     for i, c in enumerate(hyperparameters.values()):
       
@@ -2997,7 +3091,7 @@ def en_update_forecast_results(n_clicks,
                       
                       html.P('The graph below shows the actual values and the forecast from {} to {}.'.format(forecast_df.index.strftime('%B %Y').values[0],forecast_df.index.strftime('%B %Y').values[-1]),
                              style = p_style),
-                      html.P('You can select either a column or a line diagram from the buttons below. The length of the time series can be adjusted from the slider below. You can also limit the length by clicking the buttons in the upper left corner.',
+                      html.P('You can select either a column, area, or a line diagram from the buttons below. The length of the time series can be adjusted from the slider below. You can also limit the length by clicking the buttons in the upper left corner.',
                              style = p_style),
                       
                       html.Div([
@@ -3013,7 +3107,7 @@ def en_update_forecast_results(n_clicks,
                         inputClassName="btn-check",
                         labelClassName="btn btn-outline-secondary",
                         labelCheckedClassName="active",                        
-                        value = 'lines'
+                        value = 'area'
                       )
                       ],style={'textAlign':'right'}),
                       html.Br(),

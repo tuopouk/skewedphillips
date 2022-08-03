@@ -18,6 +18,7 @@ from sklearn.metrics import mean_absolute_percentage_error
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
+from xgboost import XGBRegressor
 from sklearn.decomposition import PCA
 import dash_daq
 import io
@@ -83,6 +84,15 @@ MODELS_sv = {
                           'constant_hyperparameters': {'random_state':42
                                                        }
                           },
+        'XGBoost': {'model':XGBRegressor,
+                           'doc': 'https://xgboost.readthedocs.io/en/stable/parameter.html',
+                           'video':"https://www.youtube.com/embed/TyvYZ26alZs",
+                           'explainer':shap.TreeExplainer,
+                           'constant_hyperparameters': {
+                                                        'n_jobs':-1,
+                                                        'booster':'gbtree',
+                                                        'random_state':42}
+                           }
         # 'Stokastinen gradientin pudotus':{'model':SGDRegressor,
         #                   'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDRegressor.html',
         #                   'video':"https://www.youtube.com/embed/TyvYZ26alZs",
@@ -94,12 +104,17 @@ MODELS_sv = {
     
     }
 UNWANTED_PARAMS = ['verbose',
+                   'verbosity',
                    #'cache_size', 
+                   'random_state',
                    'max_iter',
                    'warm_start',
                     'max_features',
                    'tol',
-                   'subsample',
+                   'enable_categorical',
+                   'n_jobs',
+                    # 'subsample',
+                    'booster'
                    # 'alpha',
                    # 'l1_ratio'
                 
@@ -109,6 +124,12 @@ LESS_THAN_ONE = [
         
                    'alpha',
                    'validation_fraction',
+                   'colsample_bylevel',
+                   'colsample_bynode',
+                   'colsample_bytree',
+                   'learning_rate',
+                   'subsample'
+                   # 'subsample',
                    
     
     ]
@@ -462,7 +483,10 @@ def sv_get_shap_values(model, explainer, X_train, X_test):
         feature_names = shap_values.feature_names
         shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
         vals = np.abs(shap_df.values).mean(0)
-        base_value = explainer.expected_value[0]
+        try:
+            base_value = explainer.expected_value[0]
+        except:
+            base_value = explainer.expected_value
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
@@ -490,6 +514,42 @@ def sv_get_shap_values(model, explainer, X_train, X_test):
         
 
 def sv_get_param_options(model_name):
+
+  if model_name == 'XGBoost':
+      
+      return {'objective': ['reg:squarederror',
+               # 'reg:squaredlogerror',
+               'reg:pseudohubererror'
+                          ],
+              'eval_metric':['rmse','mae','mape','mphe'],
+             'base_score': 'float',
+             'booster': ['gbtree', 'gblinear', 'dart'],
+             'colsample_bylevel': 'float',
+             'colsample_bynode': 'float',
+             'colsample_bytree': 'float',
+             # 'enable_categorical': 'bool',
+             'gamma': 'int',
+             # 'gpu_id': None,
+             # 'importance_type': None,
+             # 'interaction_constraints': None,
+             'learning_rate': 'float',
+             # 'max_delta_step': 'int',
+             # 'max_depth': 'int',
+              'min_child_weight': 'int',
+             # 'missing': np.nan,
+             # 'monotone_constraints': None,
+             'n_estimators': 'int',
+             'n_jobs': 'int',
+             # 'num_parallel_tree': 'int',
+             # 'predictor': ['auto','cpu_predictor','gpu_predictor'],
+             'random_state': 'int',
+             'reg_alpha': 'int',
+             'reg_lambda': 'int',
+             'scale_pos_weight': 'int',
+             'subsample': 'int',
+             'tree_method': ['auto', 'exact', 'approx', 'hist', 'gpu_hist'],
+             'validate_parameters': 'bool',
+             'verbosity': 'int'}
 
   model = MODELS_sv[model_name]['model']
 
@@ -2116,7 +2176,7 @@ def layout():
                                 html.Br(),
                                 html.P("I det här avsnittet kan du välja maskininlärningsalgoritm, justera dess hyperparametrar och, om du vill, använda huvudkomponentanalys som du vill.",
                                         style = p_style),
-                                html.P("Välj först algoritmen, sedan visas dess specifika hyperparametrar, som du kan justera för att passa. Hyperparametrar läses dynamiskt direkt från Scikit-learn biblioteksdokumentation och därför finns det ingen finsk översättning för dem. Under kontrollmenyerna hittar du en länk till dokumentationssidan för den valda algoritmen, där du kan läsa mer om ämnet. Det finns inte ett enda sätt att justera hyperparametrar, men olika värden måste testas iterativt.",
+                                html.P("Välj först algoritmen, sedan visas dess specifika hyperparametrar, som du kan justera för att passa. Hyperparametrar läses automatiskt från Scikit-learn biblioteksdokumentation eller refereras från XGBoost-dokumentation och därför finns det ingen svensk översättning för dem. Under kontrollmenyerna hittar du en länk till dokumentationssidan för den valda algoritmen, där du kan läsa mer om ämnet. Det finns inte ett enda sätt att justera hyperparametrar, men olika värden måste testas iterativt.",
                                         style = p_style),
                                 html.Br(),
                                 html.P("Dessutom kan du välja om du vill använda principalkomponentanalys för att minimera funktioner. Huvudkomponentsanalysen är en statistisk och teknisk bullerdämpningsmetod som syftar till att förbättra prognosens kvalitet. Linjära kombinationer av de valda funktionerna bildas på ett sådant sätt att variationen i de ursprungliga uppgifterna förblir med ett visst förhållande i de ändrade uppgifterna. Du kan justera den förklarade variansen efter dina önskemål. Liksom för hyperparametrar är denna definition rent empirisk.",
@@ -2589,6 +2649,42 @@ def sv_update_hyperparameter_selections(model_name):
         
     hyperparameters = model().get_params()
     
+    if model_name == 'XGBoost':
+        
+        hyperparameters = {'objective': 'reg:squarederror',
+               'base_score': .5,
+               'eval_metric':'rmse',
+               'booster': 'gbtree',
+               'colsample_bylevel': .99,
+               'colsample_bynode': .99,
+               'colsample_bytree': .99,
+               # 'enable_categorical': False,
+               'gamma': 0,
+               # 'gpu_id': None,
+               # 'importance_type': None,
+               # 'interaction_constraints': None,
+               'learning_rate': .3,
+               # 'max_delta_step': 0,
+               # 'max_depth': 0,
+                'min_child_weight': 1,
+               # 'missing': np.nan,
+               # 'monotone_constraints': None,
+               'n_estimators': 100,
+               'n_jobs': -1,
+               # 'num_parallel_tree': 1,
+               # 'predictor': 'auto',
+               'random_state': 42,
+               'reg_alpha': 0,
+               'reg_lambda': 1,
+               'scale_pos_weight': 1,
+               'subsample': .99,
+               'tree_method': 'auto',
+               'validate_parameters': False,
+               'verbosity': 0}
+    
+    elif model_name=='Gradientförstärkning':
+        hyperparameters.update({'subsample':.99})
+    
     type_dict ={}
     for i, c in enumerate(hyperparameters.values()):
       
@@ -2991,7 +3087,7 @@ def sv_update_forecast_results(n_clicks,
                       
                       html.P('Diagrammet nedan visar de faktiska värdena och prognosen från {} till {}.'.format(forecast_df.index.strftime('%B %Y').values[0],forecast_df.index.strftime('%B %Y').values[-1]),
                              style = p_style),
-                      html.P("Du kan välja antingen en kolumn eller ett linjediagram från knapparna nedan. Längden på tidsserien kan justeras från reglaget nedan. Du kan också begränsa längden genom att klicka på knapparna i övre vänstra hörnet.",
+                      html.P("Du kan välja antingen en kolumn, områdes eller ett linjediagram från knapparna nedan. Längden på tidsserien kan justeras från reglaget nedan. Du kan också begränsa längden genom att klicka på knapparna i övre vänstra hörnet.",
                              style = p_style),
                       
                       html.Div([
@@ -3007,7 +3103,7 @@ def sv_update_forecast_results(n_clicks,
                         inputClassName="btn-check",
                         labelClassName="btn btn-outline-secondary",
                         labelCheckedClassName="active",                        
-                        value = 'lines'
+                        value = 'area'
                       )
                       ],style={'textAlign':'right'}),
                       html.Br(),

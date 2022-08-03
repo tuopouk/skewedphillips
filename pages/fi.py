@@ -22,6 +22,7 @@ from sklearn.metrics import mean_absolute_percentage_error
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
+from xgboost import XGBRegressor
 from sklearn.decomposition import PCA
 import dash_daq
 import io
@@ -86,6 +87,15 @@ MODELS = {
                           'constant_hyperparameters': {'random_state':42
                                                        }
                           },
+        'XGBoost': {'model':XGBRegressor,
+                           'doc': 'https://xgboost.readthedocs.io/en/stable/parameter.html',
+                           'video':"https://www.youtube.com/embed/TyvYZ26alZs",
+                           'explainer':shap.TreeExplainer,
+                           'constant_hyperparameters': {
+                                                        'n_jobs':-1,
+                                                        'booster':'gbtree',
+                                                        'random_state':42}
+                           }
         # 'Stokastinen gradientin pudotus':{'model':SGDRegressor,
         #                   'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDRegressor.html',
         #                   'video':"https://www.youtube.com/embed/TyvYZ26alZs",
@@ -97,12 +107,17 @@ MODELS = {
     
     }
 UNWANTED_PARAMS = ['verbose',
+                   'verbosity',
                    #'cache_size', 
+                   'random_state',
                    'max_iter',
                    'warm_start',
                     'max_features',
                    'tol',
-                   'subsample',
+                   'enable_categorical',
+                   'n_jobs',
+                    # 'subsample',
+                    'booster'
                    # 'alpha',
                    # 'l1_ratio'
                 
@@ -112,6 +127,12 @@ LESS_THAN_ONE = [
         
                    'alpha',
                    'validation_fraction',
+                   'colsample_bylevel',
+                   'colsample_bynode',
+                   'colsample_bytree',
+                   'learning_rate',
+                   'subsample'
+                   # 'subsample',
                    
     
     ]
@@ -480,7 +501,10 @@ def get_shap_values(model, explainer, X_train, X_test):
         feature_names = shap_values.feature_names
         shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
         vals = np.abs(shap_df.values).mean(0)
-        base_value = explainer.expected_value[0]
+        try:
+            base_value = explainer.expected_value[0]
+        except:
+            base_value = explainer.expected_value
         shap_importance = pd.DataFrame(list(zip(feature_names, vals)), columns=['col_name', 'feature_importance_vals']).set_index('col_name')
         shap_importance = shap_importance.sort_values(by=['feature_importance_vals'], ascending=False) 
         shap_importance.columns = ['SHAP']
@@ -508,6 +532,45 @@ def get_shap_values(model, explainer, X_train, X_test):
         
 
 def get_param_options(model_name):
+    
+    
+  if model_name == 'XGBoost':
+      
+      return {'objective': ['reg:squarederror',
+               # 'reg:squaredlogerror',
+               'reg:pseudohubererror'
+                          ],
+              'eval_metric':['rmse','mae','mape','mphe'],
+             'base_score': 'float',
+             'booster': ['gbtree', 'gblinear', 'dart'],
+             'colsample_bylevel': 'float',
+             'colsample_bynode': 'float',
+             'colsample_bytree': 'float',
+             # 'enable_categorical': 'bool',
+             'gamma': 'int',
+             # 'gpu_id': None,
+             # 'importance_type': None,
+             # 'interaction_constraints': None,
+             'learning_rate': 'float',
+             # 'max_delta_step': 'int',
+             # 'max_depth': 'int',
+              'min_child_weight': 'int',
+             # 'missing': np.nan,
+             # 'monotone_constraints': None,
+             'n_estimators': 'int',
+             'n_jobs': 'int',
+             # 'num_parallel_tree': 'int',
+             # 'predictor': ['auto','cpu_predictor','gpu_predictor'],
+             'random_state': 'int',
+             'reg_alpha': 'int',
+             'reg_lambda': 'int',
+             'scale_pos_weight': 'int',
+             'subsample': 'int',
+             'tree_method': ['auto', 'exact', 'approx', 'hist', 'gpu_hist'],
+             'validate_parameters': 'bool',
+             'verbosity': 'int'}
+      
+
 
   model = MODELS[model_name]['model']
 
@@ -533,6 +596,7 @@ def get_param_options(model_name):
       ''
       
   return dict_list
+
 
 
 
@@ -1142,7 +1206,7 @@ def test(model, features, test_size, explainer, use_pca = False, n_components=.9
   if use_pca:
     X = pca.transform(X)
 
-  
+
   df['Ennustettu muutos'] = model.predict(X)
   df['Ennuste'] = np.maximum(0, df.prev + df['Ennustettu muutos'])
 
@@ -1170,7 +1234,7 @@ def test(model, features, test_size, explainer, use_pca = False, n_components=.9
 
     scaled_features.append(pd.DataFrame(X, columns = cols))
   
-  
+
 
   shap_df, local_shap_df = get_shap_values(model, explainer, X_train = pd.DataFrame(X, columns = cols), X_test = pd.concat(scaled_features))
 
@@ -2624,6 +2688,43 @@ def update_hyperparameter_selections(model_name):
         
     hyperparameters = model().get_params()
     
+    if model_name == 'XGBoost':
+        
+        hyperparameters = {'objective': 'reg:squarederror',
+               'base_score': .5,
+               'eval_metric':'rmse',
+               'booster': 'gbtree',
+               'colsample_bylevel': .99,
+               'colsample_bynode': .99,
+               'colsample_bytree': .99,
+               # 'enable_categorical': False,
+               'gamma': 0,
+               # 'gpu_id': None,
+               # 'importance_type': None,
+               # 'interaction_constraints': None,
+               'learning_rate': .3,
+               # 'max_delta_step': 0,
+               # 'max_depth': 0,
+                'min_child_weight': 1,
+               # 'missing': np.nan,
+               # 'monotone_constraints': None,
+               'n_estimators': 100,
+               'n_jobs': -1,
+               # 'num_parallel_tree': 1,
+               # 'predictor': 'auto',
+               'random_state': 42,
+               'reg_alpha': 0,
+               'reg_lambda': 1,
+               'scale_pos_weight': 1,
+               'subsample': .99,
+               'tree_method': 'auto',
+               'validate_parameters': False,
+               'verbosity': 0}
+    
+    elif model_name=='Gradient Boost':
+        hyperparameters.update({'subsample':.99})
+    
+    
     type_dict ={}
     for i, c in enumerate(hyperparameters.values()):
       
@@ -2632,6 +2733,7 @@ def update_hyperparameter_selections(model_name):
     h_series = pd.Series(type_dict).sort_values()
 
     param_options = get_param_options(model_name)
+    
        
     
     children = []
@@ -3031,7 +3133,7 @@ def update_forecast_results(n_clicks,
                       
                       html.P('Alla olevassa kuvaajassa on esitetty toteuteet arvot sekä ennuste ajalle {} - {}.'.format(forecast_df.index.strftime('%B %Y').values[0],forecast_df.index.strftime('%B %Y').values[-1]),
                              style = p_style),
-                      html.P('Voit valita alla olevista painikkeista joko pylväs, -tai viivadiagramin. Kuvaajan pituutta voi säätää alla olevasta liukuvaliskosta. Pituutta voi rajat myös vasemman yläkulman painikkeista.',
+                      html.P('Voit valita alla olevista painikkeista joko pylväs, alue, -tai viivadiagramin. Kuvaajan pituutta voi säätää alla olevasta liukuvaliskosta. Pituutta voi rajat myös vasemman yläkulman painikkeista.',
                              style = p_style),
                       
                       html.Div([
@@ -3047,7 +3149,7 @@ def update_forecast_results(n_clicks,
                         inputClassName="btn-check",
                         labelClassName="btn btn-outline-secondary",
                         labelCheckedClassName="active",                        
-                        value = 'lines'
+                        value = 'area'
                       )
                       ],style={'textAlign':'right'}),
                       html.Br(),
@@ -3119,7 +3221,7 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                            style = h3_style),
                     html.P('Oheisissa kuvaajissa on esitetty käytettyjen ennustepiirteiden globaalit ja lokaalit tärkeydet ennusteelle. '
                            'Globaaleilla merkitysarvoilla voidaan tarkastella mitkä piirteet yleisesti ottaen ovat merkitsevimpiä ennusteelle. '
-                           'Sen sijaan lokaaleilla arvoilla voidaan arvioida, mitkä tekijät vaikuttivat ja miten jonkin yksittäisen kuukauden ennusteeseen. '
+                           'Sen sijaan lokaaleilla arvoilla voidaan arvioida, mitkä tekijät nostivat tai laskivat ennusteen arvoa tiettynä kuukautena. '
                            'Merkitysarvot on esitetty ns. SHAP-arvoina, jotka kuvaavat piirteiden kontribuutiota ennusteelle. '
                            'Ennustepiirteisiin kuuluvat valittujen hyödykeindeksien lisäksi edellisen kuukauden työttömyysaste sekä kuukausi.',
                            style = p_style),
@@ -3555,7 +3657,8 @@ def download_forecast_data(n_clicks, df, method_selection_results, weights_dict)
         weights_df.to_excel(writer, sheet_name= 'Indeksimuutokset')
         hyperparam_df.to_excel(writer, sheet_name= 'Hyperparametrit')
         metadata.to_excel(writer, sheet_name= 'Metadata')
-
+        
+        
 
         writer.save()
         
