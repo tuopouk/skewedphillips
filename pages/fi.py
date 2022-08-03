@@ -567,7 +567,7 @@ def get_param_options(model_name):
              'reg_lambda': 'int',
              'scale_pos_weight': 'int',
              'subsample': 'int',
-             'tree_method': ['auto', 'exact', 'approx', 'hist', 'gpu_hist'],
+             'tree_method': ['auto', 'exact', 'approx', 'hist'],
              'validate_parameters': 'bool',
              'verbosity': 'int'}
       
