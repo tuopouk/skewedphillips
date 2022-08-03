@@ -2673,7 +2673,7 @@ def en_update_hyperparameter_selections(model_name):
                 'min_child_weight': 1,
                # 'missing': np.nan,
                # 'monotone_constraints': None,
-               'n_estimators': 100,
+               'n_estimators': 50,
                'n_jobs': -1,
                # 'num_parallel_tree': 1,
                # 'predictor': 'auto',
