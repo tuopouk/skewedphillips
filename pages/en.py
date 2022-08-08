@@ -18,6 +18,7 @@ from sklearn.metrics import mean_absolute_percentage_error
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.decomposition import PCA
 import dash_daq
 from xgboost import XGBRegressor
@@ -45,6 +46,16 @@ except:
 in_dev = True
 
 MODELS_en = {
+    
+    
+        'Decision Tree':{'model':DecisionTreeRegressor,
+                           'doc': 'https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html',
+                           'video':"https://www.youtube.com/embed/UhY5vPfQIrA",
+                           'explainer':shap.TreeExplainer,
+                           'constant_hyperparameters': {
+                                                        # 'n_jobs':-1,
+                                                        'random_state':42}
+                           },
     
         'Random Forest': {'model':RandomForestRegressor,
                            'doc': 'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html',

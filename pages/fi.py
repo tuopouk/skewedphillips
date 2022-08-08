@@ -22,6 +22,7 @@ from sklearn.metrics import mean_absolute_percentage_error
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
 from xgboost import XGBRegressor
 from sklearn.decomposition import PCA
 import dash_daq
@@ -48,6 +49,17 @@ except:
 
 
 MODELS = {
+    
+    
+    
+        'Päätöspuu':{'model':DecisionTreeRegressor,
+                           'doc': 'https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html',
+                           'video':"https://www.youtube.com/embed/UhY5vPfQIrA",
+                           'explainer':shap.TreeExplainer,
+                           'constant_hyperparameters': {
+                                                        # 'n_jobs':-1,
+                                                        'random_state':42}
+                           },
     
         'Satunnaismetsä': {'model':RandomForestRegressor,
                            'doc': 'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html',
