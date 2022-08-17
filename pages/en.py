@@ -1480,6 +1480,11 @@ def layout():
                                         style = p_style),
                                   html.P("Inflation also has a silver lining, which is a fall in unemployment in the short term. This so-called The Phillips curve is an empirical observation made in the 1950s by an economist Alban William Phillips. The observation states that there is a conflict between inflation and unemployment in the short term. This idea is presented in the graph below, which describes inflation and unemployment rate at the same time in Finland. The descending logarithmic trend line corresponds to Phillips's observation.",
                                         style = p_style),
+                                  html.P("(Continues after the chart)",style={
+                                              'font-style':'italic',
+                                              'font-size':p_font_size,
+                                             'text-align':'center'}
+                                      ),
                                 
                                   html.H3('Monthly Phillips Curve in Finland', 
                                           style=h3_style),
@@ -2952,6 +2957,11 @@ def en_update_test_results(n_clicks,
                              
                              html.P('The graph below shows how well the forecast model would have predicted the unemployment rate from {} to {}.'.format(test_result.index.strftime('%B %Y').values[0],test_result.index.strftime('%B %Y').values[-1]),
                                     style = p_style),
+                             html.P("(Continues after the chart)",style={
+                                         'font-style':'italic',
+                                         'font-size':p_font_size,
+                                        'text-align':'center'}
+                                 ),
                               html.Div([html.Br(),dbc.RadioItems(id = 'test_chart_type_en', 
                                           options = [{'label':'bars','value':'bars'},
                                                     {'label':'lines','value':'lines'},
@@ -4109,6 +4119,11 @@ def en_update_corr_selection(features_values):
             
             html.P('Use this graph to view the relationship and correlation between the price index of the selected commodity and the unemployment rate or monthly change. In theory, a good predictive feature correlates strongly with the predictable variable.',
                    style = p_style),
+            html.P("(Continues after the chart)",style={
+                        'font-style':'italic',
+                        'font-size':p_font_size,
+                       'text-align':'center'}
+                ),
         html.H3('Select a commodity', style = h3_style),
         dcc.Dropdown(id = 'corr_feature_en',
                         multi = True,
@@ -4142,6 +4157,11 @@ def en_update_feature_corr_selection(features_values):
                 html.Br(),
                 html.P('Use this graph to view the relationships and correlations between commodities. If the correlation between two commodities is strong, the forecast can be improved by removing the other from the forecast features.',
                        style = p_style),
+                html.P("(Continues after the chart)",style={
+                            'font-style':'italic',
+                            'font-size':p_font_size,
+                           'text-align':'center'}
+                    ),
         
         dbc.Row(justify = 'center',children=[
             dbc.Col([

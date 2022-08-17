@@ -1479,7 +1479,11 @@ def layout():
                                         style = p_style),
                                   html.P("Inflationen har också ett positivt inslag, vilket är en nedgång i arbetslösheten på kort sikt. Denna så kallade Phillipskurvan är en empirisk observation som gjordes på 1950-talet av en ekonom Alban William Phillips. Observationen visar att det finns en konflikt mellan inflation och arbetslöshet på kort sikt. Denna idé presenteras i grafen nedan, som beskriver inflation och arbetslöshet råtta e samtidigt i Finland. Den fallande logaritmiska trendlinjen motsvarar Phillips observation. ",
                                         style = p_style),
-                                
+                                 html.P("(Fortsätter efter diagrammet)",style={
+                                             'font-style':'italic',
+                                             'font-size':p_font_size,
+                                            'text-align':'center'}
+                                     ),
                                   html.H3("Månatlig Phillipskurva i Finlands ekonomi", 
                                           style=h3_style),
                                   html.H4("Källa: Statistikcentralen", 
@@ -2946,7 +2950,11 @@ def sv_update_test_results(n_clicks,
                             html.Br(),
                              html.H3('Hur gick det för oss?',
                                      style = h3_style),
-                             
+                             html.P("(Fortsätter efter diagrammet)",style={
+                                         'font-style':'italic',
+                                         'font-size':p_font_size,
+                                        'text-align':'center'}
+                                 ),
                              html.P('Diagrammet nedan visar hur väl prognosmodellen skulle ha förutsett arbetslösheten från {} till {}.'.format(test_result.index.strftime('%B %Y').values[0],test_result.index.strftime('%B %Y').values[-1]),
                                     style = p_style),
                               html.Div([html.Br(),dbc.RadioItems(id = 'test_chart_type_sv', 
@@ -4105,6 +4113,11 @@ def sv_update_corr_selection(features_values):
             
             html.P("Använd denna graf för att visa förhållandet och korrelationen mellan prisindexet för den valda råvaran och arbetslösheten eller månadsförändringen. I teorin korrelerar en bra prediktiv funktion starkt med den förutsägbara variabeln.",
                    style = p_style),
+            html.P("(Fortsätter efter diagrammet)",style={
+                        'font-style':'italic',
+                        'font-size':p_font_size,
+                       'text-align':'center'}
+                ),
         html.H3('Välj en vara', style = h3_style),
         dcc.Dropdown(id = 'corr_feature_sv',
                         multi = True,
@@ -4138,6 +4151,11 @@ def sv_update_feature_corr_selection(features_values):
                 html.Br(),
                 html.P("Använd denna graf för att se relationerna och korrelationerna mellan varor. Om korrelationen mellan två råvaror är stark kan prognosen förbättras genom att ta bort den andra från prognosfunktionerna.",
                        style = p_style),
+                html.P("(Fortsätter efter diagrammet)",style={
+                            'font-style':'italic',
+                            'font-size':p_font_size,
+                           'text-align':'center'}
+                    ),
         
         dbc.Row(justify = 'center',children=[
             dbc.Col([

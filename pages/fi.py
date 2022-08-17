@@ -1270,6 +1270,8 @@ def test(model, features, test_size, explainer, use_pca = False, n_components=.9
                                                 
 
 def predict(model, features, feature_changes, length, use_pca = False, n_components=.99):
+      
+  
   
   df = data.copy()
   df = df.iloc[1:,:]
@@ -1420,7 +1422,7 @@ def layout():
     
     return html.Div([dbc.Container(fluid=True, className = 'dbc', children=[
         
-   
+
         
         html.Br(),        
         dbc.Row(
@@ -1514,6 +1516,11 @@ def layout():
                                         style = p_style),
                                   html.P('Inflaatiosta löytyy myös hopeareunus, joka on työttömyyden lasku lyhyellä aikavälillä. Tämä ns. Phillipsin käyrä on samannimisen taloustieteilijän Alban William Phillipsin 1950 -luvulla tekemä empiirinen havainto, jossa inflaation ja työttömyyden välillä vallitsee ristiriita lyhyellä ajalla. Tämä kyseinen idea on esitetty alla olevassa kuvaajassa, jossa on kuvattu inflaatio ja saman ajankohdan työttömyysaste Suomessa. Laskeva logaritminen trendiviiva vastaa Phillipsin havaintoa.',
                                         style = p_style),
+                                  html.P("(Jatkuu kuvaajan jälkeen)",style={
+                                              'font-style':'italic',
+                                              'font-size':p_font_size,
+                                             'text-align':'center'}
+                                      ),
                                 
                                   html.H3('Phillipsin käyrä Suomen taloudessa kuukausittain', 
                                           style=h3_style),
@@ -2994,6 +3001,11 @@ def update_test_results(n_clicks,
                              
                              html.P('Alla olevassa kuvaajassa nähdään kuinka hyvin ennustemalli olisi ennustanut työttömyysasteen ajalle {} - {}.'.format(test_result.index.strftime('%B %Y').values[0],test_result.index.strftime('%B %Y').values[-1]),
                                     style = p_style),
+                             html.P("(Jatkuu kuvaajan jälkeen)",style={
+                                         'font-style':'italic',
+                                         'font-size':p_font_size,
+                                        'text-align':'center'}
+                                 ),
                               html.Div([html.Br(),dbc.RadioItems(id = 'test_chart_type', 
                                           options = [{'label':'pylväät','value':'bars'},
                                                     {'label':'viivat','value':'lines'},
@@ -4155,6 +4167,11 @@ def update_corr_selection(features_values):
             
             html.P('Tällä kuvaajalla voit tarkastella valitun hyödykkeen hintaindeksin ja työttömyysasteen tai kuukausimuutoksen välistä suhdetta ja korrelaatiota. Teoriassa hyvä ennustepiirre korreloi vahvasti ennustettavan muuttujan kanssa.',
                    style = p_style),
+            html.P("(Jatkuu kuvaajan jälkeen)",style={
+                        'font-style':'italic',
+                        'font-size':p_font_size,
+                       'text-align':'center'}
+                ),
         html.H3('Valitse hyödyke', style = h3_style),
         dcc.Dropdown(id = 'corr_feature',
                         multi = True,
@@ -4188,6 +4205,11 @@ def update_feature_corr_selection(features_values):
                 html.Br(),
                 html.P('Tällä kuvaajalla voit tarkastella hyödykkeiden keskinäisiä suhteita ja korrelaatioita. Mikäli korrelaatio kahden hyödykkeen välillä on vahva, voi ennuste parantua toisen poistamalla ennustepiirteistä.',
                        style = p_style),
+                html.P("(Jatkuu kuvaajan jälkeen)",style={
+                            'font-style':'italic',
+                            'font-size':p_font_size,
+                           'text-align':'center'}
+                    ),
         
         dbc.Row(justify = 'center',children=[
             dbc.Col([
