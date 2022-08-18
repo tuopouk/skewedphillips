@@ -35,6 +35,7 @@ import random
 import dash_bootstrap_components as dbc
 from datetime import datetime
 import locale
+from dash_iconify import DashIconify
 
 
 np.seterr(invalid='ignore')
@@ -210,7 +211,21 @@ h1_style = {
            'margin-bottom': '50px'}
 
 
-
+footer = dbc.Card([
+        html.Br(),
+        
+        dbc.Row([
+            
+            dbc.Col(dbc.NavLink(DashIconify(icon="logos:github"), href="https://github.com/tuopouk/skewedphillips",external_link=True, target='_blank',className="btn btn-link btn-floating btn-lg text-dark m-1"),className="mb-4" ,xl=1,lg=1,md=4,sm=4,xs=4),
+            dbc.Col(dbc.NavLink(DashIconify(icon="logos:twitter"), href="https://twitter.com/TuomasPoukkula",external_link=True, target='_blank',className="btn btn-link btn-floating btn-lg text-dark m-1"),className="mb-4",xl=1,lg=1,md=4,sm=4,xs=4   ),
+            dbc.Col(dbc.NavLink(DashIconify(icon="logos:linkedin"), href="https://www.linkedin.com/in/tuomaspoukkula/",external_link=True, target='_blank',className="btn btn-link btn-floating btn-lg text-dark m-1"),className="mb-4",xl=1,lg=1,md=4,sm=4,xs=4  )
+            
+            
+            
+            ],className ="d-flex justify-content-center align-items-center", justify='center',align='center')
+    
+    
+    ],className ='card text-white bg-secondary mb-3')
 
 def set_color(x,y):
     
@@ -1823,7 +1838,8 @@ def layout():
                                       
                                       ),
                                   html.Br()
-                                  ])
+                                  ]),
+                                footer
                  
                         
                         
@@ -2000,7 +2016,9 @@ def layout():
                 dbc.Row(id = 'adjustments_div',
                         justify = 'left', 
                      
-                        )
+                        ),
+                html.Br(),
+                footer
             ]
             ),
 
@@ -2206,7 +2224,9 @@ def layout():
                          ],
                          justify='center', 
                          # style = {'margin' : '10px 10px 10px 10px'}
-                         )
+                         ),
+                     html.Br(),
+                     footer
                 
                      ]
                 ),
@@ -2323,6 +2343,7 @@ def layout():
                               # style = {'margin' : '10px 10px 10px 10px'}
                             ),
                         html.Br(),
+                        footer
                         
                         
                         ]
@@ -2423,6 +2444,8 @@ def layout():
                             ], justify = 'center', align='center', 
                             
                             ),
+                        html.Br(),
+                        footer
                  
                         
                         
@@ -2510,7 +2533,9 @@ def layout():
                                             xs = 12, sm = 12, md = 12, lg = 8, xl = 8)
                                     ], justify = 'center', 
                              # style = {'margin' : '10px 10px 10px 10px'}
-                                    )
+                                    ),
+                        html.Br(),
+                        footer
                                        
                             
                             
@@ -2525,8 +2550,8 @@ def layout():
 
         ]
             
-    ),
-
+    )
+       
     
    ]
   )])
