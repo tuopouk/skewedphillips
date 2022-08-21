@@ -3317,8 +3317,10 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                             "Ne kuvaavat suuntaa ja voimakkuutta, joka piirteillä oli valitun kuukauden ennusteeseen. "
                             "Vihreällä värillä on korostettu työttömyyden kuukausimuutosta laskevat tekijät ja punaisella sitä nostavat piirteet. "
                             "Mustalla on merkitty triviaalit piirteet eli kuluva kuukausi ja edellisen kuukauden työttömyysaste. "
-                            "Pystyakselilla on esitetty piirteiden nimet ja suluissa niiden arvo valittuna ajankohtana.",
+                            "Pystyakselilla on esitetty piirteiden nimet sekä suluissa niiden arvo valittuna ajankohtana ja muutoksen suunta edelliseen kuukauteen nähden kuvaavalla ikonilla.",
                             style =p_style),
+
+                     
                      html.Br(),
                         html.H3('Valitse kuukausi', style =h3_style),
                                         dcc.Dropdown(id = 'local_shap_month_selection',
@@ -3330,7 +3332,8 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                                         
                                         html.Div(dcc.Loading(id = 'local_shap_graph_div',
                                                               type = random.choice(spinners))),
-                                    html.Br()]]
+                                    html.Br()
+                                    ]]
 
     else:
         return [html.Div(),html.Div(),html.Div()]
@@ -3419,7 +3422,7 @@ def update_shap_graph(cut_off, only_commodities, shap):
                       hovertemplate = '<b>%{y}</b>: %{x}',
                           textfont = dict(
                                family='Cadiz Semibold', 
-                              size = 20))],
+                              size = 16))],
          layout=go.Layout(title = dict(text = 'Piirteiden globaalit merkitykset<br>Keskimääräiset |SHAP - arvot|',
                                                                      x=.5,
                                                                      font=dict(
@@ -3459,7 +3462,7 @@ def update_shap_graph(cut_off, only_commodities, shap):
                                                                      automargin=True,
                                                                      tickfont = dict(
                                                                          family = 'Cadiz Semibold', 
-                                                                          size = 16
+                                                                          size = 14
                                                                          )),
                                                         yaxis = dict(title=dict(text = 'Ennustepiirre',
                                                                                font=dict(
@@ -3471,7 +3474,7 @@ def update_shap_graph(cut_off, only_commodities, shap):
                                                                     automargin=True,
                                                                     tickfont = dict(
                                                                         family = 'Cadiz Semibold', 
-                                                                         size = 16
+                                                                         size = 14
                                                                         ))
                                                         )))
     
@@ -3522,7 +3525,23 @@ def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
     feature_values[prev_str] = data.loc[date,'prev']
     feature_values['Kuluva kuukausi'] = data.loc[date,'month']
     
-          
+    feature_values_1 = {f:data.loc[date-pd.DateOffset(months=1),f] for f in data.columns if f not in ['Työttömyysaste', 'change','prev','month','Inflaatio']}
+    feature_values_1[prev_str] = data.loc[date-pd.DateOffset(months=1),'prev']
+    feature_values_1['Kuluva kuukausi'] = data.loc[date-pd.DateOffset(months=1),'month']
+    
+    differences = {f:feature_values[f]-feature_values_1[f] for f in feature_values.keys()}
+    changes={}
+    
+    # How the unemployment rate changed last month?
+    changes[prev_str] = data.loc[date-pd.DateOffset(months=1),'change']
+    
+    for d in differences.keys():
+        if differences[d] >0:
+            changes[d]='🔺'
+        elif differences[d] <0:
+            changes[d] = '🔽'
+        else:
+            changes[d] = '⇳'
     
     if only_commodities:
         dff = dff.loc[[i for i in dff.index if i not in ['Kuluva kuukausi', prev_str]]]
@@ -3549,10 +3568,11 @@ def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
    
     # dff = dff.sort_values()
 
+
     
     return html.Div([dcc.Graph(id = 'local_shap_graph',
                      config = config_plots,
-                         figure = go.Figure(data=[go.Bar(y =['{} ({})'.format(i, feature_values[i]) if i in feature_values.keys() else i for i in dff.index], 
+                         figure = go.Figure(data=[go.Bar(y =['{} ({} {})'.format(i, feature_values[i],changes[i]) if i in feature_values.keys() else i for i in dff.index], 
                       x = dff.values,
                       orientation='h',
                       name = '',
@@ -3562,7 +3582,7 @@ def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
                       hovertemplate = '<b>%{y}</b>: %{x}',
                           textfont = dict(
                                family='Cadiz Semibold', 
-                              size = 20))],
+                              size = 16))],
          layout=go.Layout(title = dict(text = 'Lokaalit piirteiden tärkeydet<br>SHAP arvot: '+date_str,
                                                                      x=.5,
                                                                      font=dict(
@@ -3596,7 +3616,7 @@ def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
                                                         height=height,#graph_height+200,
                                                         xaxis = dict(title=dict(text = 'SHAP - arvo',
                                                                                 font=dict(
-                                                                                    size=18, 
+                                                                                    size=14, 
                                                                                     family = 'Cadiz Semibold'
                                                                                     )),
                                                                      automargin=True,
@@ -3606,15 +3626,15 @@ def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
                                                                          family = 'Cadiz Semibold', 
                                                                           size = 16
                                                                          )),
-                                                        yaxis = dict(title=dict(text = 'Ennustepiirre',
+                                                        yaxis = dict(title=dict(text = 'Ennustepiirre: 🔺 = arvo kasvoi, 🔽 = arvo laski, ⇳ = arvo pysyi samana edelliseen kuukauteen nähden',
                                                                                font=dict(
-                                                                                    size=18, 
+                                                                                    size=16, 
                                                                                    family = 'Cadiz Semibold'
                                                                                    )),
                                                                     automargin=True,
                                                                     tickfont = dict(
                                                                         family = 'Cadiz Semibold', 
-                                                                         size = 16
+                                                                         size = 14
                                                                         ))
                                                         ))),
                      html.P('Ennuste ≈ Edeltävä ennustettu työttömyysaste + [ {} + SUM( SHAP-arvot ) ] / 100'.format(round(100*base_value,2)))

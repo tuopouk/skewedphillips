@@ -3267,7 +3267,7 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                             "They represent the direction and intensity that characterised the forecast for the selected month. "
                             "Green highlights the factors that reduce the monthly change in unemployment and red highlights the features that increase it. "
                             "Black color indicates the trivial features which are the current month and the unemployment rate of the previous month. "
-                            "The vertical axis shows the names of the features and their values of the corresponding time in brackets.",
+                            "The vertical axis shows the names of the features as well as their values of the corresponding time and the direction of change compared to the previous month with an icon.",
                             style =p_style),
                       html.Br(),
                         html.H3('Select a month', style =h3_style),
@@ -3327,6 +3327,24 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     feature_values = {f:data_en.loc[date,f] for f in data_en.columns if f not in ['Työttömyysaste', 'change','prev','month','Inflaatio']}
     feature_values[prev_str] = data_en.loc[date,'prev']
     feature_values['Current Month'] = data_en.loc[date,'month']
+    
+    feature_values_1 = {f:data_en.loc[date-pd.DateOffset(months=1),f] for f in data_en.columns if f not in ['Työttömyysaste', 'change','prev','month','Inflaatio']}
+    feature_values_1[prev_str] = data_en.loc[date-pd.DateOffset(months=1),'prev']
+    feature_values_1['Current Month'] = data_en.loc[date-pd.DateOffset(months=1),'month']
+    
+    differences = {f:feature_values[f]-feature_values_1[f] for f in feature_values.keys()}
+    changes={}
+    
+    # How the unemployment rate changed last month?
+    changes[prev_str] = data_en.loc[date-pd.DateOffset(months=1),'change']
+    
+    for d in differences.keys():
+        if differences[d] >0:
+            changes[d]='🔺'
+        elif differences[d] <0:
+            changes[d] = '🔽'
+        else:
+            changes[d] = '⇳'
           
     
     if only_commodities:
@@ -3358,7 +3376,7 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     
     return html.Div([dcc.Graph(id = 'local_shap_graph_en',
                      config = config_plots_en,
-                         figure = go.Figure(data=[go.Bar(y =['{} ({})'.format(i, feature_values[i]) if i in feature_values.keys() else i for i in dff.index], 
+                         figure = go.Figure(data=[go.Bar(y =['{} ({} {})'.format(i, feature_values[i],changes[i]) if i in feature_values.keys() else i for i in dff.index], 
                       x = dff.values,
                       orientation='h',
                       name = '',
@@ -3403,7 +3421,7 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                                                         height=height,#graph_height+200,
                                                         xaxis = dict(title=dict(text = 'SHAP value',
                                                                                 font=dict(
-                                                                                    size=18, 
+                                                                                    size=16, 
                                                                                     family = 'Cadiz Semibold'
                                                                                     )),
                                                                      automargin=True,
@@ -3411,17 +3429,17 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                                                                       # categoryorder='total descending',
                                                                      tickfont = dict(
                                                                          family = 'Cadiz Semibold', 
-                                                                          size = 16
+                                                                          size = 14
                                                                          )),
-                                                        yaxis = dict(title=dict(text = 'Feature',
+                                                        yaxis = dict(title=dict(text = 'Feature: : 🔺 = increase, 🔽 = decrease, ⇳ = same as previous month',
                                                                                font=dict(
-                                                                                    size=18, 
+                                                                                    size=16, 
                                                                                    family = 'Cadiz Semibold'
                                                                                    )),
                                                                     automargin=True,
                                                                     tickfont = dict(
                                                                         family = 'Cadiz Semibold', 
-                                                                         size = 16
+                                                                         size = 14
                                                                         ))
                                                         ))),
                      html.P('Forecast ≈ Previous predicted unemployment rate + [ {} + SUM( SHAP values ) ] / 100'.format(round(100*base_value,2)))
