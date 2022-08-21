@@ -3387,7 +3387,7 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                       hovertemplate = '<b>%{y}</b>: %{x}',
                           textfont = dict(
                                family='Cadiz Semibold', 
-                              size = 20))],
+                              size = 16))],
          layout=go.Layout(title = dict(text = 'Local Feature Importances<br>SHAP values: '+date_str,
                                                                      x=.5,
                                                                      font=dict(
@@ -3431,7 +3431,7 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                                                                          family = 'Cadiz Semibold', 
                                                                           size = 14
                                                                          )),
-                                                        yaxis = dict(title=dict(text = 'Feature: : 🔺 = increase, 🔽 = decrease, ⇳ = same as previous month',
+                                                        yaxis = dict(title=dict(text = 'Feature: 🔺 = increase, 🔽 = decrease, ⇳ = same as previous month',
                                                                                font=dict(
                                                                                     size=16, 
                                                                                    family = 'Cadiz Semibold'

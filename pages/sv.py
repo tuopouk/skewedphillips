@@ -3383,7 +3383,7 @@ def sv_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                       hovertemplate = '<b>%{y}</b>: %{x}',
                           textfont = dict(
                                family='Cadiz Semibold', 
-                              size = 20))],
+                              size = 16))],
          layout=go.Layout(title = dict(text = 'Lokala funktionsbetydelser<br>SHAP värden: '+date_str,
                                                                      x=.5,
                                                                      font=dict(
