@@ -1448,7 +1448,7 @@ def layout():
                 dbc.Col([
                     
                     html.Br(),  
-                    html.Div('Phillipsin vinouma',
+                    html.H1('Phillipsin vinouma',
                              style=h1_style
                             ),
                   
