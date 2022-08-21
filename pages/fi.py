@@ -207,8 +207,9 @@ h2_style = {
 h1_style = {
     # #'font-family':'Messina Modern Semibold',
             'font-size':'80px',
-           'text-align':'center',
-           'margin-bottom': '50px'}
+            'text-align':'center',
+            'margin-bottom': '50px'}
+# h1_style = "display-1 text-center fw-bold mb-5 mt-3"
 
 
 footer = dbc.Card([
@@ -1447,7 +1448,7 @@ def layout():
                 dbc.Col([
                     
                     html.Br(),  
-                    html.H1('Phillipsin vinouma',
+                    html.Div('Phillipsin vinouma',
                              style=h1_style
                             ),
                   
@@ -4190,7 +4191,8 @@ def update_corr_selection(features_values):
             html.H3('Tarkastele valitun hyödykkeen hintaindeksin suhdetta työttömyysasteeseen',
                     style=h3_style),
             
-            html.P('Tällä kuvaajalla voit tarkastella valitun hyödykkeen hintaindeksin ja työttömyysasteen tai kuukausimuutoksen välistä suhdetta ja korrelaatiota. Teoriassa hyvä ennustepiirre korreloi vahvasti ennustettavan muuttujan kanssa.',
+            html.P('Tällä kuvaajalla voit tarkastella valitun hyödykkeen hintaindeksin ja työttömyysasteen tai kuukausimuutoksen välistä suhdetta ja korrelaatiota. Teoriassa hyvä ennustepiirre korreloi vahvasti ennustettavan muuttujan kanssa. '
+                   'Visualisoinnin parantamiseksi, trendiviiva näytetään kuvaajassa ainoastaan kun yksi vain hyödyke on valittuna.',
                    style = p_style),
             html.P("(Jatkuu kuvaajan jälkeen)",style={
                         'font-style':'italic',
@@ -4405,12 +4407,33 @@ def update_commodity_unemployment_graph(values, label):
                          marker_symbol = random.choice(symbols),
                          hovertemplate = "<b>{}</b>:".format(value)+" %{x}"+"<br><b>"+label_str+"</b>: %{y}"+"<br>(Korrelaatio: {:.2f})".format(sorted(data[[label, value]].corr()[value].values)[0])) for value in values]
     
+    if len(values)==1:
+        data_ = data[(data[label].notna())].copy()
+        
+        for value in values:
+        
+            a, b = np.polyfit(np.log(data_[value]), data_[label], 1)
+    
+            y = a * np.log(data_[value].values) +b 
+            
+    
+            df = data_[[value]].copy()
+            df['log_inflation'] = y
+            df = df.sort_values(by = 'log_inflation')
+            traces.append(go.Scatter(x=df[value], 
+                                      y =df['log_inflation'],
+                                      showlegend=True,
+                                      name = 'Logaritminen<br>trendiviiva',
+                                      line = dict(width=5),
+                                      hovertemplate=[]))
+    
+    
     return [dcc.Graph(figure = go.Figure(data = traces,
           layout = go.Layout(title = dict(text = 'Valitut hyödykkeet vs.<br>'+label_str, 
                                           x=.5, 
                                           font=dict(
                                               family='Cadiz Semibold',
-                                               size=20
+                                               size=18
                                               )
                                           ),
                             xaxis= dict(title = dict(text='Hyödykkeiden pisteluku', 

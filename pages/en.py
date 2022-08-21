@@ -4140,7 +4140,8 @@ def en_update_corr_selection(features_values):
             html.H3('View the relationship between the price index of the selected commodity and the unemployment rate',
                     style=h3_style),
             
-            html.P('Use this graph to view the relationship and correlation between the price index of the selected commodity and the unemployment rate or monthly change. In theory, a good predictive feature correlates strongly with the predictable variable.',
+            html.P('Use this graph to view the relationship and correlation between the price index of the selected commodity and the unemployment rate or monthly change. In theory, a good predictive feature correlates strongly with the predictable variable. '
+                   'For better visualisation, the trendline is shown in the graph only when one commodity is selected.',
                    style = p_style),
             html.P("(Continues after the chart)",style={
                         'font-style':'italic',
@@ -4351,6 +4352,26 @@ def en_update_commodity_unemployment_graph(values, label):
                          marker = dict(size=10),
                          marker_symbol = random.choice(symbols),
                          hovertemplate = "<b>{}</b>:".format(value)+" %{x}"+"<br><b>"+label_str+"</b>: %{y}"+"<br>(Correlation: {:.2f})".format(sorted(data_en[[label, value]].corr()[value].values)[0])) for value in values]
+    
+    if len(values)==1:
+        data_ = data_en[(data_en[label].notna())].copy()
+        
+        for value in values:
+        
+            a, b = np.polyfit(np.log(data_[value]), data_[label], 1)
+    
+            y = a * np.log(data_[value].values) +b 
+            
+    
+            df = data_[[value]].copy()
+            df['log_inflation'] = y
+            df = df.sort_values(by = 'log_inflation')
+            traces.append(go.Scatter(x=df[value], 
+                                      y =df['log_inflation'],
+                                      showlegend=True,
+                                      name = 'Logarithmic<br>trendline',
+                                      line = dict(width=5),
+                                      hovertemplate=[]))
     
     return [dcc.Graph(figure = go.Figure(data = traces,
           layout = go.Layout(title = dict(text = 'Selected commodities vs.<br>'+label_str, 
