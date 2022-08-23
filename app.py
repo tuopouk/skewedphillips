@@ -6,6 +6,8 @@ import os
 from dash_bootstrap_templates import ThemeChangerAIO
 
 
+
+
 dbc_css = ("https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates@V1.0.2/dbc.min.css")
 
 external_stylesheets = [
@@ -73,7 +75,7 @@ app.index_string = '''<!DOCTYPE html>
 
 app.title = 'Skewed Phillips'
 
-p_font_size = 22
+p_font_size = "1.3rem"
 p_style = {
         # #'font-family':'Messina Modern Book',
             'font-size':p_font_size,
@@ -138,7 +140,7 @@ navbar = dbc.Navbar(
         dbc.Col([
             dbc.NavItem(quick_help_button)
             ], align='center'),#xl = 4, lg = 4, md = 6, sm = 6),
- 
+
         
         ], align='center',
         className = "d-flex justify-content-start"
@@ -194,6 +196,7 @@ navbar = dbc.Navbar(
         
 
 
+
 app.layout = dbc.Container(
     [dcc.Location(id='location'),
      navbar,
@@ -201,8 +204,9 @@ app.layout = dbc.Container(
      html.Br(),
      html.Br(),
      html.Br(),
-     html.Br(),
-     dash.page_container],
+     html.Br(),     
+     dash.page_container
+     ],
     fluid=True,
     className='dbc'
 
@@ -270,7 +274,7 @@ def update_quick_help_offcanvas(pathname):
                             # #'font-family':'Cadiz Semibold',
                                   'text-align':'left',
                                   
-                                  'font-size':22,
+                                  'font-size':p_font_size,
                                   'margin-bottom':'30px'
                                   }
                         ),
@@ -279,7 +283,7 @@ def update_quick_help_offcanvas(pathname):
                         style = {
                             # #'font-family':'Cadiz Semibold',
                                   'text-align':'left',
-                                  'font-size':20,
+                                  'font-size':"1.1rem",
                                   'margin-bottom':'30px'
                                   }
                         ),
@@ -293,7 +297,7 @@ def update_quick_help_offcanvas(pathname):
                     "Hienosäädä yksittäisten hyödykkeiden muutoksia muokkaamalla laatikoiden arvoja.",
                      style = {
                          # #'font-family':'Cadiz Book',
-                              'font-size':p_font_size-2,
+                              'font-size':"1.1rem",
                                'text-align':'left'}
                 ),
                 html.Br(),
@@ -301,7 +305,7 @@ def update_quick_help_offcanvas(pathname):
                          style = {
                              # #'font-family':'Cadiz Semibold',
                                   'margin-bottom':'30px',
-                                  'font-size':20,
+                                  'font-size':"1.1rem",
                                     'text-align':'left',
                                     
                                     }
@@ -313,7 +317,7 @@ def update_quick_help_offcanvas(pathname):
                     "Voit myös tarkastella indeksien, työttömyysasteen ja inflaation aikasarjoja.",
                      style = {
                          # #'font-family':'Cadiz Book',
-                              'font-size':p_font_size-2,
+                              'font-size':"1.1rem",
                                 'text-align':'left'}
                 ),
                 html.Br(),
@@ -321,7 +325,7 @@ def update_quick_help_offcanvas(pathname):
                          style = {
                              # #'font-family':'Cadiz Semibold',
                                   'margin-bottom':'30px',
-                                  'font-size':20,
+                                  'font-size':"1.1rem",
                                     'text-align':'left'}
                         ),
                 html.P(
@@ -331,7 +335,7 @@ def update_quick_help_offcanvas(pathname):
                     "ja niin tehtäessä valitse säilötyn variaation määrä liutin-valinnalla.",
                      style = {
                          # #'font-family':'Cadiz Book',
-                              'font-size':p_font_size-2,
+                              'font-size':"1.1rem",
                                 'text-align':'left'}
                 ),
                 html.Br(),
@@ -339,7 +343,7 @@ def update_quick_help_offcanvas(pathname):
                          style = {
                              # #'font-family':'Cadiz Semibold',
                                    'text-align':'left',
-                                   'font-size':20,
+                                   'font-size':"1.1rem",
                                    'margin-bottom':'30px'
                                    }
                         ),
@@ -353,7 +357,7 @@ def update_quick_help_offcanvas(pathname):
                     " Voit myös tutkia Shapley-arvojen avulla mitkä piirteet ja hyödykkeet vaikuttivat eniten ennustetulokseen.",
                     style = {
                         # #'font-family':'Cadiz Book',
-                             'font-size':p_font_size-2,
+                             'font-size':"1.1rem",
                               'text-align':'left'}
                 ),
                 html.Br(),
@@ -361,7 +365,7 @@ def update_quick_help_offcanvas(pathname):
                          style = {
                              # #'font-family':'Cadiz Semibold',
                                    'text-align':'left',
-                                   'font-size':20,
+                                   'font-size':"1.1rem",
                                    'margin-bottom':'30px'
                                    
                                    }
@@ -375,7 +379,7 @@ def update_quick_help_offcanvas(pathname):
                     "Voit myös säätää hyödykeindeksien oletettuja kuukausimuutoksia ja kokeilla uudestaan.",
                     style = {
                         # #'font-family':'Cadiz Book',   
-                             'font-size':p_font_size-2,
+                             'font-size':"1.1rem",
                                'text-align':'left'}
                 ),
                 
@@ -390,7 +394,7 @@ def update_quick_help_offcanvas(pathname):
                     # #'font-family':'Cadiz Semibold',
                           'text-align':'left',
                           
-                          'font-size':22,
+                          'font-size':p_font_size,
                           'margin-bottom':'30px'
                           }
                 ),
@@ -399,7 +403,7 @@ def update_quick_help_offcanvas(pathname):
                 style = {
                     # #'font-family':'Cadiz Semibold',
                           'text-align':'left',
-                          'font-size':20,
+                          'font-size':"1.1rem",
                           'margin-bottom':'30px'
                           }
                 ),
@@ -413,7 +417,7 @@ def update_quick_help_offcanvas(pathname):
             "Fine-tune changes in individual commodities by modifying the values in the boxes.",
              style = {
                  # #'font-family':'Cadiz Book',
-                      'font-size':p_font_size-2,
+                      'font-size':"1.1rem",
                        'text-align':'left'}
         ),
         html.Br(),
@@ -421,7 +425,7 @@ def update_quick_help_offcanvas(pathname):
                  style = {
                      # #'font-family':'Cadiz Semibold',
                           'margin-bottom':'30px',
-                          'font-size':20,
+                          'font-size':"1.1rem",
                             'text-align':'left',
                             
                             }
@@ -433,7 +437,7 @@ def update_quick_help_offcanvas(pathname):
             "You can also view time series for indices, unemployment rate, and inflation.",
              style = {
                  # #'font-family':'Cadiz Book',
-                      'font-size':p_font_size-2,
+                      'font-size':"1.1rem",
                         'text-align':'left'}
         ),
         html.Br(),
@@ -441,7 +445,7 @@ def update_quick_help_offcanvas(pathname):
                  style = {
                      # #'font-family':'Cadiz Semibold',
                           'margin-bottom':'30px',
-                          'font-size':20,
+                          'font-size':"1.1rem",
                             'text-align':'left'}
                 ),
         html.P(
@@ -451,7 +455,7 @@ def update_quick_help_offcanvas(pathname):
             "and when doing so, select the amount of explained variance with the slider selection.",
              style = {
                  # #'font-family':'Cadiz Book',
-                      'font-size':p_font_size-2,
+                      'font-size':"1.1rem",
                         'text-align':'left'}
         ),
         html.Br(),
@@ -459,7 +463,7 @@ def update_quick_help_offcanvas(pathname):
                  style = {
                      # #'font-family':'Cadiz Semibold',
                            'text-align':'left',
-                           'font-size':20,
+                           'font-size':"1.1rem",
                            'margin-bottom':'30px'
                            }
                 ),
@@ -473,7 +477,7 @@ def update_quick_help_offcanvas(pathname):
             " You can also use Shapley values to determine which features and commodities contributed most to your forecast result.",
             style = {
                 # #'font-family':'Cadiz Book',
-                     'font-size':p_font_size-2,
+                     'font-size':"1.1rem",
                       'text-align':'left'}
         ),
         html.Br(),
@@ -481,7 +485,7 @@ def update_quick_help_offcanvas(pathname):
                  style = {
                      # #'font-family':'Cadiz Semibold',
                            'text-align':'left',
-                           'font-size':20,
+                           'font-size':"1.1rem",
                            'margin-bottom':'30px'
                            
                            }
@@ -495,7 +499,7 @@ def update_quick_help_offcanvas(pathname):
             "You can also adjust expected monthly changes in commodity indices and try again.",
             style = {
                 # #'font-family':'Cadiz Book',   
-                     'font-size':p_font_size-2,
+                     'font-size':"1.1rem",
                        'text-align':'left'}
         ),
         
@@ -510,7 +514,7 @@ def update_quick_help_offcanvas(pathname):
                     # #'font-family':'Cadiz Semibold',
                           'text-align':'left',
                           
-                          'font-size':22,
+                          'font-size':p_font_size,
                           'margin-bottom':'30px'
                           }
                 ),
@@ -519,7 +523,7 @@ def update_quick_help_offcanvas(pathname):
                 style = {
                     # #'font-family':'Cadiz Semibold',
                           'text-align':'left',
-                          'font-size':20,
+                          'font-size':"1.1rem",
                           'margin-bottom':'30px'
                           }
                 ),
@@ -533,7 +537,7 @@ def update_quick_help_offcanvas(pathname):
               "Finjustera förändringar i enskilda varor genom att ändra värdena i rutorna.",
              style = {
                  # #'font-family':'Cadiz Book',
-                      'font-size':p_font_size-2,
+                      'font-size':"1.1rem",
                        'text-align':'left'}
         ),
         html.Br(),
@@ -541,7 +545,7 @@ def update_quick_help_offcanvas(pathname):
                  style = {
                      # #'font-family':'Cadiz Semibold',
                           'margin-bottom':'30px',
-                          'font-size':20,
+                          'font-size':"1.1rem",
                             'text-align':'left',
                             
                             }
@@ -553,7 +557,7 @@ def update_quick_help_offcanvas(pathname):
           "Du kan också se tidsserier för index, arbetslöshet och inflation.",
              style = {
                  # #'font-family':'Cadiz Book',
-                      'font-size':p_font_size-2,
+                      'font-size':"1.1rem",
                         'text-align':'left'}
         ),
         html.Br(),
@@ -561,7 +565,7 @@ def update_quick_help_offcanvas(pathname):
                  style = {
                      # #'font-family':'Cadiz Semibold',
                           'margin-bottom':'30px',
-                          'font-size':20,
+                          'font-size':"1.1rem",
                             'text-align':'left'}
                 ),
         html.P(
@@ -571,7 +575,7 @@ def update_quick_help_offcanvas(pathname):
               "och när du gör det väljer du mängden förklarad varians med skjutreglagets val.",
              style = {
                  # #'font-family':'Cadiz Book',
-                      'font-size':p_font_size-2,
+                      'font-size':"1.1rem",
                         'text-align':'left'}
         ),
         html.Br(),
@@ -579,7 +583,7 @@ def update_quick_help_offcanvas(pathname):
                  style = {
                      # #'font-family':'Cadiz Semibold',
                            'text-align':'left',
-                           'font-size':20,
+                           'font-size':"1.1rem",
                            'margin-bottom':'30px'
                            }
                 ),
@@ -593,7 +597,7 @@ def update_quick_help_offcanvas(pathname):
               "Du kan också använda Shapley-värden för att avgöra vilka funktioner och råvaror som bidrog mest till ditt prognosresultat.",
             style = {
                 # #'font-family':'Cadiz Book',
-                     'font-size':p_font_size-2,
+                     'font-size':"1.1rem",
                       'text-align':'left'}
         ),
         html.Br(),
@@ -601,7 +605,7 @@ def update_quick_help_offcanvas(pathname):
                  style = {
                      # #'font-family':'Cadiz Semibold',
                            'text-align':'left',
-                           'font-size':20,
+                           'font-size':"1.1rem",
                            'margin-bottom':'30px'
                            
                            }
@@ -615,7 +619,7 @@ def update_quick_help_offcanvas(pathname):
           "Du kan också justera förväntade månatliga förändringar i råvaruindex och försöka igen.",
             style = {
                 # #'font-family':'Cadiz Book',   
-                     'font-size':p_font_size-2,
+                     'font-size':"1.1rem",
                        'text-align':'left'}
         ),
         
@@ -630,7 +634,7 @@ def update_quick_help_offcanvas(pathname):
                             # #'font-family':'Cadiz Semibold',
                                   'text-align':'left',
                                   
-                                  'font-size':22,
+                                  'font-size':p_font_size,
                                   'margin-bottom':'30px'
                                   }
                         ),
@@ -639,7 +643,7 @@ def update_quick_help_offcanvas(pathname):
                         style = {
                             # #'font-family':'Cadiz Semibold',
                                   'text-align':'left',
-                                  'font-size':20,
+                                  'font-size':"1.1rem",
                                   'margin-bottom':'30px'
                                   }
                         ),
@@ -653,7 +657,7 @@ def update_quick_help_offcanvas(pathname):
                     "Hienosäädä yksittäisten hyödykkeiden muutoksia muokkaamalla laatikoiden arvoja.",
                      style = {
                          # #'font-family':'Cadiz Book',
-                              'font-size':p_font_size-2,
+                              'font-size':"1.1rem",
                                'text-align':'left'}
                 ),
                 html.Br(),
@@ -661,7 +665,7 @@ def update_quick_help_offcanvas(pathname):
                          style = {
                              # #'font-family':'Cadiz Semibold',
                                   'margin-bottom':'30px',
-                                  'font-size':20,
+                                  'font-size':"1.1rem",
                                     'text-align':'left',
                                     
                                     }
@@ -673,7 +677,7 @@ def update_quick_help_offcanvas(pathname):
                     "Voit myös tarkastella indeksien, työttömyysasteen ja inflaation aikasarjoja.",
                      style = {
                          # #'font-family':'Cadiz Book',
-                              'font-size':p_font_size-2,
+                              'font-size':"1.1rem",
                                 'text-align':'left'}
                 ),
                 html.Br(),
@@ -681,7 +685,7 @@ def update_quick_help_offcanvas(pathname):
                          style = {
                              # #'font-family':'Cadiz Semibold',
                                   'margin-bottom':'30px',
-                                  'font-size':20,
+                                  'font-size':"1.1rem",
                                     'text-align':'left'}
                         ),
                 html.P(
@@ -691,7 +695,7 @@ def update_quick_help_offcanvas(pathname):
                     "ja niin tehtäessä valitse säilötyn variaation määrä liutin-valinnalla.",
                      style = {
                          # #'font-family':'Cadiz Book',
-                              'font-size':p_font_size-2,
+                              'font-size':"1.1rem",
                                 'text-align':'left'}
                 ),
                 html.Br(),
@@ -699,7 +703,7 @@ def update_quick_help_offcanvas(pathname):
                          style = {
                              # #'font-family':'Cadiz Semibold',
                                    'text-align':'left',
-                                   'font-size':20,
+                                   'font-size':"1.1rem",
                                    'margin-bottom':'30px'
                                    }
                         ),
@@ -713,7 +717,7 @@ def update_quick_help_offcanvas(pathname):
                     " Voit myös tutkia Shapley-arvojen avulla mitkä piirteet ja hyödykkeet vaikuttivat eniten ennustetulokseen.",
                     style = {
                         # #'font-family':'Cadiz Book',
-                             'font-size':p_font_size-2,
+                             'font-size':"1.1rem",
                               'text-align':'left'}
                 ),
                 html.Br(),
@@ -721,7 +725,7 @@ def update_quick_help_offcanvas(pathname):
                          style = {
                              # #'font-family':'Cadiz Semibold',
                                    'text-align':'left',
-                                   'font-size':20,
+                                   'font-size':"1.1rem",
                                    'margin-bottom':'30px'
                                    
                                    }
@@ -735,7 +739,7 @@ def update_quick_help_offcanvas(pathname):
                     "Voit myös säätää hyödykeindeksien oletettuja kuukausimuutoksia ja kokeilla uudestaan.",
                     style = {
                         # #'font-family':'Cadiz Book',   
-                             'font-size':p_font_size-2,
+                             'font-size':"1.1rem",
                                'text-align':'left'}
                 ),
                 
@@ -794,6 +798,8 @@ def update_email_topic(label):
         return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skev Phillips",external_link=True, target='_blank')]
     else:
        return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=https://skewedphillips.herokuapp.com/",external_link=True, target='_blank')] 
+
+
 
 if __name__ == "__main__":
     app.run_server(debug=False)
