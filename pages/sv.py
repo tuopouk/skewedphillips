@@ -3261,7 +3261,8 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                         ]),
                     html.Br()
                     ],
-                    [dbc.Card([
+                    [html.Br(),
+                        dbc.Card([
                         dbc.CardBody([
                             html.H3('Egenskapsimporter', className='card-title',
                                     style=h3_style),
@@ -3278,7 +3279,8 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                         ])
                         ],
                 
-                    [dbc.Card([
+                    [html.Br(),
+                        dbc.Card([
                         dbc.CardBody([
                             html.H3('Månatliga egenskapsimporter', className='card-title',
                                     style=h3_style),

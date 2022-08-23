@@ -3266,7 +3266,8 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                         ]),
                     html.Br()
                     ],
-                    [dbc.Card([
+                    [html.Br(),
+                        dbc.Card([
                         dbc.CardBody([
                             html.H3('Feature importances', className='card-title',
                                     style=h3_style),
@@ -3284,7 +3285,8 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                         ])
                     ],
                 
-                    [dbc.Card([
+                    [html.Br(),
+                        dbc.Card([
                         dbc.CardBody([
                             html.H3('Monthly feature importances', className='card-title',
                                     style=h3_style),
