@@ -8,7 +8,9 @@ import dash
 
 dash.register_page(__name__,
                    title = 'Skewed Phillips',
-                   name = 'Skewed Phillips')
+                   name = 'Skewed Phillips',
+                   image='en.png',
+                   description ="Forecasting Finland's Unemployment Rate with Consumer Price Changes")
 import pandas as pd
 import numpy as np
 import requests
@@ -170,39 +172,46 @@ config_plots_en = {'locale':'en',
 
 spinners = ['graph', 'cube', 'circle', 'dot' ,'default']
 
-p_font_size = 22
-graph_height = 750
+p_font_size = "1.3rem"
+graph_height = 650
 
 p_style = {
         # #'font-family':'Messina Modern Book',
             'font-size':p_font_size,
+           'text-align':'break'}
+
+p_center_style = {
+        # #'font-family':'Messina Modern Book',
+            'font-size':p_font_size,
            'text-align':'center'}
+
 
 p_bold_style = {
         # #'font-family':'Cadiz Semibold',
-            'font-size':p_font_size-3,
+            'font-size':"1.1rem",#p_font_size-3,
            'text-align':'left'}
 
 h4_style = {
     # #'font-family':'Messina Modern Semibold',
-            'font-size':'18px',
+            'font-size':"1.45rem",#'18px',
            'text-align':'center',
            'margin-bottom': '20px'}
 h3_style = {
     # #'font-family':'Messina Modern Semibold',
-            'font-size':'34px',
+            'font-size':"2.125rem",#'34px',
            'text-align':'center',
            'margin-bottom': '30px'}
 h2_style = {
     # #'font-family':'Messina Modern Semibold',
-            'font-size':'52px',
+            'font-size':"3.25rem",#'52px',
            'text-align':'center',
            'margin-bottom': '30px'}
 h1_style = {
     # #'font-family':'Messina Modern Semibold',
-            'font-size':'80px',
-           'text-align':'center',
-           'margin-bottom': '50px'}
+            'font-size':"5rem",#'80px',
+            'text-align':'center',
+            'margin-bottom': '50px'}
+# h1_style = "display-1 text-center fw-bold mb-5 mt-3"
 
 footer = dbc.Card([
         html.Br(),
@@ -432,26 +441,26 @@ def en_draw_phillips_curve():
                   ],
             layout = go.Layout(
                                xaxis=dict(showspikes=True,
-                                          title = dict(text='Unemployment rate (%)', font=dict(size=22, 
+                                          title = dict(text='Unemployment rate (%)', font=dict(size=18, 
                                                                                              family = 'Cadiz Semibold'
                                                                                             )), 
                                           tickformat = ' ',
                                           automargin=True,
                                           
                                           tickfont = dict(
-                                                           size=18, 
+                                                           size=16, 
                                                            family = 'Cadiz Semibold'
                                                           )
                                           ), 
                                yaxis=dict(showspikes=True,
-                                          title = dict(text='Inflation (%)', font=dict(size=22, 
+                                          title = dict(text='Inflation (%)', font=dict(size=18, 
                                                                                         family = 'Cadiz Semibold'
                                                                                        )
                                                        ),
                                           tickformat = ' ', 
                                           automargin=True,
                                           tickfont = dict(
-                                               size=18,
+                                               size=16,
                                                family = 'Cadiz Semibold'
                                               )
                                           ),
@@ -465,7 +474,7 @@ def en_draw_phillips_curve():
                                height= graph_height,
                                template='seaborn',  
                                # autosize=True,
-                                hoverlabel = dict(font=dict(size=20,
+                                hoverlabel = dict(font=dict(size=18,
                                                              family='Cadiz Book'
                                                             )),
                                 legend = dict(font=dict(
@@ -482,7 +491,7 @@ def en_draw_phillips_curve():
                                title = dict(text = 'Unemployment rate vs.<br>Inflation<br>{} - {}<br>'.format(df.index.min().strftime('%B %Y'),df.index.max().strftime('%B %Y')),
                                             x=.5,
                                             font=dict(
-                                                size=22,
+                                                size=20,
                                                  family = 'Cadiz Semibold'
                                                 ))
                               )
@@ -630,7 +639,7 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                                hovertemplate = hovertemplate,
                                textfont = dict(
                                     family='Cadiz Semibold', 
-                                   size = 18,color='green'), 
+                                   size = 16,color='green'), 
                                marker = dict(color='#008000',size=12),
                                line = dict(width=5)),
                     
@@ -644,26 +653,26 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                            hovertemplate = hovertemplate,
                            textfont = dict(
                                 family='Cadiz Semibold', 
-                               size = 18)
+                               size = 16)
                            )
                     ],layout=go.Layout(xaxis = dict(title = dict(text='Time',font=dict(size=20, 
                                                                                        family = 'Cadiz Semibold'
                                                                                        )),
                                                     tickfont = dict(
                                                         family = 'Cadiz Semibold', 
-                                                        size = 18),
+                                                        size = 16),
                                                     automargin=True
                                                     ),
                                        yaxis = dict(title = dict(text='Unemployment rate (%)',
                                                                  font=dict(
                                                                       family='Cadiz Semibold',
-                                                                     size=20)),
+                                                                     size=16)),
                                                     tickfont = dict(
                                                         family = 'Cadiz Semibold', 
                                                         size = 18),
                                                     automargin=True
                                                     ),
-                                       height = graph_height,
+                                       height = graph_height+100,
                                        margin=dict(
                                             l=10,
                                            r=10,
@@ -680,7 +689,7 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                                                         x=.47,
                                                         y=1.04
                                                      ),
-                                       hoverlabel = dict(font_size = 20, 
+                                       hoverlabel = dict(font_size = 16, 
                                                          font_family = 'Cadiz Book'
                                                          ),
                                        template = 'seaborn',
@@ -689,7 +698,7 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
-                                                        size=22)
+                                                        size=20)
                                                     )
                                        )
                                                                                        )
@@ -707,7 +716,7 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                                 hovertemplate = hovertemplate,
                                 textfont = dict(
                                      family='Cadiz Semibold', 
-                                    size = 18,color='green'), 
+                                    size = 16,color='green'), 
                                 marker = dict(color='#008000',size=10),
                                 line = dict(width=2)),
                     
@@ -723,24 +732,24 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                             line = dict(width=2),
                             textfont = dict(
                                  family='Cadiz Semibold', 
-                                size = 18,color='red'))
-                    ],layout=go.Layout(xaxis = dict(title = dict(text='Time',font=dict(size=20, 
+                                size = 16,color='red'))
+                    ],layout=go.Layout(xaxis = dict(title = dict(text='Time',font=dict(size=16, 
                                                                                        family = 'Cadiz Semibold'
                                                                                        )),
                                                     tickfont = dict(
                                                         family = 'Cadiz Semibold', 
-                                                        size = 18),
+                                                        size = 16),
                                                     automargin=True,
                                                     ),
                                         yaxis = dict(title = dict(text='Unemployment Rate (%)',font=dict(
                                              family='Cadiz Semibold',
-                                            size=20)),
+                                            size=16)),
                                                     tickfont = dict(
                                                         family = 'Cadiz Semibold',
-                                                        size = 18),
+                                                        size = 16),
                                                     automargin=True
                                                     ),
-                                        height = graph_height,
+                                        height = graph_height+100,
                                         legend = dict(font=dict(size=16,
                                                                  family='Cadiz Book'
                                                                 ),
@@ -757,7 +766,7 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                                              # t=120,
                                              # pad=4
                                         ),
-                                        hoverlabel = dict(font_size = 20, 
+                                        hoverlabel = dict(font_size = 16, 
                                                            font_family = 'Cadiz Book'
                                                           ),
                                         template = 'seaborn',
@@ -765,7 +774,7 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
-                                                        size=22)
+                                                        size=20)
                                                     )
                                         ))
                                                     
@@ -781,7 +790,7 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                            hovertemplate = hovertemplate,
                            textfont = dict(
                                 family='Cadiz Semibold', 
-                               size = 18)
+                               size = 16)
                                     ),
                         
                         go.Bar(x=df.index.strftime('%B %Y'), 
@@ -794,25 +803,25 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                            hovertemplate = hovertemplate,
                            textfont = dict(
                                 family='Cadiz Semibold', 
-                               size = 18)
+                               size = 16)
                                 )
                         ],layout=go.Layout(xaxis = dict(title = dict(text='Time',font=dict(size=20, 
                                                                                            family = 'Cadiz Semibold'
                                                                                            )),
                                                         tickfont = dict(
                                                             family = 'Cadiz Semibold', 
-                                                            size = 18),
+                                                            size = 16),
                                                         automargin=True
                                                         ),
                                             yaxis = dict(title = dict(text='Unemployment Rate (%)',font=dict(
                                                  family='Cadiz Semibold',
-                                                size=20)),
+                                                size=16)),
                                                         tickfont = dict(
                                                          family = 'Cadiz Semibold', 
-                                                        size = 18),
+                                                        size = 16),
                                                         automargin=True
                                                         ),
-                                            height = graph_height,
+                                            height = graph_height+100,
                                             margin=dict(
                                                  l=10,
                                                 r=10,
@@ -829,7 +838,7 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                                                              x=.47,
                                                              y=1.04
                                                           ),
-                                            hoverlabel = dict(font_size = 20,
+                                            hoverlabel = dict(font_size = 16,
                                                               font_family = 'Cadiz Book'
                                                               ),
                                             template = 'seaborn',
@@ -837,7 +846,7 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                                                         x=.5,
                                                         font=dict(
                                                              family='Cadiz Semibold',
-                                                            size=22)
+                                                            size=20)
                                                         )
                                             )
                                                         )                                                   
@@ -874,13 +883,13 @@ def en_plot_forecast_data(df, chart_type):
                                hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
                                marker = dict(color='red'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Time',font=dict(
-                         size=20, 
+                         size=16, 
                         family = 'Cadiz Semibold'
                         )),
                         automargin=True,
                 
                                                     tickfont = dict(family = 'Cadiz Semibold', 
-                                                                     size = 18
+                                                                     size = 16
                                                                     ),
                                                     rangeslider=dict(visible=True),
                                                     rangeselector=dict(
@@ -924,7 +933,7 @@ def en_plot_forecast_data(df, chart_type):
                                             # pad=4
                                        ),
                                       hoverlabel = dict(
-                                            font_size = 20, 
+                                            font_size = 16, 
                                                          font_family = 'Cadiz Book'
                                                          ),
                                        legend = dict(orientation='h',
@@ -939,19 +948,19 @@ def en_plot_forecast_data(df, chart_type):
                                        template = 'seaborn',
                                        yaxis = dict(title=dict(text = 'Unemployment Rate (%)',
                                                      font=dict(
-                                                          size=20, 
+                                                          size=16, 
                                                          family = 'Cadiz Semibold'
                                                          )),
                                                     automargin=True,
                                                      tickfont = dict(
                                                          family = 'Cadiz Book', 
-                                                                      size = 18
+                                                                      size = 16
                                                                      )),
                                        title = dict(text = 'Unemployment Rate and Forecast per Month<br>{} - {}'.format(data_en.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
-                                                               size=20
+                                                               size=16
                                                               )),
     
                                        ))
@@ -975,13 +984,13 @@ def en_plot_forecast_data(df, chart_type):
                                hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
                                marker = dict(color='red'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Time',font=dict(
-                         size=20, 
+                         size=16, 
                         family = 'Cadiz Semibold'
                         )),
                         automargin=True,
                 
                                                     tickfont = dict(family = 'Cadiz Semibold', 
-                                                                     size = 18
+                                                                     size = 16
                                                                     ),
                                                     rangeslider=dict(visible=True),
                                                     rangeselector=dict(
@@ -1025,7 +1034,7 @@ def en_plot_forecast_data(df, chart_type):
                                             # pad=4
                                        ),
                                       hoverlabel = dict(
-                                            font_size = 20, 
+                                            font_size = 16, 
                                                          font_family = 'Cadiz Book'
                                                          ),
                                        legend = dict(orientation='h',
@@ -1040,20 +1049,20 @@ def en_plot_forecast_data(df, chart_type):
                                        template = 'seaborn',
                                        yaxis = dict(title=dict(text = 'Unemployment Rate (%)',
                                                      font=dict(
-                                                          size=20, 
+                                                          size=16, 
                                                          family = 'Cadiz Semibold'
                                                          )),
                                                     rangemode='tozero',
                                                     automargin=True,
                                                      tickfont = dict(
                                                          family = 'Cadiz Book', 
-                                                                      size = 18
+                                                                      size = 16
                                                                      )),
                                        title = dict(text = 'Unemployment Rate and Forecast per Month<br>{} - {}'.format(data_en.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
-                                                               size=20
+                                                               size=16
                                                               )),
     
                                        ))
@@ -1079,12 +1088,12 @@ def en_plot_forecast_data(df, chart_type):
                                marker = dict(color='red'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Time',
                                                                  font=dict(
-                                                                     size=20, 
+                                                                     size=16, 
                                                                      family = 'Cadiz Semibold'
                                                                      )),
                                                                  automargin=True,
                                                     tickfont = dict(family = 'Cadiz Semibold', 
-                                                                    size = 18
+                                                                    size = 16
                                                                     ),
                                                     rangeslider=dict(visible=True),
                                                     rangeselector=dict(
@@ -1129,7 +1138,7 @@ def en_plot_forecast_data(df, chart_type):
                                        ),
                                        template='seaborn',
                                        hoverlabel = dict(
-                                           font_size = 20, 
+                                           font_size = 16, 
                                             font_family = 'Cadiz Book'
                                            ),
                                        legend = dict(orientation='h',
@@ -1143,20 +1152,20 @@ def en_plot_forecast_data(df, chart_type):
                                                    )),
                                        yaxis = dict(title=dict(text = 'Unemployment Rate (%)',
                                                      font=dict(
-                                                          size=20, 
+                                                          size=16, 
                                                          family = 'Cadiz Semibold'
                                                          )),
                                                     automargin=True,
                                                      tickfont = dict(
                                                          family = 'Cadiz Book', 
-                                                                      size = 18
+                                                                      size = 16
                                                                      )
                                                      ),
                                        title = dict(text = 'Unemployment Rate and Forecast per month<br>{} - {}'.format(data_en.index.strftime('%B %Y').values[0],df.index.strftime('%B %Y').values[-1]),
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
-                                                               size=22
+                                                               size=16
                                                               )),
     
                                        )) 
@@ -1483,7 +1492,7 @@ def layout():
                                             'textAlign':'center',
                                             'font-style': 'italic',
                                             #'font-family':'Messina Modern Book', 
-                                              'font-size':p_font_size-4
+                                              'font-size':"0.8rem"
                                             })], href = 'https://www.technologyreview.com/2019/08/21/133411/rodney-brooks/', target="_blank"),
                                   
 
@@ -1536,7 +1545,7 @@ def layout():
                                                 style = {
                                                     'text-align':'center', 
                                                     #'font-family':'Messina Modern Book', 
-                                                      'font-size':p_font_size-2
+                                                      'font-size':"1.1rem"
                                                     }),
                                           html.P('There are several theories explaining the Phillips curve, depending on whether the catalyst for the phenomenon is a change in price level or unemployment. In the face of high unemployment, the law of supply and demand requires lower prices to improve commodity sales. On the other hand, in the short term, as prices rise, output increases as producers increase commodity production to achieve higher margins. This leads to lower unemployment, as increased production leads to new recruitments that can be made to the unemployed population. On the other hand, when unemployment is low, there is labour demand pressure on the market, which increases wages. The rise in wages, on the other hand, leads to an increase in the overall price level, as suppliers of goods can ask for higher prices for their products and services.',
                                                  style = p_style),
@@ -1564,7 +1573,7 @@ def layout():
                                                 style={
                                                     'textAlign':'center',
                                                     #'font-family':'Messina Modern Book', 
-                                                      'font-size':p_font_size-4
+                                                      'font-size':"0.8rem"
                                                     }),
         
                                           html.Br(),
@@ -1572,7 +1581,11 @@ def layout():
                                                  style=p_style),
                                           html.P("It is difficult to convert the Phillips curve into a mathematical equation in which by investing inflation we can calculate the unemployment rate. This gave me the idea that there could be a machine learning method that could learn the prevailing laws between inflation and unemployment. Inflation is the annual change in the consumer price index. The consumer price index consists of several commodities that express the consumption needs of society at that time. Could some of these commodities affect more than others? Would only the basic consumer price index, the unemployment rate of the previous month and some information on seasonal fluctuations in unemployment be sufficient for forecast characteristics? Which commodities should I choose? What algorithm, what hyperparameters? I was toying with the idea that there might be some combination of commodity mix and methodology that can produce at least a satisfactory short-term forecast. That's why I wanted to create an app that anyone, regardless of academic background, could do experiments like this.",
                                                  style=p_style),
-                                          html.P("After several iterations, the result was an application where you can design a basket of goods, choose a machine learning method, test the ability of the combination of these to predict already realized values and finally make predictions. On top of that, I built the possibility to adjust the hyperparameters of machine learning algorithms and utilize principal component analysis to eliminate irrelevant features. The next problem was the difficulty of interpreting the models. There is a commonly known conflict between accuracy and interpretability in machine learning. Simpler models, such as linear regression, are easier to interpret than, for example, random forests, but random forests can produce better predictions. This creates a black box problem that needs to be solved in order to make the method more credible and transparent and thus to be used in general planning and decision-making. I added Shapley values as agnostic functionality to the application. Shapley values are a concept based on game theory that is based on calculating the contributions of players in cooperative games (e.g. the contribution of individual players in a football game to the outcome). In machine learning, a similar model is used to estimate the prediction contribution of forecast traits. A more interesting research problem than predicting unemployment itself turned out to be that which commodities or combinations of commodities succeed in predicting unemployment best!",
+                                          html.P("After several iterations, the result was an application where you can design a basket of goods, choose a machine learning method, test the ability of the combination of these to predict already realized values and finally make predictions. On top of that, I built the possibility to adjust the hyperparameters of machine learning algorithms and utilize principal component analysis to eliminate irrelevant features. ",
+                                                 style = p_style),
+                                          html.P("The next problem was the difficulty of interpreting the models. There is a commonly known conflict between accuracy and interpretability in machine learning. Simpler models, such as linear regression, are easier to interpret than, for example, random forests, but random forests can produce better predictions. This creates a black box problem that needs to be solved in order to make the method more credible and transparent and thus to be used in general planning and decision-making. ",
+                                                 style=p_style),
+                                          html.P("I added Shapley values as agnostic functionality to the application. Shapley values are a concept based on game theory that is based on calculating the contributions of players in cooperative games (e.g. the contribution of individual players in a football game to the outcome). In machine learning, a similar model is used to estimate the prediction contribution of forecast traits. A more interesting research problem than predicting unemployment itself turned out to be that which commodities or combinations of commodities succeed in predicting unemployment best!",
                                                  style =p_style),
                                           html.P("The purpose was to find Phillips' observation using machine learning and perhaps find the formula of the Phillips curve. The benefit of machine learning comes from the fact that it produces its own view of the phenomenon by observing the data describing it. As AI pioneer Rodney Brooks has said, 'The world is the best model of itself, it is always updated, and contains all the necessary details, it just needs to be observed correctly and often enough.'"  ,
                                                  style =p_style),
@@ -1625,7 +1638,7 @@ def layout():
                                                   style=p_style),
                                           html.P("This website uses only crucial necessary cookies and users' personal data is not collected for any purpose.",
                                                   style=p_style),
-                                          html.A([html.P('See a third-party report on GDPR compliance.', style = p_style)],
+                                          html.A([html.P('See a third-party report on GDPR compliance.', style = p_center_style)],
                                                  href = '/assets/report-skewedphillipsherokuappcom-11629005.pdf',
                                                  target = '_blank'),
                                           html.Br(),
@@ -1638,7 +1651,7 @@ def layout():
                                                   style=p_style),
                                        
                                           html.Br(),
-                                          html.Div(style={'text-align':'center'},children = [
+                                          html.Div(children = [
                                               html.H3('References', 
                                                       style = h3_style),
                                               html.P('Here is also a list of data sources and additional reading related to the topics described.',
@@ -1703,14 +1716,14 @@ def layout():
                                           html.H3('Written by', style = h3_style),
                                           
                                           html.Div(style = {'textAlign':'center'},children = [
-                                              html.I('Tuomas Poukkula', style = p_style),
+                                              html.I('Tuomas Poukkula', style = p_center_style),
                                          
                                               html.Br(),
                                               html.P("Data Scientist",
-                                                     style = p_style),
+                                                     style = p_center_style),
                                               html.P("Gofore Ltd",
-                                                     style = p_style),
-                                              html.A([html.P('Contact via e-mail',style = p_style)],
+                                                     style = p_center_style),
+                                              html.A([html.P('Contact via e-mail',style = p_center_style)],
                                                      href = 'mailto:tuomas.poukkula@gofore.com?subject=Phillips: Q&A',
                                                      target='_blank')
                                               ]),
@@ -1829,20 +1842,27 @@ def layout():
         
                 dbc.Row(children = [
                         
-                        html.Br(),
+                        dbc.Row([
+                            dbc.Col([
+                                
+                                html.Br(),
+                                html.P('This section selects the commodities used to predict unemployment.',
+                                        style = p_style),
+                                html.P('You can select items from the menu below, then you can adjust their expected monthly change by entering a number in the boxes below.',
+                                        style = p_style),
+                                html.P('You can also adjust the same monthly change for all assets or take advantage of averages of actual monthly changes.',
+                                        style = p_style),
+                                html.P("You can select or sort the product menu from the drop-down menu above. You can choose either alphabetical order, correlation order (according to Pearson's correlation coefficient) or delineation according to Statistics Finland's commodity hierarchy. The correlation order here refers to the correlation coefficient between the values of the price index of each commodity and the unemployment rates at the same time, calculated using the Pearson method. These can be sorted in descending or ascending order by either the actual value (highest positive - lowest negative) or the absolute value (without +/-).",
+                                        style = p_style),
+
+                                html.Br(),
+                                
+                                ],xs =12, sm=12, md=12, lg=9, xl=9)
+                        ], justify = 'center'),
                     
                         dbc.Col(children=[
                            
                             html.Br(),
-                            html.P('This section selects the commodities used to predict unemployment.',
-                                    style = p_style),
-                            html.P('You can select items from the menu below, then you can adjust their expected monthly change by entering a number in the boxes below.',
-                                    style = p_style),
-                            html.P('You can also adjust the same monthly change for all assets or take advantage of averages of actual monthly changes.',
-                                    style = p_style),
-                            html.P("You can select or sort the product menu from the drop-down menu above. You can choose either alphabetical order, correlation order (according to Pearson's correlation coefficient) or delineation according to Statistics Finland's commodity hierarchy. The correlation order here refers to the correlation coefficient between the values of the price index of each commodity and the unemployment rates at the same time, calculated using the Pearson method. These can be sorted in descending or ascending order by either the actual value (highest positive - lowest negative) or the absolute value (without +/-).",
-                                    style = p_style),
-
                             html.Br(),
                             html.H3('Select features from the dropdown menu',
                                     style=h3_style),
@@ -1852,52 +1872,52 @@ def layout():
                                               children = [
                                                  
                                                   dbc.DropdownMenuItem("Alphabetical order", id = 'alphabet_en',style={
-                                                      'font-size':p_font_size-3, 
+                                                      'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Correlation (descending)", id = 'corr_desc_en',style={
-                                                      'font-size':p_font_size-3, 
+                                                      'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Correlation (ascending)", id = 'corr_asc_en',style={
-                                                      'font-size':p_font_size-3, 
+                                                      'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       })
                                                       ,
                                                   dbc.DropdownMenuItem("Absolute correlation (descending)", id = 'corr_abs_desc_en',style={
-                                                      'font-size':p_font_size-3, 
+                                                      'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Absolute correlation (ascending)", id = 'corr_abs_asc_en',style={
-                                                      'font-size':p_font_size-3, 
+                                                      'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("Main classes", id = 'main_class_en',style={
-                                                      'font-size':p_font_size-3, 
+                                                      'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("2. class", id = 'second_class_en',style={
-                                                      'font-size':p_font_size-3, 
+                                                      'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("3. class", id = 'third_class_en',style={
-                                                      'font-size':p_font_size-3, 
+                                                      'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("4. class", id = 'fourth_class_en',style={
-                                                      'font-size':p_font_size-3, 
+                                                      'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("5. class", id = 'fifth_class_en',style={
-                                                      'font-size':p_font_size-3, 
+                                                      'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       )
@@ -1909,7 +1929,7 @@ def layout():
                                             className="m-1",
                                             size="lg",
                                             style={
-                                                'font-size':p_font_size-3, 
+                                                'font-size':"0.9rem", 
                                                 #'font-family':'Cadiz Book'
                                                 }
                                             ),
@@ -1919,7 +1939,7 @@ def layout():
                                           options = initial_options_en,
                                           multi = True,
                                           value = list(initial_features_en),
-                                          style = {'font-size':p_font_size-3, #'font-family':'Cadiz Book'
+                                          style = {'font-size':"1rem", #'font-family':'Cadiz Book'
                                                    },
                                           placeholder = 'Select Commodities'),
                             html.Br(),
@@ -2012,10 +2032,7 @@ def layout():
                               html.Br()
                               ],xs =12, sm=12, md=12, lg=9, xl=9)
                          ],
-                             justify = 'center', 
-                             style = {'textAlign':'center',
-                                       # 'margin':'10px 10px 10px 10px'
-                                      }
+                             justify = 'center'
                              ),
                     
                      dbc.Row([
@@ -2107,7 +2124,7 @@ def layout():
                                                                                  ),
                                                                                  hoverlabel=dict(font=dict(
                                                                                       family='Cadiz Book',
-                                                                                     size=20)),
+                                                                                     size=18)),
                                                                                  legend = dict(orientation = 'h',
                                                                                                 xanchor='center',
                                                                                                 yanchor='top',
@@ -2222,10 +2239,7 @@ def layout():
                                 html.P('If the edges of the hyperparameter box are red, then the value is not appropriate. Testing and prediction fails if allowed values are applied to hyperparameters. You can check the allowed values in the model documentation.',
                                         style = p_style)
                             ],xs =12, sm=12, md=12, lg=9, xl=9)
-                        ], justify = 'center', 
-                            style = {'textAlign':'center',
-                                      # 'margin':'10px 10px 10px 10px'
-                                     }
+                        ], justify = 'center'
                             ),
                         html.Br(),
                         dbc.Row([
@@ -2237,7 +2251,7 @@ def layout():
                                               value = 'Random Forest',
                                               multi = False,
                                               placeholder = 'Choose an algorithm',
-                                              style = {'font-size':p_font_size-3, #'font-family':'Cadiz Book'
+                                              style = {'font-size':"0.9rem", #'font-family':'Cadiz Book'
                                                        },
                                               options = [{'label': c, 'value': c} for c in MODELS_en.keys()]),
                                 
@@ -2290,7 +2304,7 @@ def layout():
                                   html.Div(id = 'ev_slider_update_en', 
                                           children = [
                                               html.Div([html.P('You selected {} % explained variance.'.format(95),
-                                                                style = p_style)
+                                                                style = p_center_style)
                                                         ], style = {'display':'none'}
                                                       )
                                           ]
@@ -2336,7 +2350,11 @@ def layout():
                                         html.P('After you have completed the test, you can view the next result graph or export the test data from the button below to Excel.',
                                               style=p_style),
                                         html.P("From the graphs below the test results, you can see how the commodities you selected affected the tested forecast.",style=p_style),
-                                        html.Br(),
+                                        html.Br()
+                                        ],xs =12, sm=12, md=12, lg=9, xl=9),
+                                ],justify='center'),
+                        dbc.Row([
+                            dbc.Col([
                                         html.H3('Select test length',style = h3_style),
                                         dcc.Slider(id = 'test_slider_en',
                                                   min = 1,
@@ -2345,20 +2363,20 @@ def layout():
                                                   step = 1,
                                                   tooltip={"placement": "top", "always_visible": True},
                                                  
-                                                  marks = {1: {'label':'a month', 'style':{'font-size':20, 
+                                                  marks = {1: {'label':'a month', 'style':{'font-size':"1.2rem", 
                                                                                             # 'font-family':'Cadiz Semibold'
                                                                                             }},
                                                           # 3:{'label':'3 kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
                                                         
-                                                            6:{'label':'six months', 'style':{'font-size':20, 
+                                                            6:{'label':'six months', 'style':{'font-size':"1.2rem", 
                                                                                                 # 'font-family':'Cadiz Semibold'
                                                                                                 }},
                                                           #  9:{'label':'yhdeksän kuukautta', 'style':{'font-size':20, #'fontFamily':'Cadiz Semibold','color':'white'}},
                                                          
-                                                          12:{'label':'a year', 'style':{'font-size':20, 
+                                                          12:{'label':'a year', 'style':{'font-size':"1.2rem", 
                                                                                         # 'font-family':'Cadiz Semibold'
                                                                                         }},
-                                                          18:{'label':'one and a half years', 'style':{'font-size':20, 
+                                                          18:{'label':'one and a half years', 'style':{'font-size':"1.2rem", 
                                                                                         # 'font-family':'Cadiz Semibold'
                                                                                         }},
                                                           
@@ -2380,10 +2398,7 @@ def layout():
                             
                             
                             ],xs =12, sm=12, md=12, lg=9, xl=9)
-                            ], justify = 'center', 
-                            style = {'textAlign':'center', 
-                                      # 'margin':'10px 10px 10px 10p'
-                                     }
+                            ], justify = 'center', style={'text-align':'center'}
                             ),
                         html.Br(),
                         dbc.Row(children = [
@@ -2440,10 +2455,7 @@ def layout():
                                     ],xs =12, sm=12, md=12, lg=9, xl=9)
                             
                             
-                            ], justify = 'center', 
-                            style = {'textAlign':'center',
-                                      'margin':'10px 10px 10px 10px'
-                                     }),
+                            ], justify = 'center'),
                         html.Br(),
                         dbc.Row(children = [
                                     #dbc.Col(xs =12, sm=12, md=12, lg=3, xl=3, align = 'start'),
@@ -2561,12 +2573,12 @@ def en_add_value_adjustments(slider_value, features, averaging):
         
         row_children =[dbc.Col([html.Br(), 
                                 html.P(feature,style={#'font-family':'Messina Modern Semibold',
-                                            'font-size':22}),
+                                            'font-size':"1.1rem"}),
                                 dcc.Input(id = {'type':'value_adjust_en', 'index':feature}, 
                                                value = round(mean_df.loc[feature],1), 
                                                type = 'number', 
                                                style={#'font-family':'Messina Modern Semibold',
-                                                           'font-size':22},
+                                                           'font-size':"1.1rem"},
                                                step = .1)],xs =12, sm=12, md=4, lg=2, xl=2) for feature in features]
     else:
         
@@ -2574,12 +2586,12 @@ def en_add_value_adjustments(slider_value, features, averaging):
         
         row_children =[dbc.Col([html.Br(), 
                                 html.P(feature,style={#'font-family':'Messina Modern Semibold',
-                                            'font-size':22}),
+                                            'font-size':"1.1rem"}),
                                 dcc.Input(id = {'type':'value_adjust_en', 'index':feature}, 
                                                value = slider_value, 
                                                type = 'number', 
                                                style ={#'font-family':'Messina Modern Semibold',
-                                                           'font-size':22},
+                                                           'font-size':"1.1rem"},
                                                step = .1)],xs =12, sm=12, md=4, lg=2, xl=2) for feature in features]
     return row_children, features_values
 
@@ -2853,7 +2865,7 @@ def en_update_hyperparameter_selections(model_name):
                                                   #label = hyperparameter,
                                                   style = {
                                                       #'font-family':'Cadiz Book',
-                                                      'font-size':p_font_size-3},
+                                                      'font-size':"0.9rem"},
                                                   options = [{'label':c, 'value': c} for c in param_options[hyperparameter] if c not in ['precomputed','poisson']],
                                                   value = value),
                                                  html.Br()],xs =12, sm=12, md=12, lg=2, xl=2)
@@ -3053,7 +3065,7 @@ def en_update_test_results(n_clicks,
         button_children = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Download Test Results'],
                                        id='test_download_button_en',
                                        n_clicks=0,
-                                       style = dict(fontSize=30,
+                                       style = dict(fontSize=25,
                                                     # fontFamily='Cadiz Semibold',
                                                     textAlign='center'),
                                        outline=True,
@@ -3166,7 +3178,7 @@ def en_update_forecast_results(n_clicks,
         forecast_download_button = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Download Forecast Results'],
                                  id='forecast_download_button_en',
                                  n_clicks=0,
-                                 style=dict(fontSize=30,
+                                 style=dict(fontSize=25,
                                             # fontFamily='Cadiz Semibold',
                                             textlign='center'),
                                  outline=True,
@@ -3384,7 +3396,7 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                       # marker_color = ['cyan' if i not in ['Month',prev_str] else 'black' for i in dff.index],
                        marker = dict(color = list(map(en_set_color,dff.index,dff.values))),
                       text = dff.values,
-                      hovertemplate = '<b>%{y}</b>: %{x}',
+                      hovertemplate = ['<b>{}</b><br><b>  SHAP value</b>: {}<br><b>  Value on the current month</b>: {} {}<br><b>  Value on the previous month</b>: {}'.format(i,dff.loc[i], feature_values[i],changes[i],feature_values_1[i]) for i in dff.index],
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 16))],
@@ -3452,7 +3464,7 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     
 )
 def en_update_cut_off_indicator(cut_off):
-    return [html.P('You chose {} features.'.format(cut_off).replace(' 1 features',' one feature'), style = p_style)]
+    return [html.P('You chose {} features.'.format(cut_off).replace(' 1 features',' one feature'), style = p_center_style)]
     
 @callback(
 
@@ -3854,11 +3866,11 @@ def en_add_ev_slider(pca):
 def en_update_ev_indicator(pca, explained_variance):
     
     return {False: [html.Div([html.P('You chose {} % explained variance.'.format(int(100*explained_variance)),
-                                                               style = p_style)
+                                                               style = p_center_style)
                                                        ], style = {'display':'none'}
                                                       )],
             True: [html.Div([html.P('You chose {} % explained variance.'.format(int(100*explained_variance)),
-                                                               style = p_style)
+                                                               style = p_center_style)
                                                        ]
                                                       )]}[pca]
 
@@ -3943,7 +3955,7 @@ def en_add_test_button(features_values):
                            className="me-1",
                            size='lg',
                            color='success',
-                           style = dict(fontSize=30,
+                           style = dict(fontSize=25,
                                         # fontFamily='Cadiz Semibold'
                                         )
                           )
@@ -3955,7 +3967,7 @@ def en_add_test_button(features_values):
 def en_update_test_size_indicator(value):
     
     return [html.Br(),html.P('You selected {} months as test data.'.format(value),
-                             style = p_style)]
+                             style = p_center_style)]
 
 @callback(
     Output('forecast_slider_indicator_en','children'),
@@ -3964,7 +3976,7 @@ def en_update_test_size_indicator(value):
 def en_update_forecast_size_indicator(value):
     
     return [html.Br(),html.P('You selected {} months for forecasting.'.format(value),
-                             style = p_style)]
+                             style = p_center_style)]
 
 
 
@@ -3994,7 +4006,7 @@ def en_update_timeseries_selections(features_values):
                         options = [{'value':feature, 'label':feature} for feature in features],
                         value = [features[0]],
                         style = {
-                            'font-size':p_font_size-3, 
+                            'font-size':"0.9rem", 
                             #'font-family':'Cadiz Book',
                             'color': 'black'},
                         multi = True)
@@ -4042,7 +4054,7 @@ def en_update_time_series(values):
                                                               size=14,
                                                               family='Cadiz Book'
                                                              )),
-                                                         hoverlabel = dict(font=dict(size=20,
+                                                         hoverlabel = dict(font=dict(size=18,
                                                                                       family='Cadiz Book'
                                                                                      )),
                                                          xaxis = dict(title=dict(text = 'Time',
@@ -4102,7 +4114,7 @@ def en_add_predict_button(features_values):
                    className="me-1",
                    size='lg',
                    color='success',
-                   style = dict(fontSize=30,
+                   style = dict(fontSize=25,
                                 # fontFamily='Cadiz Semibold'
                                 )
                    
@@ -4127,13 +4139,13 @@ def en_update_slider_prompt(value, averaging):
     if averaging:
     
         return [html.Br(),html.P('You selected the average of the latest {} months.'.format(value),
-                      style = p_style),
+                      style = p_center_style),
                 html.Br(),
                 html.P('You can still adjust individual values on the input boxes.',
                        style = p_style)]
     else:
         return [html.Br(),html.P('You selected the estimated monthly change to be  {} %.'.format(value),
-                      style = p_style),
+                      style = p_center_style),
                 html.Br(),
                 html.P('You can still adjust individual values on the input boxes.',
                        style = p_style)]
@@ -4172,7 +4184,7 @@ def en_update_corr_selection(features_values):
                         # clearable=False,
                         options = [{'value':feature, 'label':feature} for feature in features],
                         value = [features[0]],
-                        style = {'font-size':p_font_size-3, 
+                        style = {'font-size':"0.9rem", 
                                  #'font-family':'Cadiz Book'
                                  },
                         placeholder = 'Select a commodity')
@@ -4212,7 +4224,7 @@ def en_update_feature_corr_selection(features_values):
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[0],
-                                style = {'font-size':p_font_size-3, 
+                                style = {'font-size':"0.9rem", 
                                          #'font-family':'Cadiz Book'
                                          },
                                 placeholder = 'Select a commodity')
@@ -4226,7 +4238,7 @@ def en_update_feature_corr_selection(features_values):
                                 multi = False,
                                 options = [{'value':feature, 'label':feature} for feature in features],
                                 value = features[-1],
-                                style = {'font-size':p_font_size-3, 
+                                style = {'font-size':"0.9rem", 
                                          #'font-family':'Cadiz Book'
                                          },
                                 placeholder = 'Select another commodity')
@@ -4312,7 +4324,7 @@ def en_update_feature_correlation_plot(value1, value2):
                                 ),
                                           orientation='h'),
                             hoverlabel = dict(
-                                 font_size = 20, 
+                                 font_size = 18, 
                                  font_family = 'Cadiz Book'
                                 ),
                             template = 'seaborn',
@@ -4430,7 +4442,7 @@ def en_update_commodity_unemployment_graph(values, label):
                                  family='Cadiz Book'
                                 )),
                             hoverlabel = dict(
-                                 font_size = 20, 
+                                 font_size = 18, 
                                  font_family = 'Cadiz Book'
                                 ),
                             template = 'seaborn',                            
