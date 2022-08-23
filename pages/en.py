@@ -1456,7 +1456,7 @@ def layout():
             dbc.Tab(label='Introduction and Instructions',
                     tab_id = 'ohje_en',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  # #'font-family':'Cadiz Semibold'
                                  },
@@ -1560,7 +1560,7 @@ def layout():
                                                                                                    #'font-family':'Messina Modern Semibold',
                                                                                                    'font-style': 'italic', 
                                                                                                    'font-weight': 'bold', 
-                                                                                                   'font-size':'34px'}),
+                                                                                                   'font-size':"2.125rem"}),
                                           
                                           html.Blockquote('There is a conflict between unemployment and inflation in the short term. Full employment and stable price levels are difficult to achieve at the same time.', 
                                                 style = {
@@ -1826,7 +1826,7 @@ def layout():
             dbc.Tab(label ='Choice of Goods',
                     tab_id ='feature_tab_en',
                      tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
@@ -2008,7 +2008,7 @@ def layout():
             dbc.Tab(label = 'Exploratory Analysis',
                     tab_id = 'eda_tab_en',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
@@ -2045,7 +2045,7 @@ def layout():
                                                      html.Div([dbc.RadioItems(id = 'eda_y_axis_en', 
                                                                  options = [{'label':'Unemployment rate (%)','value':'Työttömyysaste'},
                                                                            {'label':'Monthly unemployment rate change (% units)','value':'change'}],
-                                                                 labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
+                                                                 labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':"1.1rem",
                                                                              #'font-family':'Cadiz Book'
                                                                              'font-weight': 'bold'
                                                                              },
@@ -2210,7 +2210,7 @@ def layout():
             dbc.Tab(label='Method Selection',
                     tab_id ='hyperparam_tab_en',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
@@ -2325,7 +2325,7 @@ def layout():
             dbc.Tab(label='Test',
                     tab_id ='test_tab_en',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
@@ -2427,7 +2427,7 @@ def layout():
             dbc.Tab(label='Forecast',
                     tab_id = 'forecast_tab_en',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
@@ -3001,7 +3001,7 @@ def en_update_test_results(n_clicks,
                                           options = [{'label':'bars','value':'bars'},
                                                     {'label':'lines','value':'lines'},
                                                     {'label':'lines and bars','value':'lines+bars'}],
-                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
+                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':"1.1rem",
                                                       #'font-family':'Cadiz Book'
                                                       'font-weight': 'bold'
                                                       },
@@ -3155,7 +3155,7 @@ def en_update_forecast_results(n_clicks,
                         options = [{'label':'bars','value':'bars'},
                                   {'label':'lines','value':'lines'},
                                   {'label':'area','value':'area'}],
-                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
+                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':"1.1rem",
                                     #'font-family':'Cadiz Book'
                                     'font-weight': 'bold'
                                     },

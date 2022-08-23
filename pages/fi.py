@@ -3052,7 +3052,7 @@ def update_test_results(n_clicks,
                                           options = [{'label':'pylväät','value':'bars'},
                                                     {'label':'viivat','value':'lines'},
                                                     {'label':'viivat ja pylväät','value':'lines+bars'}],
-                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':"1.05rem",#18,
+                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':"1.1rem",#18,
                                                       'font-weight': 'bold'
                                                       #'font-family':'Cadiz Book'
                                                       },
@@ -3208,7 +3208,7 @@ def update_forecast_results(n_clicks,
                         options = [{'label':'pylväät','value':'bars'},
                                   {'label':'viivat','value':'lines'},
                                   {'label':'alue','value':'area'}],
-                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':"1.05rem",
+                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':"1.1rem",
                                     #'font-family':'Cadiz Book'
                                     'font-weight': 'bold'
                                     },

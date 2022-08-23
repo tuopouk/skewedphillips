@@ -1457,7 +1457,7 @@ def layout():
             dbc.Tab(label='Inledning och instruktioner',
                     tab_id = 'ohje_sv',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  # #'font-family':'Cadiz Semibold'
                                  },
@@ -1560,7 +1560,7 @@ def layout():
                                                                                                    #'font-family':'Messina Modern Semibold',
                                                                                                    'font-style': 'italic', 
                                                                                                    'font-weight': 'bold', 
-                                                                                                   'font-size':'34px'}),
+                                                                                                   'font-size':"2.125rem"}),
                                           
                                           html.Blockquote("Det finns en konflikt mellan arbetslöshet och inflation på kort sikt. Full sysselsättning och stabila prisnivåer är svåra att uppnå samtidigt.", 
                                                 style = {
@@ -1826,7 +1826,7 @@ def layout():
             dbc.Tab(label ='Val av varor',
                     tab_id ='feature_tab_sv',
                      tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
@@ -2008,7 +2008,7 @@ def layout():
             dbc.Tab(label = 'Förberedande analys',
                     tab_id = 'eda_tab_sv',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
@@ -2045,7 +2045,7 @@ def layout():
                                                      html.Div([dbc.RadioItems(id = 'eda_y_axis_sv', 
                                                                  options = [{'label':'Arbetslöshet (%)','value':'Työttömyysaste'},
                                                                            {'label':'Förändring av månadsarbetslösheten (% enheter)','value':'change'}],
-                                                                 labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
+                                                                 labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':"1.1rem",
                                                                              #'font-family':'Cadiz Book'
                                                                              'font-weight': 'bold'
                                                                              },
@@ -2210,7 +2210,7 @@ def layout():
             dbc.Tab(label='Metodval',
                     tab_id ='hyperparam_tab_sv',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
@@ -2324,7 +2324,7 @@ def layout():
             dbc.Tab(label='Provning',
                     tab_id ='test_tab_sv',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
@@ -2428,7 +2428,7 @@ def layout():
             dbc.Tab(label='Prognos',
                     tab_id = 'forecast_tab_sv',
                     tabClassName="flex-grow-1 text-center",
-                    tab_style = {'font-size':'25px',
+                    tab_style = {'font-size':"1.5625rem",
                                  'font-weight': 'bold', 
                                  #'font-family':'Cadiz Semibold'
                                  },
@@ -2999,7 +2999,7 @@ def sv_update_test_results(n_clicks,
                                           options = [{'label':'stapeldiagram','value':'bars'},
                                                     {'label':'linjediagram','value':'lines'},
                                                     {'label':'stapel- och linjediagram','value':'lines+bars'}],
-                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
+                                          labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':"1.1rem",
                                                       #'font-family':'Cadiz Book'
                                                       'font-weight': 'bold'
                                                       },
@@ -3153,7 +3153,7 @@ def sv_update_forecast_results(n_clicks,
                         options = [{'label':'stapeldiagram','value':'bars'},
                                   {'label':'linjediagram','value':'lines'},
                                   {'label':'områdesdiagram','value':'area'}],
-                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':18,
+                        labelStyle={'display':'inline-block', 'padding':'10px','margin':'10px 10px 10px 10px','font-size':"1.1rem",
                                     #'font-family':'Cadiz Book'
                                     'font-weight': 'bold'
                                     },
