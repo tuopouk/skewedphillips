@@ -3594,7 +3594,7 @@ def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
                       # marker_color = ['cyan' if i not in ['Kuukausi',prev_str] else 'black' for i in dff.index],
                       marker = dict(color = list(map(set_color,dff.index,dff.values))),
                       text = dff.values,
-                      hovertemplate = ['<b>{}</b><br><b>  SHAP-arvo</b>: {}<br><b>  Kuluvan kuukauden arvo</b>: {} {}<br><b>  Viime kuukauden arvo</b>: {}'.format(i,dff.loc[i], feature_values[i],changes[i],feature_values_1[i]) for i in dff.index],
+                      hovertemplate = ['<b>{}</b><br><b>  SHAP-arvo</b>: {}<br><b>  Tarkasteltavan kuukauden arvo</b>: {} {}<br><b>  Edeltävän kuukauden arvo</b>: {}'.format(i,dff.loc[i], feature_values[i],changes[i],feature_values_1[i]) for i in dff.index],
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 16))],
