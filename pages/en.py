@@ -2415,7 +2415,7 @@ def layout():
                             dbc.Col([html.Div(id = 'shap_results_div_en')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
                             dbc.Col([html.Div(id = 'local_shap_results_div_en')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
                             
-                            ], justify = 'center', align='center', 
+                            ], justify = 'center', align='start', 
                             
                             ),
                         html.Br(),
@@ -3266,21 +3266,35 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                         ]),
                     html.Br()
                     ],
-                    [html.P("The graph below shows the mean absolute SHAP values. "
+                    [dbc.Card([
+                        dbc.CardBody([
+                            html.H3('Feature importances', className='card-title',
+                                    style=h3_style),
+                        html.P("The graph below shows the mean absolute SHAP values. "
                             "They describe how much the features on average affected forecasts, regardless of the direction of impact. "
                             "They are calculated as the average of the absolute SHAP values of the local characteristics. "
                             "Black color indicates the trivial features which are the current month and the unemployment rate of the previous month. ",
-                           style =p_style),
+                           style =p_style,
+                           className='card-text'
+                           ),
                      html.Br(),
-                        dcc.Loading([dbc.Row(id = 'shap_graph_div_en', justify = 'center')], type = random.choice(spinners))],
+                        dcc.Loading([dbc.Row(id = 'shap_graph_div_en', justify = 'center')], type = random.choice(spinners))
+                        
+                            ])
+                        ])
+                    ],
                 
-                    [html.Br(),
+                    [dbc.Card([
+                        dbc.CardBody([
+                            html.H3('Monthly feature importances', className='card-title',
+                                    style=h3_style),
                      html.P("The graph below shows the SHAP values of the features for a selected month. "
                             "They represent the direction and intensity that characterised the forecast for the selected month. "
                             "Green highlights the factors that reduce the monthly change in unemployment and red highlights the features that increase it. "
                             "Black color indicates the trivial features which are the current month and the unemployment rate of the previous month. "
                             "The vertical axis shows the names of the features as well as their values of the corresponding time and the direction of change compared to the previous month with an icon.",
-                            style =p_style),
+                             style =p_style,
+                            className="card-text"),
                       html.Br(),
                         html.H3('Select a month', style =h3_style),
                                         dcc.Dropdown(id = 'local_shap_month_selection_en',
@@ -3292,7 +3306,11 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                                         
                                         html.Div(dcc.Loading(id = 'local_shap_graph_div_en',
                                                               type = random.choice(spinners))),
-                                    html.Br()]]
+                                    
+                                    ])
+                        ])
+                                    
+                                    ]]
 
     else:
         return [html.Div(),html.Div(),html.Div()]
@@ -3396,7 +3414,7 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                       # marker_color = ['cyan' if i not in ['Month',prev_str] else 'black' for i in dff.index],
                        marker = dict(color = list(map(en_set_color,dff.index,dff.values))),
                       text = dff.values,
-                      hovertemplate = ['<b>{}</b><br><b>  SHAP value</b>: {}<br><b>  Value on the current month</b>: {} {}<br><b>  Value on the previous month</b>: {}'.format(i,dff.loc[i], feature_values[i],changes[i],feature_values_1[i]) for i in dff.index],
+                      hovertemplate = ['<b>{}</b><br><b>  SHAP value</b>: {}<br><b>  Value on the current month</b>: {} {}<br><b>  Value on the previous month</b>: {}'.format(i,dff.loc[i], feature_values[i],changes[i],feature_values_1[i]) if i in feature_values.keys() else i for i in dff.index],
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 16))],
@@ -3480,7 +3498,7 @@ def en_update_shap_slider(shap):
     
     
     return [html.P('Select how many features are shown in the graph below.',
-                       style = p_style),
+                       style = p_center_style),
                 dcc.Slider(id = 'cut_off_en',
                    min = 1, 
                    max = len(shap_df),

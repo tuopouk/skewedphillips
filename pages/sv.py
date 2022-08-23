@@ -2414,7 +2414,7 @@ def layout():
                             dbc.Col([html.Div(id = 'shap_results_div_sv')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
                             dbc.Col([html.Div(id = 'local_shap_results_div_sv')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
                             
-                            ], justify = 'center', align='center', 
+                            ], justify = 'center', align='start', 
                             
                             ),
                         html.Br(),
@@ -3261,21 +3261,34 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                         ]),
                     html.Br()
                     ],
-                    [html.P("Diagrammet nedan visar medelvärdet av absoluta SHAP-värden. "
+                    [dbc.Card([
+                        dbc.CardBody([
+                            html.H3('Egenskapsimporter', className='card-title',
+                                    style=h3_style),
+                        
+                        html.P("Diagrammet nedan visar medelvärdet av absoluta SHAP-värden. "
                             "De beskriver hur mycket funktionerna i genomsnitt påverkade prognoserna, oavsett vilken riktning som påverkades. "
                             "De beräknas som genomsnittet av de absoluta SHAP-värdena för de lokala egenskaperna. "
                             "Svart färg indikerar de triviala egenskaper som är den aktuella månaden och arbetslösheten föregående månad.",
-                           style =p_style),
+                           style =p_style,
+                           className="card-text"),
                      html.Br(),
-                        dcc.Loading([dbc.Row(id = 'shap_graph_div_sv', justify = 'center')], type = random.choice(spinners))],
+                        dcc.Loading([dbc.Row(id = 'shap_graph_div_sv', justify = 'center')], type = random.choice(spinners))
+                        ])
+                        ])
+                        ],
                 
-                    [html.Br(),
+                    [dbc.Card([
+                        dbc.CardBody([
+                            html.H3('Månatliga egenskapsimporter', className='card-title',
+                                    style=h3_style),
                      html.P("Diagrammet nedan visar SHAP-värdena för funktionerna för en vald månad. "
                             "De representerar den riktning och intensitet som kännetecknade prognosen för den valda månaden. "
                             "Grönt belyser de faktorer som minskar månadsförändringen i arbetslösheten och rött belyser de egenskaper som ökar den. "
                             "Svart färg indikerar de triviala egenskaper som är den aktuella månaden och arbetslösheten föregående månad. "
                             "Den vertikala axeln visar namnen på funktionerna och deras värden för motsvarande tid med förändringens riktning jämfört med föregående månad med en ikon inom parentes.",
-                            style =p_style),
+                            style =p_style,
+                            className="card-text"),
                       html.Br(),
                         html.H3('Välj en månad', style =h3_style),
                                         dcc.Dropdown(id = 'local_shap_month_selection_sv',
@@ -3286,8 +3299,11 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                                         html.Br(),
                                         
                                         html.Div(dcc.Loading(id = 'local_shap_graph_div_sv',
-                                                              type = random.choice(spinners))),
-                                    html.Br()]]
+                                                              type = random.choice(spinners))
+                                                 )
+                                   ])
+                        ])
+                        ]]
 
     else:
         return [html.Div(),html.Div(),html.Div()]
@@ -3393,7 +3409,7 @@ def sv_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                       # marker_color = ['cyan' if i not in ['Month',prev_str] else 'black' for i in dff.index],
                        marker = dict(color = list(map(sv_set_color,dff.index,dff.values))),
                       text = dff.values,
-                      hovertemplate = ['<b>{}</b><br><b>  SHAP värde</b>: {}<br><b>  Värde under nuvarande månad</b>: {} {}<br><b>  Värde under föregående månad</b>: {}'.format(i,dff.loc[i], feature_values[i],changes[i],feature_values_1[i]) for i in dff.index],
+                      hovertemplate = ['<b>{}</b><br><b>  SHAP värde</b>: {}<br><b>  Värde under nuvarande månad</b>: {} {}<br><b>  Värde under föregående månad</b>: {}'.format(i,dff.loc[i], feature_values[i],changes[i],feature_values_1[i]) if i in feature_values.keys() else i for i in dff.index],
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 16))],
@@ -3477,7 +3493,7 @@ def sv_update_shap_slider(shap):
     
     
     return [html.P('Välj hur många funktioner som visas i diagrammet nedan.',
-                       style = p_style),
+                       style = p_center_style),
                 dcc.Slider(id = 'cut_off_sv',
                    min = 1, 
                    max = len(shap_df),

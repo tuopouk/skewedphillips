@@ -2456,7 +2456,7 @@ def layout():
                             dbc.Col([html.Div(id = 'shap_results_div')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
                             dbc.Col([html.Div(id = 'local_shap_results_div')],xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
                             
-                            ], justify = 'center', align='center', 
+                            ], justify = 'center',align='start'
                             
                             ),
                         html.Br(),
@@ -3320,25 +3320,37 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                     html.Br()
                     ],
                     
-                    [html.P("Alla olevassa kuvaajassa on esitetty keskimääräiset absoluuttiset SHAP-arvot. "
+                    [dbc.Card([
+                        dbc.CardBody([
+                            html.H3('Piirteiden tärkeydet', className='card-title',
+                                    style=h3_style),
+                            html.P("Alla olevassa kuvaajassa on esitetty keskimääräiset absoluuttiset SHAP-arvot. "
                            "Ne kuvaavat kuinka paljon piirteet keskimäärin vaikuttivat ennusteisiin, riippumatta vaikutuksen suunnasta. "
                            "Ne on laskettu piirteiden lokaalien absoluuttisten SHAP - arvojen keskiarvona. "
                            "Mustalla on merkitty triviaalit piirteet eli kuluva kuukausi ja edellisen kuukauden työttömyysaste. ",
-                           style =p_style),
-                     html.Br(),
-                     dcc.Loading([dbc.Row(id = 'shap_graph_div', justify = 'center')], type = random.choice(spinners))],
+                            style =p_style,
+                           className="card-text"),
+                            html.Br(),
+                            dcc.Loading([dbc.Row(id = 'shap_graph_div', justify = 'center')], type = random.choice(spinners))
+                            ])
+                        ])
+                        ],
                 
-                    [html.Br(),
-                     html.P("Alla olevassa kuvaajassa on esitetty piirteiden SHAP-arvot valitulle kuukaudelle. "
-                            "Ne kuvaavat suuntaa ja voimakkuutta, joka piirteillä oli valitun kuukauden ennusteeseen. "
-                            "Vihreällä värillä on korostettu työttömyyden kuukausimuutosta laskevat tekijät ja punaisella sitä nostavat piirteet. "
-                            "Mustalla on merkitty triviaalit piirteet eli kuluva kuukausi ja edellisen kuukauden työttömyysaste. "
-                            "Pystyakselilla on esitetty piirteiden nimet sekä suluissa niiden arvo valittuna ajankohtana ja muutoksen suunta edelliseen kuukauteen nähden kuvaavalla ikonilla.",
-                            style =p_style),
+                    [
+                     dbc.Card([
+                         dbc.CardBody([
+                             html.H3('Piirteiden merkitykset kuukausittain',className='card-title',
+                                     style=h3_style),
+                             html.P("Alla olevassa kuvaajassa on esitetty piirteiden SHAP-arvot valitulle kuukaudelle. "
+                                    "Ne kuvaavat suuntaa ja voimakkuutta, joka piirteillä oli valitun kuukauden ennusteeseen. "
+                                    "Vihreällä värillä on korostettu työttömyyden kuukausimuutosta laskevat tekijät ja punaisella sitä nostavat piirteet. "
+                                    "Mustalla on merkitty triviaalit piirteet eli kuluva kuukausi ja edellisen kuukauden työttömyysaste. "
+                                    "Pystyakselilla on esitetty piirteiden nimet sekä suluissa niiden arvo valittuna ajankohtana ja muutoksen suunta edelliseen kuukauteen nähden kuvaavalla ikonilla.",
+                                    style =p_style,className="card-text"),
 
                      
-                     html.Br(),
-                        html.H3('Valitse kuukausi', style =h3_style),
+                            html.Br(),
+                            html.H3('Valitse kuukausi', style =h3_style),
                                         dcc.Dropdown(id = 'local_shap_month_selection',
                                                       options = options, 
                                                       style = {'font-size':"1rem"},
@@ -3347,8 +3359,10 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                                         html.Br(),
                                         
                                         html.Div(dcc.Loading(id = 'local_shap_graph_div',
-                                                              type = random.choice(spinners))),
-                                    html.Br()
+                                                              type = random.choice(spinners)))
+                                    
+                                    ])
+                         ])
                                     ]]
 
     else:
@@ -3377,7 +3391,7 @@ def update_shap_slider(shap):
     
     
     return [html.P('Valitse kuinka monta piirrettä näytetään kuvaajassa',
-                       style = p_style),
+                       style = p_center_style),
                 dcc.Slider(id = 'cut_off',
                    min = 1, 
                    max = len(shap_df),
@@ -3594,7 +3608,7 @@ def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
                       # marker_color = ['cyan' if i not in ['Kuukausi',prev_str] else 'black' for i in dff.index],
                       marker = dict(color = list(map(set_color,dff.index,dff.values))),
                       text = dff.values,
-                      hovertemplate = ['<b>{}</b><br><b>  SHAP-arvo</b>: {}<br><b>  Tarkasteltavan kuukauden arvo</b>: {} {}<br><b>  Edeltävän kuukauden arvo</b>: {}'.format(i,dff.loc[i], feature_values[i],changes[i],feature_values_1[i]) for i in dff.index],
+                      hovertemplate = ['<b>{}</b><br><b>  SHAP-arvo</b>: {}<br><b>  Tarkasteltavan kuukauden arvo</b>: {} {}<br><b>  Edeltävän kuukauden arvo</b>: {}'.format(i,dff.loc[i], feature_values[i],changes[i],feature_values_1[i]) if i in feature_values.keys() else i for i in dff.index],
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 16))],
