@@ -354,7 +354,7 @@ def update_quick_help_offcanvas(pathname):
                     "klikkaamalla 'Lataa testitulokset koneelle -nappia'. "
                     "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä."
                     " "
-                    " Voit myös tutkia Shapley-arvojen avulla mitkä piirteet ja hyödykkeet vaikuttivat eniten ennustetulokseen.",
+                    " Voit myös tutkia SHAP-arvojen avulla mitkä piirteet ja hyödykkeet vaikuttivat eniten ennustetulokseen.",
                     style = {
                         # #'font-family':'Cadiz Book',
                              'font-size':"1.1rem",
@@ -375,8 +375,11 @@ def update_quick_help_offcanvas(pathname):
                     "Valitse ennusteen pituus ja klikkaa ennusta nappia. "
                     "Tarkastele ennusteen kuvaajaa tai viedä tulokset Exceliin "
                     "klikkaamalla 'Lataa ennustedata koneelle -nappia'. "
+                    "Kuten testiosiossa, voit myös tarkastella ennusteen agnostiikkaa, "
+                    "minkä avulla voit analysoida minkä hyödykkeiden hintojen muutokset tulevat "
+                    "lyhyellä aikavälillä kasvattamaan tai laskemaan työttömyysastetta. "
                     "Voit palata edellisiin vaiheisiin ja kokeilla uudelleen eri hyödykkeillä ja menetelmillä. "
-                    "Voit myös säätää hyödykeindeksien oletettuja kuukausimuutoksia ja kokeilla uudestaan.",
+                    "Voit myös säätää hyödykeindeksien oletettuja kuukausimuutoksia ja kokeilla uudestaan. ",
                     style = {
                         # #'font-family':'Cadiz Book',   
                              'font-size':"1.1rem",
@@ -494,7 +497,10 @@ def update_quick_help_offcanvas(pathname):
         html.P(
             "Select the forecast length and click the forecast button. "
             "View the forecast graph or export the results to Excel "
-            "by clicking the 'Download forecast results' button."
+            "by clicking the 'Download forecast results' button. "
+            "As in the test section, you can also look at the agnostics of the forecast, "
+            "which allows you to analyze which commodity price changes will occur "
+            "in the short term to increase or decrease the unemployment rate. "
             "You can go back to the previous steps and try again with different commodities and methods. "
             "You can also adjust expected monthly changes in commodity indices and try again.",
             style = {
@@ -614,7 +620,10 @@ def update_quick_help_offcanvas(pathname):
         html.P(
             "Välj prognoslängden och klicka på prognosknappen. "
           "Visa prognosgrafen eller exportera resultaten till Excel "
-          "genom att klicka på knappen 'Hämta prognosresultat'."
+          "genom att klicka på knappen 'Hämta prognosresultat'. "
+          "Som i testavsnittet kan du också titta på prognosens agnostik, "
+            "som du kan använda för att analysera vilka varuprisförändringar som kommer att inträffa "
+            "på kort sikt ökar eller minskar arbetslösheten. "
           "Du kan gå tillbaka till de tidigare stegen och försöka igen med olika råvaror och metoder. "
           "Du kan också justera förväntade månatliga förändringar i råvaruindex och försöka igen.",
             style = {
