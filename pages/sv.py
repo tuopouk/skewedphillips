@@ -1264,7 +1264,7 @@ def sv_test(model, features, test_size, explainer, use_pca = False, n_components
 
                                                 
 
-def sv_predict(model, features, feature_changes, length, use_pca = False, n_components=.99):
+def sv_predict(model,explainer, features, feature_changes, length, use_pca = False, n_components=.99):
   
   df = data_sv.copy()
   df = df.iloc[1:,:]
@@ -1274,7 +1274,7 @@ def sv_predict(model, features, feature_changes, length, use_pca = False, n_comp
   feat.append('prev')
   feat.append('month')
   
-  # cols = feat
+  cols = feat
 
   scl = StandardScaler()
   label = 'change'
@@ -1291,7 +1291,7 @@ def sv_predict(model, features, feature_changes, length, use_pca = False, n_comp
     
     X = pca.fit_transform(X)
     n_feat = len(pd.DataFrame(X).columns)
-    # cols = ['_ '+str(i+1)+'. pääkomponentti' for i in range(n_feat)]
+    cols = ['_ '+str(i+1)+'. pääkomponentti' for i in range(n_feat)]
     
     
   model.fit(X,y)
@@ -1320,8 +1320,10 @@ def sv_predict(model, features, feature_changes, length, use_pca = False, n_comp
   last_row.Työttömyysaste = np.maximum(0, last_row.prev + last_row.change)
 
   results = []
+  scaled_features_shap = []
 
   results.append(last_row)
+  scaled_features_shap.append(pd.DataFrame(scaled_features, columns = cols))
   
 
   for _ in range(length-1):
@@ -1344,11 +1346,16 @@ def sv_predict(model, features, feature_changes, length, use_pca = False, n_comp
 
     dff.Työttömyysaste = np.maximum(0, dff.prev + dff.change)
     results.append(dff)
+    scaled_features_shap.append(pd.DataFrame(scaled_features, columns = cols))
 
   result = pd.concat(results)
   result['n_feat'] = n_feat
+  
+  shap_df, local_shap_df = sv_get_shap_values(model, explainer, X_train = pd.DataFrame(X, columns = cols), X_test = pd.concat(scaled_features_shap))
 
-  return result
+  local_shap_df.index = result.index
+
+  return result, shap_df, local_shap_df
 
 
 
@@ -1430,7 +1437,7 @@ def layout():
                     html.P('Välj önskad flik genom att klicka på rubrikerna nedan. '
                             'Knapparna i övre vänstra hörnet visar snabb hjälp '
                             'Du kan också ändra färgschemat på sidan.',
-                           style = p_style)
+                           style = p_center_style)
                     ],xs =12, sm=12, md=12, lg=9, xl=9)
         ], justify='center'),
         html.Br(),
@@ -1445,6 +1452,8 @@ def layout():
                     dcc.Store(id ='local_shap_data_sv'),
                     dcc.Store(id = 'test_data_sv'),
                     dcc.Store(id = 'forecast_data_sv'),
+                    dcc.Store(id = 'forecast_shap_data_sv'),
+                    dcc.Store(id = 'local_forecast_shap_data_sv'),
                     dcc.Download(id='forecast_download_sv'),
                     dcc.Download(id='test_download_sv')
         ]),
@@ -1493,7 +1502,7 @@ def layout():
                                             'textAlign':'center',
                                             'font-style': 'italic',
                                             #'font-family':'Messina Modern Book', 
-                                              'font-size':"0.8rem"
+                                              'font-size':"1rem"
                                             })], href = 'https://www.technologyreview.com/2019/08/21/133411/rodney-brooks/', target="_blank"),
                                   
 
@@ -1573,7 +1582,7 @@ def layout():
                                                 style={
                                                     'textAlign':'center',
                                                     #'font-family':'Messina Modern Book', 
-                                                      'font-size':"0.8rem"
+                                                      'font-size':"1rem"
                                                     }),
         
                                           html.Br(),
@@ -1613,7 +1622,7 @@ def layout():
                                                     style = p_style),
                                          html.P("4. Test. Du kan välja den tidsperiod som modellen vill förutsäga tidigare. Det gör att du kan uppskatta hur prognosmodellen skulle ha fungerat för redan realiserade data. I det här avsnittet kan du också se hur mycket varje prognosfunktion bidrog till att göra prognosen.",
                                                     style = p_style),
-                                         html.P("5. Prognos. Du kan nu använda din valda metod för att göra en förutsägelse för framtiden. Välj längden på prognosen och klicka på prognosen. Du kan sedan exportera prognosen till Excel också. Prognosen baseras på förändringsvärdena för de varor du anger.",
+                                         html.P("5. Prognos. Du kan nu använda din valda metod för att göra en förutsägelse för framtiden. Välj längden på prognosen och klicka på prognosen. Du kan sedan exportera prognosen till Excel också. Prognosen baseras på förändringsvärdena för de varor du anger. Som i testavsnittet kan du också se vilka varor och egenskaper som påverkar förändringen i arbetslöshetstalet och vilka varuprisförändringar som bidrar till månatliga förändringar i arbetslöshetstalet.",
                                                     style = p_style),
                                           
                                           html.Br(),
@@ -2447,21 +2456,13 @@ def layout():
                             dbc.Col([
                                         # html.H3('Prognoser',style=h3_style),
                                         # html.Br(),
-                                        html.P("I det här avsnittet kan du göra en prognos för den valda tiden. När du förutspår aktiveras inställningarna på fliken Metodval. Prognosen bygger på antaganden som gjorts på fliken Produktval om den relativa prisutvecklingen på råvaror.",
+                                        html.P("I det här avsnittet kan du göra en prognos för den valda tiden. När du förutspår aktiveras inställningarna på fliken Metodval. Prognosen baseras på antaganden som gjorts under fliken Produktval om den relativa prisutvecklingen på råvaror. "
+                                                "Det är bra att notera att osäkerheten ökar ju längre prognosen görs. "
+                                                "Dessutom kan du titta på modellen agnostik, som visar vilka varor och egenskaper som påverkar utvecklingen av arbetslöshetstalet och vilka varuprisförändringar som påverkar förändringen av arbetslöshetstalet på månadsbasis om användarnas antaganden uppfylls. ",
                                               style=p_style),
                                         html.P("När du har gjort prognosen kan du visa den intilliggande prognosgrafen eller exportera resultatdata från knappen nedan till Excel.",
                                               style=p_style),
-                                        html.Br()
-                                    ],xs =12, sm=12, md=12, lg=9, xl=9)
-                            
-                            
-                            ], justify = 'center'),
-                        html.Br(),
-                        dbc.Row(children = [
-                                    #dbc.Col(xs =12, sm=12, md=12, lg=3, xl=3, align = 'start'),
-                                    dbc.Col(children = [
                                         html.Br(),
-
                                         html.H3('Välj prognoslängd',
                                                 style=h3_style),
                                         dcc.Slider(id = 'forecast_slider_sv',
@@ -2494,16 +2495,28 @@ def layout():
                                         html.Div(id = 'forecast_slider_indicator_sv',style = {'textAlign':'center'}),
                                         html.Div(id = 'forecast_button_div_sv',children = [html.P('Valitse commodities first.',
                                                                                               style = p_style
-                                                                                              )],style = {'textAlign':'center'})],
-                                        xs =12, sm=12, md=12, lg=4, xl=4
-                                        ),
-                                    html.Br(),
+                                                                                              )],style = {'textAlign':'center'})
+                                        
+                                    ],xs =12, sm=12, md=12, lg=9, xl=9)
+                            
+                            
+                            ], justify = 'center'),
+                        html.Br(),
+                        dbc.Row(children = [
                                     
                                     dbc.Col([dcc.Loading(id = 'forecast_results_div_sv',type = spinners[random.randint(0,len(spinners)-1)])],
                                             xs = 12, sm = 12, md = 12, lg = 8, xl = 8)
                                     ], justify = 'center', 
                              # style = {'margin' : '10px 10px 10px 10px'}
                                     ),
+                        html.Br(),
+                        dbc.Row([dbc.Col([html.Div(id = 'forecast_shap_selections_div_sv')],xs = 12, sm = 12, md = 12, lg = 9, xl = 9)],justify = 'center'),
+                        dbc.Row([
+                            
+                            dbc.Col(id = 'forecast_shap_div_sv', xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+                            dbc.Col(id = 'forecast_local_shap_div_sv', xs = 12, sm = 12, md = 12, lg = 6, xl = 6)
+                            
+                        ], justify ='center', align='start'),
                         html.Br(),
                         footer
                                        
@@ -3080,6 +3093,8 @@ def sv_update_test_results(n_clicks,
 @callback(
     
       [Output('forecast_data_sv','data'),
+       Output('forecast_shap_data_sv','data'),
+       Output('local_forecast_shap_data_sv','data'),
        Output('forecast_results_div_sv','children'),
        Output('forecast_download_button_div_sv','children')],
       [Input('forecast_button_sv','n_clicks')],
@@ -3130,7 +3145,10 @@ def sv_update_forecast_results(n_clicks,
         
         weights = pd.Series(weights_dict)
         
-        forecast_df = sv_predict(model, 
+        explainer = MODELS_sv[model_name]['explainer']
+        
+        forecast_df, shap_df, local_shap_df = sv_predict(model,
+                                 explainer,
                               features, 
                               feature_changes = weights, 
                               length=forecast_size, 
@@ -3147,6 +3165,11 @@ def sv_update_forecast_results(n_clicks,
                              style = p_style),
                       html.P("Du kan välja antingen en kolumn, områdes eller ett linjediagram från knapparna nedan. Längden på tidsserien kan justeras från reglaget nedan. Du kan också begränsa längden genom att klicka på knapparna i övre vänstra hörnet.",
                              style = p_style),
+                      html.P("(Fortsätter efter diagrammet)",style={
+                                  'font-style':'italic',
+                                  'font-size':p_font_size,
+                                 'text-align':'center'}
+                          ),
                       
                       html.Div([
                       dbc.RadioItems(id = 'chart_type_sv', 
@@ -3169,7 +3192,7 @@ def sv_update_forecast_results(n_clicks,
           html.Div(id = 'forecast_graph_div_sv'),
         
           html.Br()
-          ],style={'textAlign':'center'})
+          ])
 
           
           # ], justify='center')        
@@ -3185,11 +3208,14 @@ def sv_update_forecast_results(n_clicks,
                                  )
         
         feat = features.copy()
-        feat = ['Työttömyysaste','month','change','n_feat']+feat
+        feat = ['Työttömyysaste','month','change','n_feat','prev']+feat
         
-        return [forecast_df[feat].reset_index().to_dict('records'), forecast_div, [html.Br(),forecast_download_button]]
+        return [forecast_df[feat].reset_index().to_dict('records'),
+                shap_df.reset_index().to_dict('records'),
+                local_shap_df.reset_index().to_dict('records'),
+                forecast_div, [html.Br(),forecast_download_button]]
     else:
-        return [html.Div(),html.Div(),html.Div()]
+        return [html.Div(),html.Div(),html.Div(),html.Div(),html.Div()]
     
 @callback(
 
@@ -3235,11 +3261,11 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                             "Förutom de utvalda råvaruindexen inkluderar prognosfunktionerna arbetslösheten föregående månad och månaden.",
                            style = p_style),
                     html.A([html.P("Se en kort introduktionsvideo om betydelsen av SHAP-värden för att förklara en modell.",
-                                   style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
+                                   style = p_center_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
                     html.A([html.P('Se även en icke-teknisk guide för tolkning av SHAP-analyser',
-                                   style = p_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
+                                   style = p_center_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
                     html.P("Grafens SHAP-värden multipliceras med 100 för att förbättra visualiseringen.",
-                           style = p_style),
+                           style = p_center_style),
                     html.Br(),
                     dbc.Row([
                         dbc.Col([
@@ -3301,6 +3327,121 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                                         html.Br(),
                                         
                                         html.Div(dcc.Loading(id = 'local_shap_graph_div_sv',
+                                                              type = random.choice(spinners))
+                                                 )
+                                   ])
+                        ])
+                        ]]
+
+    else:
+        return [html.Div(),html.Div(),html.Div()]
+
+@callback(
+
+    [Output('forecast_shap_selections_div_sv','children'),
+     Output('forecast_shap_div_sv','children'),
+     Output('forecast_local_shap_div_sv','children')
+     ],
+    [Input('forecast_button_sv','n_clicks'),
+     Input('forecast_shap_data_sv','data'),
+     State('local_forecast_shap_data_sv','data')]    
+    
+)
+def sv_update_forecast_shap_results(n_clicks, shap, local_shap_data):
+    
+    if shap is None or local_shap_data is None:
+        raise PreventUpdate
+        
+    if n_clicks > 0:
+        
+        try:
+            locale.setlocale(locale.LC_ALL, 'sv_FI')
+        except:
+            locale.setlocale(locale.LC_ALL, 'sv-FI')
+    
+        shap_df = pd.DataFrame(shap)
+        
+        shap_df = shap_df.set_index(shap_df.columns[0])
+        
+        local_shap_df = pd.DataFrame(local_shap_data)
+        local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+        local_shap_df.index = pd.to_datetime(local_shap_df.index)
+        
+        options = [{'label':c.strftime('%B %Y'), 'value': c} for c in list(local_shap_df.index)]
+        
+        return [[
+            
+                    html.H3('Vilka egenskaper kommer att få störst effekt?',
+                           style = h3_style),
+                    html.P("Som i testavsnittet, när man förutspår arbetslösheten under de kommande månaderna, är det också möjligt att titta på vilka egenskaper som kommer att betyda mest och vilka som kommer att förklara förändringen i arbetslöshetstalet under en kommande månad. "
+                            "Diagrammet ovan visar modellens prognos med antagandet att prisindexet för de varor som användaren valt ändras med den valda förändringstakten på månadsbasis. "
+                            "De globala och lokala SHAP-värdena nedan gör det möjligt att se hur användarvalda månatliga varuspecifika förändringar påverkar prognosen. "
+                            "Detta gör det möjligt att gå tillbaka till varuval sektionen, justera förändringshastigheten och försöka igen förutsäga med flera månatliga förändringar. ",
+                           style = p_style),
+                    # html.A([html.P("Se en kort introduktionsvideo om betydelsen av SHAP-värden för att förklara en modell.",
+                    #                style = p_center_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
+                    # html.A([html.P('Se även en icke-teknisk guide för tolkning av SHAP-analyser',
+                    #                style = p_center_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
+                    # html.P("Grafens SHAP-värden multipliceras med 100 för att förbättra visualiseringen.",
+                    #        style = p_center_style),
+                    html.Br(),
+                    dbc.Row([
+                        dbc.Col([
+                                html.Div(id = 'forecast_cut_off_div_sv'),
+                                
+                                html.Div(id = 'forecast_cut_off_indicator_sv'),
+                                
+                                ],xs =12, sm=12, md=12, lg=9, xl=9),
+                        dbc.Col([
+                                dash_daq.BooleanSwitch(id = 'forecast_shap_features_switch_sv', 
+                                                        label = dict(label = "Visa endast varornas bidrag",
+                                                                     style = {'font-size':p_font_size,
+                                                                              'text-align':'center',
+                                                                              # #'fontFamily':'Cadiz Semibold'
+                                                                              }), 
+                                                        on = False, 
+                                                        color = 'red')
+                                ],xs =12, sm=12, md=12, lg=3, xl=3)
+                        ]),
+                    html.Br()
+                    ],
+                    [html.Br(),
+                        dbc.Card([
+                        dbc.CardBody([
+                            html.H3('Egenskapsimporter', className='card-title',
+                                    style=h3_style),
+                        
+                        html.P("De globala SHAP-värdena som presenteras i grafen nedan kan användas för att sortera utvalda råvaror och funktioner enligt deras inverkan på modellen. "
+                               "Funktionen som fick det högsta globala signifikansvärdet bidrog mest som helhet oavsett förändringens riktning.",
+                           style =p_style,
+                           className="card-text"),
+                     html.Br(),
+                        dcc.Loading([dbc.Row(id = 'forecast_shap_graph_div_sv', justify = 'center')], type = random.choice(spinners))
+                        ])
+                        ])
+                        ],
+                
+                    [html.Br(),
+                        dbc.Card([
+                        dbc.CardBody([
+                            html.H3('Månatliga egenskapsimporter', className='card-title',
+                                    style=h3_style),
+                     html.P("Diagrammet nedan visar de lokala SHAP-värdena för funktionerna, som kan visas varje månad genom att välja önskad månad i rullgardinsmenyn. "
+                            "Dessa värden anger vilka varuprisförändringar som kommer att minska eller öka arbetslösheten under den valda månaden. "
+                            "Att dela en varas SHAP-värde med 100 resulterar i procentenheter i prisförändringen på en vara som bidrar till månadsförändringen i arbetslösheten. "
+                            "Under grafen finns en formel för att beräkna arbetslösheten med hjälp av SHAP-värden.",
+                            style =p_style,
+                            className="card-text"),
+                      html.Br(),
+                        html.H3('Välj en månad', style =h3_style),
+                                        dcc.Dropdown(id = 'forecast_local_shap_month_selection_sv',
+                                                      options = options, 
+                                                      style = {'font-size':16},
+                                                      value = list(local_shap_df.index)[0],
+                                                      multi=False ),
+                                        html.Br(),
+                                        
+                                        html.Div(dcc.Loading(id = 'forecast_local_shap_graph_div_sv',
                                                               type = random.choice(spinners))
                                                  )
                                    ])
@@ -3403,7 +3544,7 @@ def sv_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     
     return html.Div([dcc.Graph(id = 'local_shap_graph_sv',
                      config = config_plots_sv,
-                         figure = go.Figure(data=[go.Bar(y =['{} ({} {})'.format(i, feature_values[i],changes[i]) if i in feature_values.keys() else i for i in dff.index], 
+                         figure = go.Figure(data=[go.Bar(y =['{} ({} {})'.format(i, round(feature_values[i],2),changes[i]) if i in feature_values.keys() else '{}: {}'.format(i,dff.loc[i]) for i in dff.index], 
                       x = dff.values,
                       orientation='h',
                       name = '',
@@ -3411,7 +3552,7 @@ def sv_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                       # marker_color = ['cyan' if i not in ['Month',prev_str] else 'black' for i in dff.index],
                        marker = dict(color = list(map(sv_set_color,dff.index,dff.values))),
                       text = dff.values,
-                      hovertemplate = ['<b>{}</b><br><b>  SHAP värde</b>: {}<br><b>  Värde under nuvarande månad</b>: {} {}<br><b>  Värde under föregående månad</b>: {}'.format(i,dff.loc[i], feature_values[i],changes[i],feature_values_1[i]) if i in feature_values.keys() else i for i in dff.index],
+                      hovertemplate = ['<b>{}</b><br><b>  SHAP värde</b>: {}<br><b>  Värde under nuvarande månad</b>: {} {}<br><b>  Värde under föregående månad</b>: {}'.format(i,dff.loc[i], round(feature_values[i],2),changes[i],round(feature_values_1[i],2)) if i in feature_values.keys() else '{}: {}'.format(i,dff.loc[i]) for i in dff.index],
                           textfont = dict(
                                family='Cadiz Semibold', 
                               size = 16))],
@@ -3471,6 +3612,184 @@ def sv_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
                                                         ))),
                      html.P('Prognos ≈ Föregående prognosad arbetslöshet + [ {} + SUM( SHAP värden ) ] / 100'.format(round(100*base_value,2)))
                      ])
+
+
+@callback(
+
+    Output('forecast_local_shap_graph_div_sv', 'children'),
+    [Input('forecast_cut_off_sv', 'value'),
+     Input('forecast_shap_features_switch_sv','on'),
+     Input('forecast_local_shap_month_selection_sv','value'),
+     Input('local_forecast_shap_data_sv','data'),
+     State('forecast_data_sv','data')]
+    
+)
+def sv_update_local_forecast_shap_graph(cut_off, only_commodities, date, local_shap_data, forecast_data):
+    
+    if local_shap_data is None:
+        raise PreventUpdate
+    
+    try:
+        locale.setlocale(locale.LC_ALL, 'sv_FI')
+    except:
+        locale.setlocale(locale.LC_ALL, 'sv-FI')    
+        
+    forecast_data = pd.DataFrame(forecast_data).set_index('Aika')
+    forecast_data.index = pd.to_datetime(forecast_data.index )
+    forecast_data = forecast_data.drop('n_feat',axis=1)    
+    
+    local_shap_df = pd.DataFrame(local_shap_data)
+    local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+    local_shap_df.index = pd.to_datetime(local_shap_df.index)
+    
+    base_value = local_shap_df['base'].values[0]
+    local_shap_df = local_shap_df.drop('base',axis=1)
+    
+    date = pd.to_datetime(date)
+    
+    
+    date_str = date.strftime('%B %Y')
+    prev_date = date - pd.DateOffset(months=1)
+    prev_str = prev_date.strftime('%B %Y') + ' arbetslöshet'
+    
+    dff = local_shap_df.loc[date,:].copy()
+    
+  
+    
+    dff.index  = dff.index.str.replace('month','Nuvarande månad').str.replace('prev',prev_str)
+    
+    feature_values = {f:forecast_data.loc[date,f] for f in forecast_data.columns if f not in ['Työttömyysaste', 'change','prev','month','Inflaatio']}
+    feature_values[prev_str] = forecast_data.loc[date,'prev']
+    feature_values['Nuvarande månad'] = forecast_data.loc[date,'month']
+    
+    try:
+        feature_values_1 = {f:forecast_data.loc[date-pd.DateOffset(months=1),f] for f in forecast_data.columns if f not in ['Työttömyysaste', 'change','prev','month','Inflaatio']}
+        feature_values_1[prev_str] = forecast_data.loc[date-pd.DateOffset(months=1),'prev']
+        feature_values_1['Nuvarande månad'] = forecast_data.loc[date-pd.DateOffset(months=1),'month']
+    except:
+        feature_values_1 = {f:data_sv.loc[date-pd.DateOffset(months=1),f] for f in data_sv.columns if f not in ['Työttömyysaste', 'change','prev','month','Inflaatio']}
+        feature_values_1[prev_str] = data_sv.loc[date-pd.DateOffset(months=1),'prev']
+        feature_values_1['Nuvarande månad'] = data_sv.loc[date-pd.DateOffset(months=1),'month']
+    
+        
+    
+    differences = {f:feature_values[f]-feature_values_1[f] for f in feature_values.keys()}
+    changes={}
+    
+    # How the unemployment rate changed last month?
+    try:
+        changes[prev_str] = forecast_data.loc[date-pd.DateOffset(months=1),'change']
+    except:
+        changes[prev_str] = data_sv.loc[date-pd.DateOffset(months=1),'change']
+    
+    for d in differences.keys():
+        if differences[d] >0:
+            changes[d]='🔺'
+        elif differences[d] <0:
+            changes[d] = '🔽'
+        else:
+            changes[d] = '⇳'
+          
+    
+    if only_commodities:
+        dff = dff.loc[[i for i in dff.index if i not in ['Nuvarande månad', prev_str]]]
+    
+    
+    dff = dff.sort_values(ascending = False)
+    
+   
+    df = pd.Series(dff.iloc[cut_off+1:].copy().sum())
+    
+    
+    
+    # df.index = df.index.astype(str).str.replace('0', 'Muut {} piirrettä'.format(len(dff.iloc[cut_off+1:,:])))
+    df.index = ['Andra {} funktioner'.format(len(dff.iloc[cut_off+1:]))]
+    
+    
+    dff = pd.concat([dff.head(cut_off).copy(),df])
+    dff = dff.loc[dff.index != 'Andra 0 funktioner']
+    
+    dff.index = dff.index.str.replace('_','')
+    
+
+    height = graph_height +200 + 10*len(dff)
+    
+    dff = np.round(dff*100,2)
+   
+    # dff = dff.sort_values()
+
+    
+    return html.Div([dcc.Graph(id = 'local_shap_graph_sv',
+                     config = config_plots_sv,
+                         figure = go.Figure(data=[go.Bar(y =['{} ({} {})'.format(i, round(feature_values[i],2),changes[i]) if i in feature_values.keys() else '{}: {}'.format(i,dff.loc[i]) for i in dff.index], 
+                      x = dff.values,
+                      orientation='h',
+                      name = '',
+                      
+                      # marker_color = ['cyan' if i not in ['Month',prev_str] else 'black' for i in dff.index],
+                       marker = dict(color = list(map(sv_set_color,dff.index,dff.values))),
+                      text = dff.values,
+                      hovertemplate = ['<b>{}</b><br><b>  SHAP värde</b>: {}<br><b>  Värde under nuvarande månad</b>: {} {}<br><b>  Värde under föregående månad</b>: {}'.format(i,dff.loc[i], round(feature_values[i],2),changes[i],round(feature_values_1[i],2)) if i in feature_values.keys() else '{}: {}'.format(i,dff.loc[i]) for i in dff.index],
+                          textfont = dict(
+                               family='Cadiz Semibold', 
+                              size = 16))],
+         layout=go.Layout(title = dict(text = 'Lokala funktionsbetydelser<br>SHAP värden: '+date_str,
+                                                                     x=.5,
+                                                                     font=dict(
+                                                                          family='Cadiz Semibold',
+                                                                          size=20
+                                                                         )),
+                                                      
+                                                        
+                                                        template = 'seaborn',
+                                                        margin=dict(
+                                                             l=10,
+                                                            r=10,
+                                                            # b=100,
+                                                             # t=120,
+                                                             # pad=4
+                                                        ),
+                                                        legend=dict(
+                                                             orientation = 'h',
+                                                                     # x=.1,
+                                                                     # y=1,
+                                                                     # xanchor='center',
+                                                                     # yanchor='top',
+                                                                    font=dict(
+                                                             size=12,
+                                                             family='Cadiz Book'
+                                                            )),
+                                                        hoverlabel = dict(font=dict(
+                                                             size=18,
+                                                             family='Cadiz Book'
+                                                            )),
+                                                        height=height,#graph_height+200,
+                                                        xaxis = dict(title=dict(text = 'SHAP värde',
+                                                                                font=dict(
+                                                                                    size=16, 
+                                                                                    family = 'Cadiz Semibold'
+                                                                                    )),
+                                                                     automargin=True,
+                                                                     # tickformat = ' ',
+                                                                      # categoryorder='total descending',
+                                                                     tickfont = dict(
+                                                                         family = 'Cadiz Semibold', 
+                                                                          size = 14
+                                                                         )),
+                                                        yaxis = dict(title=dict(text = 'Funktion: 🔺 = ökning, 🔽 = minskning, ⇳ = samma som föregående månad',
+                                                                               font=dict(
+                                                                                    size=16, 
+                                                                                   family = 'Cadiz Semibold'
+                                                                                   )),
+                                                                    automargin=True,
+                                                                    tickfont = dict(
+                                                                        family = 'Cadiz Semibold', 
+                                                                         size = 14
+                                                                        ))
+                                                        ))),
+                     html.P('Prognos ≈ Föregående prognosad arbetslöshet + [ {} + SUM( SHAP värden ) ] / 100'.format(round(100*base_value,2)))
+                     ])
+
     
 @callback(
 
@@ -3479,6 +3798,16 @@ def sv_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
     
 )
 def sv_update_cut_off_indicator(cut_off):
+    return [html.P('Du valde {} funktioner.'.format(cut_off).replace(' 1 funktioner',' en funktion'), style = p_center_style)]
+
+
+@callback(
+
+    Output('forecast_cut_off_indicator_sv','children'),
+    [Input('forecast_cut_off_sv','value')]    
+    
+)
+def sv_update_forecast_cut_off_indicator(cut_off):
     return [html.P('Du valde {} funktioner.'.format(cut_off).replace(' 1 funktioner',' en funktion'), style = p_center_style)]
     
 @callback(
@@ -3497,6 +3826,30 @@ def sv_update_shap_slider(shap):
     return [html.P('Välj hur många funktioner som visas i diagrammet nedan.',
                        style = p_center_style),
                 dcc.Slider(id = 'cut_off_sv',
+                   min = 1, 
+                   max = len(shap_df),
+                   value = {True:len(shap_df), False: int(math.ceil(.2*len(shap_df)))}[len(shap_df)<=25],
+                   step = 1,
+                   marks=None,
+                   tooltip={"placement": "top", "always_visible": True},
+                   )]
+
+@callback(
+
+    Output('forecast_cut_off_div_sv','children'),
+    [Input('forecast_shap_data_sv','data')]    
+    
+)
+def sv_update_forecast_shap_slider(shap):
+    if shap is None:
+        raise PreventUpdate
+
+    shap_df = pd.DataFrame(shap)
+    
+    
+    return [html.P('Välj hur många funktioner som visas i diagrammet nedan.',
+                       style = p_center_style),
+                dcc.Slider(id = 'forecast_cut_off_sv',
                    min = 1, 
                    max = len(shap_df),
                    value = {True:len(shap_df), False: int(math.ceil(.2*len(shap_df)))}[len(shap_df)<=25],
@@ -3611,19 +3964,126 @@ def sv_update_shap_graph(cut_off, only_commodities, shap):
                                                                          size = 16
                                                                         ))
                                                         )))
+@callback(
+
+    Output('forecast_shap_graph_div_sv', 'children'),
+    [Input('forecast_cut_off_sv', 'value'),
+     Input('forecast_shap_features_switch_sv','on'),
+     State('forecast_shap_data_sv','data')]
     
+)
+def sv_update_forecast_shap_graph(cut_off, only_commodities, shap):
+    
+    if shap is None:
+        raise PreventUpdate
+        
+    
+    shap_df = pd.DataFrame(shap)
+    shap_df = shap_df.set_index(shap_df.columns[0])
+    shap_df.index = shap_df.index.str.replace('Kuukausi','Månad')
+    shap_df.index = shap_df.index.str.replace('Edellisen kuukauden työttömyysaste','Föregående arbetslöshetstal')
+  
+    
+    
+    if only_commodities:
+        shap_df = shap_df.loc[[i for i in shap_df.index if i not in ['Månad', 'Föregående arbetslöshetstal']]]
+    
+    
+    shap_df = shap_df.sort_values(by='SHAP', ascending = False)
+    
+   
+    df = pd.DataFrame(shap_df.iloc[cut_off+1:,:].sum())
+    df = df.T
+    df.index = df.index.astype(str).str.replace('0', 'Andra {} funktioner'.format(len(shap_df.iloc[cut_off+1:,:])))
+    
+    
+    shap_df = pd.concat([shap_df.head(cut_off),df])
+    shap_df = shap_df.loc[shap_df.index != 'Andra 0 funktioner']
+    
+    shap_df.index = shap_df.index.str.replace('_','')
+    
+
+    height = graph_height +200 + 10*len(shap_df)
+    
+    
+    return dcc.Graph(id = 'shap_graph_sv',
+                     config = config_plots_sv,
+                         figure = go.Figure(data=[go.Bar(y =shap_df.index, 
+                      x = np.round(100*shap_df.SHAP,2),
+                      orientation='h',
+                      name = '',
+                      marker_color = ['aquamarine' if i not in ['Månad','Föregående arbetslöshetstal'] else 'black' for i in shap_df.index],
+                      # marker = dict(color = 'turquoise'),
+                      text = np.round(100*shap_df.SHAP,2),
+                      hovertemplate = '<b>%{y}</b>: %{x}',
+                          textfont = dict(
+                               family='Cadiz Semibold', 
+                              size = 20))],
+         layout=go.Layout(title = dict(text = 'Globala funktionsviktigheter<br>Genomsnittliga |SHAP - värden|',
+                                                                     x=.5,
+                                                                     font=dict(
+                                                                          family='Cadiz Semibold',
+                                                                          size=20
+                                                                         )),
+                                                      
+                                                        
+                                                        template = 'seaborn',
+                                                        margin=dict(
+                                                             l=10,
+                                                            r=10,
+                                                            # b=100,
+                                                             # t=120,
+                                                             # pad=4
+                                                        ),
+                                                        legend=dict(
+                                                             orientation = 'h',
+                                                                     # x=.1,
+                                                                     # y=1,
+                                                                     # xanchor='center',
+                                                                     # yanchor='top',
+                                                                    font=dict(
+                                                             size=12,
+                                                             family='Cadiz Book'
+                                                            )),
+                                                        
+                                                        height=height,#graph_height+200,
+                                                        xaxis = dict(title=dict(text = 'Genomsnittligt |SHAP-värde|',
+                                                                                font=dict(
+                                                                                    size=18, 
+                                                                                    family = 'Cadiz Semibold'
+                                                                                    )),
+                                                                     automargin=True,
+                                                                     tickfont = dict(
+                                                                         family = 'Cadiz Semibold', 
+                                                                          size = 16
+                                                                         )),
+                                                        yaxis = dict(title=dict(text = 'Funktion',
+                                                                               font=dict(
+                                                                                    size=18, 
+                                                                                   family = 'Cadiz Semibold'
+                                                                                   )),
+                                                                    tickformat = ' ',
+                                                                     categoryorder='total ascending',
+                                                                    automargin=True,
+                                                                    tickfont = dict(
+                                                                        family = 'Cadiz Semibold', 
+                                                                         size = 16
+                                                                        ))
+                                                        )))    
 
 @callback(
     Output("forecast_download_sv", "data"),
     [Input("forecast_download_button_sv", "n_clicks")],
     [State('forecast_data_sv','data'),
      State('method_selection_results_sv','data'),
-     State('change_weights_sv','data')
+     State('change_weights_sv','data'),          
+      State('forecast_shap_data_sv','data'),
+      State('local_forecast_shap_data_sv','data'),
      ]
     
     
 )
-def sv_download_forecast_data(n_clicks, df, method_selection_results, weights_dict):
+def sv_download_forecast_data(n_clicks, df, method_selection_results, weights_dict, shap_data, local_shap_data):
     
     if n_clicks > 0:
         
@@ -3682,11 +4142,31 @@ def sv_download_forecast_data(n_clicks, df, method_selection_results, weights_di
         hyperparam_df.index.name = 'Hyperparameter'
         hyperparam_df.columns = ['Värde']   
         hyperparam_df['Värde'] = hyperparam_df['Värde'].astype(str)
+        
+        shap_df = pd.DataFrame(shap_data)
+        shap_df = shap_df.set_index(shap_df.columns[0])
+        shap_df.index.name = 'Funktion'
+        shap_df.SHAP = np.round(100*shap_df.SHAP,2)
+        shap_df.index = shap_df.index.str.replace('Kuukausi', 'Månad')
+        shap_df.index = shap_df.index.str.replace('Edellisen kuukauden työttömyysaste', 'Arbetslöshet föregående månad')
+        shap_df.index = shap_df.index.str.replace('_','')
+        
+        local_shap_df = pd.DataFrame(local_shap_data)
+        local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
+        local_shap_df.index = pd.to_datetime(local_shap_df.index)
+        local_shap_df.index.name = 'Tid'
+        local_shap_df = local_shap_df.rename(columns = {'month':'Månad',
+                                  'prev': 'Arbetslöshet föregående månad'})
+        local_shap_df = local_shap_df.multiply(100, axis=1)
+        local_shap_df.columns = local_shap_df.columns.str.replace('_','')
+        local_shap_df.drop('base',axis=1,inplace=True)
 
   
         data_ = data_sv.copy().rename(columns={'change':'Förändring (procentenheter)',
                                       'prev':'Tidigare arbetslöshetstal -%',
-                                      'month':'Månad'})
+                                      'month':'Månad',
+                                      'Työttömyysaste':'Arbetslöshet',
+                                      'Inflaatio':'Inflation'})
         data_.index.name = 'Tid'
         
         
@@ -3700,6 +4180,20 @@ def sv_download_forecast_data(n_clicks, df, method_selection_results, weights_di
         weights_df.to_excel(writer, sheet_name= 'Indexändringar')
         hyperparam_df.to_excel(writer, sheet_name= 'Hyperparametrar')
         metadata.to_excel(writer, sheet_name= 'Metadata')
+        
+        
+        workbook = writer.book
+        workbook.set_properties(
+        {
+            "title": "Skewed Phillips",
+            "subject": "Prognosresultat",
+            "author": "Tuomas Poukkula",
+            "company": "Gofore Ltd.",
+            "keywords": "XAI, Prediktiv analys",
+            "comments": "Kolla aplikationen på: https://skewedphillips.herokuapp.com"
+        }
+        )
+        
 
 
         writer.save()
@@ -3810,6 +4304,18 @@ def sv_download_test_data(n_clicks,
         hyperparam_df.to_excel(writer, sheet_name= 'Modellhyperparametrar')
         shap_df.to_excel(writer, sheet_name= 'Funktion betydelser')
         local_shap_df.to_excel(writer, sheet_name= 'Månatliga betydelser')
+        
+        workbook = writer.book
+        workbook.set_properties(
+        {
+            "title": "Skewed Phillips",
+            "subject": "Provningsresultat",
+            "author": "Tuomas Poukkula",
+            "company": "Gofore Ltd.",
+            "keywords": "XAI, Prediktiv analys",
+            "comments": "Kolla aplikationen på: https://skewedphillips.herokuapp.com"
+        }
+        )
 
         writer.save()
         
