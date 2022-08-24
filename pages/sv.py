@@ -4205,6 +4205,8 @@ def sv_download_forecast_data(n_clicks, df, method_selection_results, weights_di
         df.to_excel(writer, sheet_name= 'Prognosuppgifter')
         weights_df.to_excel(writer, sheet_name= 'Indexändringar')
         hyperparam_df.to_excel(writer, sheet_name= 'Hyperparametrar')
+        shap_df.to_excel(writer, sheet_name= 'Funktion betydelser')
+        local_shap_df.to_excel(writer, sheet_name= 'Månatliga betydelser')
         metadata.to_excel(writer, sheet_name= 'Metadata')
         
         
