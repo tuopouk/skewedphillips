@@ -1292,7 +1292,7 @@ def en_predict(model,explainer, features, feature_changes, length, use_pca = Fal
     
     X = pca.fit_transform(X)
     n_feat = len(pd.DataFrame(X).columns)
-    cols = ['_ '+str(i+1)+'. pääkomponentti' for i in range(n_feat)]
+    cols = ['_ '+str(i+1)+'. PC' for i in range(n_feat)]
     
     
   model.fit(X,y)

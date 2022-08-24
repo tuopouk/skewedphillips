@@ -1291,7 +1291,7 @@ def sv_predict(model,explainer, features, feature_changes, length, use_pca = Fal
     
     X = pca.fit_transform(X)
     n_feat = len(pd.DataFrame(X).columns)
-    cols = ['_ '+str(i+1)+'. pääkomponentti' for i in range(n_feat)]
+    cols = ['_ '+str(i+1)+'. PC' for i in range(n_feat)]
     
     
   model.fit(X,y)
@@ -2547,6 +2547,32 @@ def layout():
     
 )
 def sv_update_shap_switch(shap_data):
+    
+    shap_df = pd.DataFrame(shap_data)
+    shap_df = shap_df.set_index(shap_df.columns[0])
+    
+    if 'Kuukausi' not in shap_df.index:
+        return dict(label = 'Du använde principalkomponentanalys',
+                     style = {'font-size':p_font_size,
+                              'text-align':'center'
+                              # #'fontFamily':'Cadiz Semibold'
+                              }), True
+    else:
+        return dict(label = 'Visa endast varornas bidrag',
+                     style = {'font-size':p_font_size, 
+                              'text-align':'center'
+                              # #'fontFamily':'Cadiz Semibold'
+                              }), False
+    
+    
+@callback(
+    
+    [Output('forecast_shap_features_switch_sv', 'label'),
+     Output('forecast_shap_features_switch_sv', 'disabled')],
+    Input('forecast_shap_data_sv','data')
+    
+)
+def sv_updateforecast_shap_switch(shap_data):
     
     shap_df = pd.DataFrame(shap_data)
     shap_df = shap_df.set_index(shap_df.columns[0])
