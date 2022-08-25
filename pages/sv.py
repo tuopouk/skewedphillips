@@ -3340,7 +3340,9 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                             "De representerar den riktning och intensitet som kännetecknade prognosen för den valda månaden. "
                             "Grönt belyser de faktorer som minskar månadsförändringen i arbetslösheten och rött belyser de egenskaper som ökar den. "
                             "Svart färg indikerar de triviala egenskaper som är den aktuella månaden och arbetslösheten föregående månad. "
-                            "Den vertikala axeln visar namnen på funktionerna och deras värden för motsvarande tid med förändringens riktning jämfört med föregående månad med en ikon inom parentes.",
+                            "Den vertikala axeln visar namnen på funktionerna och deras värden för motsvarande tid med förändringens riktning jämfört med föregående månad med en ikon inom parentes. "
+                            "I denna graf motsvarar en SHAP-enhet en hundradels procentenhet som används att beskriva arbetslöshets månadsförändring. "
+                            "Under grafen finns en formel som kan användas för att beräkna månatliga prognoser genom att använda de lokala SHAP-värden och det konstanta värde som modellen producerar.",
                             style =p_style,
                             className="card-text"),
                       html.Br(),

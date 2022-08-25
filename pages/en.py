@@ -3330,7 +3330,8 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                         html.P("The graph below shows the mean absolute SHAP values. "
                             "They describe how much the features on average affected forecasts, regardless of the direction of impact. "
                             "They are calculated as the average of the absolute SHAP values of the local characteristics. "
-                            "Black color indicates the trivial features which are the current month and the unemployment rate of the previous month. ",
+                            "Black color indicates the trivial features which are the current month and the unemployment rate of the previous month. "
+                            ,
                            style =p_style,
                            className='card-text'
                            ),
@@ -3350,7 +3351,9 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                             "They represent the direction and intensity that characterised the forecast for the selected month. "
                             "Green highlights the factors that reduce the monthly change in unemployment and red highlights the features that increase it. "
                             "Black color indicates the trivial features which are the current month and the unemployment rate of the previous month. "
-                            "The vertical axis shows the names of the features as well as their values of the corresponding time and the direction of change compared to the previous month with an icon.",
+                            "The vertical axis shows the names of the features as well as their values of the corresponding time and the direction of change compared to the previous month with an icon. "
+                            "In this graph, one SHAP unit corresponds to one hundredth of a percentage point that is used to describe unemployment rate's monthly change. "
+                            "Below the graph is a formula that can be used to calculate monthly forecasts by the use of SHAP values and the constant value produced by the model.",
                              style =p_style,
                             className="card-text"),
                       html.Br(),

@@ -3399,11 +3399,13 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                          dbc.CardBody([
                              html.H3('Piirteiden merkitykset kuukausittain',className='card-title',
                                      style=h3_style),
-                             html.P("Alla olevassa kuvaajassa on esitetty piirteiden SHAP-arvot valitulle kuukaudelle. "
+                             html.P("Alla olevassa kuvaajassa on esitetty piirteiden lokaalit SHAP-arvot valitulle kuukaudelle. "
                                     "Ne kuvaavat suuntaa ja voimakkuutta, joka piirteillä oli valitun kuukauden ennusteeseen. "
                                     "Vihreällä värillä on korostettu työttömyyden kuukausimuutosta laskevat tekijät ja punaisella sitä nostavat piirteet. "
                                     "Mustalla on merkitty triviaalit piirteet eli kuluva kuukausi ja edellisen kuukauden työttömyysaste. "
-                                    "Pystyakselilla on esitetty piirteiden nimet sekä suluissa niiden arvo valittuna ajankohtana ja muutoksen suunta edelliseen kuukauteen nähden kuvaavalla ikonilla.",
+                                    "Pystyakselilla on esitetty piirteiden nimet sekä suluissa niiden arvo valittuna ajankohtana ja muutoksen suunta edelliseen kuukauteen nähden kuvaavalla ikonilla."
+                                    "Tässä kuvaajassa yksi SHAP-yksikkö vastaa yhtä sadasosaa prosenttiyksiköistä, jolla kuvataan työttömyysasteen kuukausimuutosta. "
+                                    "Kuvaajan alapuolella on esitetty kaava, jolla kuukausiennusteet voidaan laskea SHAP-arvoilla ja mallin tuottamalla vakioarvolla. ",
                                     style =p_style,className="card-text"),
 
                      
