@@ -3299,8 +3299,9 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                                    style = p_center_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
                     html.A([html.P('See also a Non-Technical Guide to Interpreting SHAP Analyses',
                                    style = p_center_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
-                    html.P("The graph's SHAP values are multiplied by 100 to improve visualization.",
-                           style = p_center_style),
+                    html.P("The graph's SHAP values are multiplied by 100 to improve visualization. "
+                           "Thereby one SHAP unit corresponds to one hundredth of a percentage point that is used to describe unemployment rate's monthly change. ",
+                           style = p_style),
                     html.Br(),
                     dbc.Row([
                         dbc.Col([
@@ -3352,7 +3353,6 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
                             "Green highlights the factors that reduce the monthly change in unemployment and red highlights the features that increase it. "
                             "Black color indicates the trivial features which are the current month and the unemployment rate of the previous month. "
                             "The vertical axis shows the names of the features as well as their values of the corresponding time and the direction of change compared to the previous month with an icon. "
-                            "In this graph, one SHAP unit corresponds to one hundredth of a percentage point that is used to describe unemployment rate's monthly change. "
                             "Below the graph is a formula that can be used to calculate monthly forecasts by the use of SHAP values and the constant value produced by the model.",
                              style =p_style,
                             className="card-text"),
@@ -3428,8 +3428,9 @@ def en_update_forecast_shap_results(n_clicks, shap, local_shap_data):
                     #                style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
                     # html.A([html.P('See also a Non-Technical Guide to Interpreting SHAP Analyses',
                     #                style = p_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
-                    # html.P("The graph's SHAP values are multiplied by 100 to improve visualization.",
-                    #        style = p_style),
+                    html.P("The graph's SHAP values are multiplied by 100 to improve visualization. "
+                           "Thereby one SHAP unit corresponds to one hundredth of a percentage point that is used to describe unemployment rate's monthly change. ",
+                           style = p_style),
                     html.Br(),
                     dbc.Row([
                         dbc.Col([

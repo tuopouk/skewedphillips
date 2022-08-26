@@ -3353,8 +3353,9 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                                    style = p_center_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
                     html.A([html.P('Katso myös ei-tekninen selittävä blogi SHAP - arvoista.',
                                    style = p_center_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
-                    html.P('Kuvaajan SHAP-arvot on kerrottu sadalla visualisoinnin parantamiseksi. ',
-                           style = p_center_style),
+                    html.P('Kuvaajan SHAP-arvot on kerrottu sadalla visualisoinnin parantamiseksi. '
+                           'Yksi SHAP-yksikkö vastaa siten yhtä sadasosaa prosenttiyksiköistä, jolla kuvataan työttömyysasteen kuukausimuutosta. ',
+                           style = p_style),
                     html.Br(),
                     dbc.Row([
                         dbc.Col([
@@ -3404,7 +3405,6 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                                     "Vihreällä värillä on korostettu työttömyyden kuukausimuutosta laskevat tekijät ja punaisella sitä nostavat piirteet. "
                                     "Mustalla on merkitty triviaalit piirteet eli kuluva kuukausi ja edellisen kuukauden työttömyysaste. "
                                     "Pystyakselilla on esitetty piirteiden nimet sekä suluissa niiden arvo valittuna ajankohtana ja muutoksen suunta edelliseen kuukauteen nähden kuvaavalla ikonilla. "
-                                    "Tässä kuvaajassa yksi SHAP-yksikkö vastaa yhtä sadasosaa prosenttiyksiköistä, jolla kuvataan työttömyysasteen kuukausimuutosta. "
                                     "Kuvaajan alapuolella on esitetty kaava, jolla kuukausiennusteet voidaan laskea SHAP-arvoilla ja mallin tuottamalla vakioarvolla. ",
                                     style =p_style,className="card-text"),
 
@@ -3481,8 +3481,9 @@ def update_forecast_shap_results(n_clicks, shap, local_shap_data):
                     #                style = p_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
                     # html.A([html.P('Katso myös ei-tekninen selittävä blogi SHAP - arvoista.',
                     #                style = p_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
-                    # html.P('Kuvaajan SHAP-arvot on kerrottu sadalla visualisoinnin parantamiseksi. ',
-                    #        style = p_style),
+                    html.P('Kuvaajan SHAP-arvot on kerrottu sadalla visualisoinnin parantamiseksi. '
+                           'Yksi SHAP-yksikkö vastaa siten yhtä sadasosaa prosenttiyksiköistä, jolla kuvataan työttömyysasteen kuukausimuutosta. ',
+                           style = p_style),
                     html.Br(),
                     dbc.Row([
                         dbc.Col([

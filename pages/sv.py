@@ -3290,8 +3290,9 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                                    style = p_center_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
                     html.A([html.P('Se även en icke-teknisk guide för tolkning av SHAP-analyser',
                                    style = p_center_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
-                    html.P("Grafens SHAP-värden multipliceras med 100 för att förbättra visualiseringen.",
-                           style = p_center_style),
+                    html.P("Grafens SHAP-värden multipliceras med 100 för att förbättra visualiseringen. "
+                           "En SHAP-enhet på de här graferna motsvarar en hundradels procentenhet som används att beskriva arbetslöshets månadsförändring. ",
+                           style = p_style),
                     html.Br(),
                     dbc.Row([
                         dbc.Col([
@@ -3341,7 +3342,6 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
                             "Grönt belyser de faktorer som minskar månadsförändringen i arbetslösheten och rött belyser de egenskaper som ökar den. "
                             "Svart färg indikerar de triviala egenskaper som är den aktuella månaden och arbetslösheten föregående månad. "
                             "Den vertikala axeln visar namnen på funktionerna och deras värden för motsvarande tid med förändringens riktning jämfört med föregående månad med en ikon inom parentes. "
-                            "I denna graf motsvarar en SHAP-enhet en hundradels procentenhet som används att beskriva arbetslöshets månadsförändring. "
                             "Under grafen finns en formel som kan användas för att beräkna månatliga prognoser genom att använda de lokala SHAP-värden och det konstanta värde som modellen producerar.",
                             style =p_style,
                             className="card-text"),
@@ -3410,8 +3410,9 @@ def sv_update_forecast_shap_results(n_clicks, shap, local_shap_data):
                     #                style = p_center_style)], href="https://www.youtube.com/embed/Tg8aPwPPJ9c", target='_blank'),
                     # html.A([html.P('Se även en icke-teknisk guide för tolkning av SHAP-analyser',
                     #                style = p_center_style)], href="https://www.aidancooper.co.uk/a-non-technical-guide-to-interpreting-shap-analyses/", target='_blank'),
-                    # html.P("Grafens SHAP-värden multipliceras med 100 för att förbättra visualiseringen.",
-                    #        style = p_center_style),
+                    html.P("Grafens SHAP-värden multipliceras med 100 för att förbättra visualiseringen. "
+                           "En SHAP-enhet på de här graferna motsvarar en hundradels procentenhet som används att beskriva arbetslöshets månadsförändring. ",
+                           style = p_style),
                     html.Br(),
                     dbc.Row([
                         dbc.Col([
