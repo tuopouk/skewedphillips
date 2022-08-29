@@ -80,21 +80,21 @@ MODELS = {
         #              'constant_hyperparameters':{'random_state':42,
         #                                          }
         #              },
-        'K lähimmät naapurit':{'model':KNeighborsRegressor,
-                               'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html',
-                                'video':'https://www.youtube.com/embed/jw5LhTWUoG4?list=PLRZZr7RFUUmXfON6dvwtkaaqf9oV_C1LF',
-                                'explainer':shap.KernelExplainer,
-                               'constant_hyperparameters': {
-                                                           'n_jobs':-1
-                                                            }
-                               },
-        'Tukivektorikone':{'model':SVR,
-                           'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html',
-                           'video':"https://www.youtube.com/embed/_YPScrckx28",
-                            'explainer':shap.KernelExplainer,
-                               'constant_hyperparameters': {
-                                                            }
-                               },
+        # 'K lähimmät naapurit':{'model':KNeighborsRegressor,
+        #                        'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html',
+        #                         'video':'https://www.youtube.com/embed/jw5LhTWUoG4?list=PLRZZr7RFUUmXfON6dvwtkaaqf9oV_C1LF',
+        #                         'explainer':shap.KernelExplainer,
+        #                        'constant_hyperparameters': {
+        #                                                    'n_jobs':-1
+        #                                                     }
+        #                        },
+        # 'Tukivektorikone':{'model':SVR,
+        #                    'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html',
+        #                    'video':"https://www.youtube.com/embed/_YPScrckx28",
+        #                     'explainer':shap.KernelExplainer,
+        #                        'constant_hyperparameters': {
+        #                                                     }
+        #                        },
         'Gradient Boost':{'model':GradientBoostingRegressor,
                           'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html',
                           'video':"https://www.youtube.com/embed/TyvYZ26alZs",

@@ -77,21 +77,21 @@ MODELS_sv = {
         #              'constant_hyperparameters':{'random_state':42,
         #                                          }
         #              },
-        'K Närmaste grannar':{'model':KNeighborsRegressor,
-                               'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html',
-                                'video':'https://www.youtube.com/embed/jw5LhTWUoG4?list=PLRZZr7RFUUmXfON6dvwtkaaqf9oV_C1LF',
-                                'explainer':shap.KernelExplainer,
-                               'constant_hyperparameters': {
-                                                           'n_jobs':-1
-                                                            }
-                               },
-        'Stöd vektormaskin':{'model':SVR,
-                           'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html',
-                           'video':"https://www.youtube.com/embed/_YPScrckx28",
-                            'explainer':shap.KernelExplainer,
-                               'constant_hyperparameters': {
-                                                            }
-                               },
+        # 'K Närmaste grannar':{'model':KNeighborsRegressor,
+        #                        'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html',
+        #                         'video':'https://www.youtube.com/embed/jw5LhTWUoG4?list=PLRZZr7RFUUmXfON6dvwtkaaqf9oV_C1LF',
+        #                         'explainer':shap.KernelExplainer,
+        #                        'constant_hyperparameters': {
+        #                                                    'n_jobs':-1
+        #                                                     }
+        #                        },
+        # 'Stöd vektormaskin':{'model':SVR,
+        #                    'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html',
+        #                    'video':"https://www.youtube.com/embed/_YPScrckx28",
+        #                     'explainer':shap.KernelExplainer,
+        #                        'constant_hyperparameters': {
+        #                                                     }
+        #                        },
         'Gradientförstärkning':{'model':GradientBoostingRegressor,
                           'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html',
                           'video':"https://www.youtube.com/embed/TyvYZ26alZs",
