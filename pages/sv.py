@@ -18,9 +18,9 @@ import requests
 import plotly.graph_objs as go
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_percentage_error
-from sklearn.svm import SVR
+# from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.neighbors import KNeighborsRegressor
+# from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from xgboost import XGBRegressor
 from sklearn.decomposition import PCA
@@ -1395,7 +1395,7 @@ fifth_class_options_sv = [{'label':c, 'value':c} for c in fifth_classes_sv]
 
 
 initial_options_sv = feature_options_sv
-initial_features_sv = [c for c in ['01.1.3 Fisk och skaldjur',
+example_basket_1 = [c for c in ['01.1.3 Fisk och skaldjur',
  '01.1.3.3 Torkad, rökt eller saltad fisk och skaldjur',
  '01.1.6.3.1 Frysta frukter och bär',
  '01.1.9.3.1 Babymat',
@@ -1415,6 +1415,62 @@ initial_features_sv = [c for c in ['01.1.3 Fisk och skaldjur',
  '09.4.2.3.3 Kabel- och betal-TV-avgifter',
  '09.6.0 Paketresor',
  '12.1.3.3.3 Kropps-, hand- och hårkrämer'] if c in data_sv.columns]
+
+example_basket_2 = [c for c in data_sv.columns if c.split()[0] in ['01.1.3',
+  '01.1.4.5',
+  '01.1.9',
+  '02.1.1.2.1',
+  '02.1.2.4',
+  '03.2.1.2',
+  '03.2.1.3',
+  '04.1.2',
+  '04.1.2.2.2',
+  '04.4.1.1',
+  '04.5.5',
+  '05.3.1.1.3',
+  '05.4.0.1.3',
+  '06.1.1.4',
+  '07.3.1.1.1',
+  '07.3.4.1',
+  '08.2.0.2',
+  '09.1.4.1.2',
+  '10.2',
+  '11.1.1.1.3',
+  '11.1.1.1.8',
+  '12.4.0']]
+
+
+
+example_basket_3 = [c for c in data_sv.columns if c.split()[0] in ['01.1.1.2.1',
+ '01.1.9.3',
+ '01.2.2.3',
+ '04.5.3.1.1',
+ '05.3',
+ '05.4.0',
+ '05.4.0.4.1',
+ '06.2.3.3',
+ '07.3.1',
+ '07.3.4',
+ '09.1.3.1',
+ '09.1.3.1.1',
+ '09.2.1.3',
+ '09.4.1',
+ '09.4.1.1.2',
+ '09.5.2.1.2',
+ '11.2.0.2',
+ '12',
+ '12.1.1.1.1',
+ '12.1.3.2',
+ '12.3.2.2',
+ '12.7.0.1']]
+
+example_basket_1_options = [{'label':c, 'value':c} for c in example_basket_1]
+example_basket_2_options = [{'label':c, 'value':c} for c in example_basket_2]
+example_basket_3_options = [{'label':c, 'value':c} for c in example_basket_3]
+
+initial_features_sv = example_basket_1
+
+
 
 def layout():
     
@@ -1860,7 +1916,9 @@ def layout():
                         html.P("Du kan också justera samma månatliga förändring för alla tillgångar eller dra nytta av genomsnittet för faktiska månatliga förändringar.",
                                 style = p_style),
                         html.P("Du kan välja eller sortera produktmenyn från rullgardinsmenyn ovan. Du kan välja antingen alfabetisk ordning, korrelationsordning (enligt Pearson korrelationskoefficient) eller avgränsning enligt Statistikcentralens varuhierarki. I korrelationsordningen avses här korrelationskoefficienten mellan värdena i prisindexet för varje vara och samtidigt arbetslöshetstalet, beräknat med Pearson-metoden. Dessa kan sorteras i fallande eller stigande ordning antingen efter det faktiska värdet (högsta positiva - lägsta negativa) eller det absoluta värdet (utan +/-). ",
-                                style = p_style)
+                                style = p_style),
+                        html.P("Det finns också några exempelkorgar som du kan komma åt genom att välja en i rullgardinsmenyn och använda kommandot Välj alla.",
+                                style = p_style),
                     ],xs =12, sm=12, md=12, lg=9, xl=9)
                 ], justify = 'center'),
                 
@@ -1926,6 +1984,21 @@ def layout():
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("5. klass", id = 'fifth_class_sv',style={
+                                                      'font-size':"0.9rem", 
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
+                                                  dbc.DropdownMenuItem("Example basket 1", id = 'example_basket_1_sv',style={
+                                                      'font-size':"0.9rem", 
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
+                                                  dbc.DropdownMenuItem("Example basket 2", id = 'example_basket_2_sv',style={
+                                                      'font-size':"0.9rem", 
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
+                                                  dbc.DropdownMenuItem("Example basket 3", id = 'example_basket_3_sv',style={
                                                       'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
@@ -3087,9 +3160,21 @@ def sv_update_test_results(n_clicks,
                         
                         ),
                     html.Br(),
-                    html.P("Det genomsnittliga absoluta procentuella felet (MAPE) är genomsnittet av de relativa felen för alla prognosvärden. Noggrannheten i detta fall beräknas med formel 1 – MAPE.", 
-                           style = p_style,
-                           className="card-text"),
+                    # html.P("Det genomsnittliga absoluta procentuella felet (MAPE) är genomsnittet av de relativa felen för alla prognosvärden. Noggrannheten i detta fall beräknas med formel 1 – MAPE.", 
+                    #        style = p_style,
+                    #        className="card-text"),
+                    html.Div([
+                        html.Label([html.A('Det genomsnittliga absoluta procentuella felet ( '),
+                                html.A('MAPE', 
+                                       href = 'https://en.wikipedia.org/wiki/Mean_absolute_percentage_error',
+                                       target='_blank'),
+                                html.A(' ) är genomsnittet av de relativa felen för alla prognosvärden. Noggrannheten i detta fall beräknas med formel 1 – MAPE.', 
+                           )
+                            ],
+                                   style = {'font-size':'1.2rem'}
+                           )
+                        ],style = {'text-align':'center'},
+                        className="card-text"),
                     html.Br(),
 
                     
@@ -5027,7 +5112,10 @@ def sv_update_commodity_unemployment_graph(values, label):
      Input('second_class_sv', 'n_clicks'),
      Input('third_class_sv', 'n_clicks'),
      Input('fourth_class_sv', 'n_clicks'),
-     Input('fifth_class_sv', 'n_clicks')
+     Input('fifth_class_sv', 'n_clicks'),
+     Input('example_basket_1_sv', 'n_clicks'),
+     Input('example_basket_2_sv', 'n_clicks'),
+     Input('example_basket_3_sv', 'n_clicks')
     ]
 )
 def sv_update_selections(*args):
@@ -5058,6 +5146,12 @@ def sv_update_selections(*args):
         return third_class_options_sv, "3. klass",#[f['value'] for f in third_class_options[:4]]
     elif button_id == 'fourth_class_sv':
         return fourth_class_options_sv, "4. klass"#,[f['value'] for f in fourth_class_options[:4]]
+    elif button_id == 'fifth_class_sv':
+        return fifth_class_options_sv, "5. klass"#,[f['value'] for f in fifth_class_options[:4]]
+    elif button_id == 'example_basket_1_sv':
+        return example_basket_1_options, "Exempelkorg 1"#,[f['value'] for f in fifth_class_options[:4]]
+    elif button_id == 'example_basket_2_sv':
+        return example_basket_2_options, "Exempelkorg 2"#,[f['value'] for f in fifth_class_options[:4]]
     else:
-        return fifth_class_options_sv, "5. klass",#[f['value'] for f in fifth_class_options[:4]]
+        return example_basket_3_options, "Exempelkorg 3"#,[f['value'] for f in fifth_class_options[:4]]
     

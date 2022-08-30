@@ -21,9 +21,9 @@ import requests
 import plotly.graph_objs as go
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_percentage_error
-from sklearn.svm import SVR
+# from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.neighbors import KNeighborsRegressor
+# from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from xgboost import XGBRegressor
 from sklearn.decomposition import PCA
@@ -1428,7 +1428,9 @@ fifth_class_options = [{'label':c, 'value':c} for c in fifth_classes]
 
 
 initial_options = feature_options
-initial_features = [c for c in ['01.1.3 Kala ja äyriäiset',
+
+
+example_basket_1 = [c for c in ['01.1.3 Kala ja äyriäiset',
  '01.1.3.3 Kuivattu, savustettu tai suolattu kala ja äyriäiset',
  '01.1.6.3.1 Pakastetut hedelmät ja marjat',
  '01.1.9.3.1 Vauvanruoat',
@@ -1448,6 +1450,60 @@ initial_features = [c for c in ['01.1.3 Kala ja äyriäiset',
  '09.4.2.3.3 Kaapeli ja maksu-TV tilausmaksut',
  '09.6.0 Valmismatkat',
  '12.1.3.3.3 Vartalo-, käsi- ja hiusvoiteet'] if c in data.columns]
+
+example_basket_2 = [c for c in data.columns if c.split()[0] in ['01.1.3',
+  '01.1.4.5',
+  '01.1.9',
+  '02.1.1.2.1',
+  '02.1.2.4',
+  '03.2.1.2',
+  '03.2.1.3',
+  '04.1.2',
+  '04.1.2.2.2',
+  '04.4.1.1',
+  '04.5.5',
+  '05.3.1.1.3',
+  '05.4.0.1.3',
+  '06.1.1.4',
+  '07.3.1.1.1',
+  '07.3.4.1',
+  '08.2.0.2',
+  '09.1.4.1.2',
+  '10.2',
+  '11.1.1.1.3',
+  '11.1.1.1.8',
+  '12.4.0']]
+
+
+
+example_basket_3 = [c for c in data.columns if c.split()[0] in ['01.1.1.2.1',
+ '01.1.9.3',
+ '01.2.2.3',
+ '04.5.3.1.1',
+ '05.3',
+ '05.4.0',
+ '05.4.0.4.1',
+ '06.2.3.3',
+ '07.3.1',
+ '07.3.4',
+ '09.1.3.1',
+ '09.1.3.1.1',
+ '09.2.1.3',
+ '09.4.1',
+ '09.4.1.1.2',
+ '09.5.2.1.2',
+ '11.2.0.2',
+ '12',
+ '12.1.1.1.1',
+ '12.1.3.2',
+ '12.3.2.2',
+ '12.7.0.1']]
+
+initial_features = example_basket_1
+
+example_basket_1_options = [{'label':c, 'value':c} for c in example_basket_1]
+example_basket_2_options = [{'label':c, 'value':c} for c in example_basket_2]
+example_basket_3_options = [{'label':c, 'value':c} for c in example_basket_3]
 
 
 def layout():
@@ -1902,6 +1958,8 @@ def layout():
                                 html.P('Voit myös säätää kaikille hyödykkeille saman kuukausimuutoksen tai hyödyntää toteutuneiden kuukausimuutosten keskiarvoja.',
                                         style = p_style),
                                 html.P('Hyödykevalikon voi rajata tai lajitella sen yllä olevasta alasvetovalikosta. Valittavanasi on joko aakkosjärjestys, korrelaatiojärjestykset (Pearsonin korrelaatiokertoimen mukaan) tai rajaus Tilastokeskuksen hyödykehierarkian mukaan. Korrelaatiojärjestyksellä tässä viitataan jokaisen hyödykkeen hintaindeksin arvojen ja saman ajankohdan työtömyysasteiden välistä korrelaatiokerrointa, joka on laskettu Pearsonin metodilla. Nämä voi lajitella laskevaan tai nousevaan järjestykseen joko todellisen arvon mukaan (suurin positiivinen - pienin negatiivinen) tai itseisarvon (ilman etumerkkiä +/-) mukaan.',
+                                        style = p_style),
+                                html.P("Käytössäsi on myös muutama esimerkkikori, jotka saat käyttöösi valitsemalla sellaisen alasvetovalikosta ja hyödyntämällä valitse kaikki -komentoa.",
                                         style = p_style)
                                 
                                 ],xs =12, sm=12, md=12, lg=9, xl=9)
@@ -1964,6 +2022,21 @@ def layout():
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("5. luokka", id = 'fifth_class',style={
+                                                      'font-size':"0.9rem", 
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
+                                                  dbc.DropdownMenuItem("Esimerkkikori 1", id = 'example_basket_1',style={
+                                                      'font-size':"0.9rem", 
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
+                                                  dbc.DropdownMenuItem("Esimerkkikori 2", id = 'example_basket_2',style={
+                                                      'font-size':"0.9rem", 
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
+                                                  dbc.DropdownMenuItem("Esimerkkikori 3", id = 'example_basket_3',style={
                                                       'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
@@ -3142,9 +3215,26 @@ def update_test_results(n_clicks,
                         
                         ),
                     html.Br(),
-                    html.P('Keskimääräinen suhteellinen virhe (MAPE) on kaikkien ennustearvojen suhteellisten virheiden keskiarvo. Tarkkuus on tässä tapauksessa laskettu kaavalla 1 - MAPE.', 
-                           style = p_style,
-                           className="card-text"),
+                    # html.P('Keskimääräinen suhteellinen virhe (MAPE) on kaikkien ennustearvojen suhteellisten virheiden keskiarvo. Tarkkuus on tässä tapauksessa laskettu kaavalla 1 - MAPE.', 
+                    #        style = p_center_style,
+                    #        className="card-text"),
+                    html.Div([
+                        html.Label([html.A('Keskimääräinen suhteellinen virhe ( ', 
+                                           # style = {'font-size':'1.2rem'}
+                                           ),
+                                html.A('MAPE', 
+                                       href = 'https://en.wikipedia.org/wiki/Mean_absolute_percentage_error',
+                                       target='_blank',
+                                       # style = {'font-size':'1.2rem'}
+                                       ),
+                                html.A(' ) on kaikkien ennustearvojen suhteellisten virheiden keskiarvo. Tarkkuus on tässä tapauksessa laskettu kaavalla 1 - MAPE.',
+                                       # style = {'font-size':'1.2rem'}
+                           )
+                            ],
+                                   style ={'font-size':'1.2rem'}
+                           )
+                        ],style = {'text-align':'center'},
+                        className="card-text"),
                     html.Br(),
 
                     
@@ -5102,7 +5192,10 @@ def update_commodity_unemployment_graph(values, label):
      Input('second_class', 'n_clicks'),
      Input('third_class', 'n_clicks'),
      Input('fourth_class', 'n_clicks'),
-     Input('fifth_class', 'n_clicks')
+     Input('fifth_class', 'n_clicks'),
+     Input('example_basket_1', 'n_clicks'),
+     Input('example_basket_2', 'n_clicks'),
+     Input('example_basket_3', 'n_clicks')
     ]
 )
 def update_selections(*args):
@@ -5133,6 +5226,13 @@ def update_selections(*args):
         return third_class_options, "3. luokka"#,[f['value'] for f in third_class_options[:4]]
     elif button_id == 'fourth_class':
         return fourth_class_options, "4. luokka"#,[f['value'] for f in fourth_class_options[:4]]
-    else:
+    elif button_id == 'fifth_class':
         return fifth_class_options, "5. luokka"#,[f['value'] for f in fifth_class_options[:4]]
+    elif button_id == 'example_basket_1':
+        return example_basket_1_options, "Esimerkkikori 1"#,[f['value'] for f in fifth_class_options[:4]]
+    elif button_id == 'example_basket_2':
+        return example_basket_2_options, "Esimerkkikori 2"#,[f['value'] for f in fifth_class_options[:4]]
+    else:
+        return example_basket_3_options, "Esimerkkikori 3"#,[f['value'] for f in fifth_class_options[:4]]
+    
     

@@ -17,9 +17,9 @@ import requests
 import plotly.graph_objs as go
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_percentage_error
-from sklearn.svm import SVR
+# from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.neighbors import KNeighborsRegressor
+# from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.decomposition import PCA
 import dash_daq
@@ -1394,7 +1394,8 @@ fifth_class_options_en = [{'label':c, 'value':c} for c in fifth_classes_en]
 
 
 initial_options_en = feature_options_en
-initial_features_en = [c for c in ['01.1.3 Fish and seafood',
+
+example_basket_1 = [c for c in ['01.1.3 Fish and seafood',
  '01.1.3.3 Dried, smoked or salted fish and seafood',
  '01.1.6.3.1 Frozen fruit and berries',
  '01.1.9.3.1 Baby food',
@@ -1414,6 +1415,60 @@ initial_features_en = [c for c in ['01.1.3 Fish and seafood',
  '09.4.2.3.3 Subscription to cable TV  and pay-TV',
  '09.6.0 Package holidays',
  '12.1.3.3.3 Body, hand and hair lotions'] if c in data_en.columns]
+
+example_basket_2 = [c for c in data_en.columns if c.split()[0] in ['01.1.3',
+  '01.1.4.5',
+  '01.1.9',
+  '02.1.1.2.1',
+  '02.1.2.4',
+  '03.2.1.2',
+  '03.2.1.3',
+  '04.1.2',
+  '04.1.2.2.2',
+  '04.4.1.1',
+  '04.5.5',
+  '05.3.1.1.3',
+  '05.4.0.1.3',
+  '06.1.1.4',
+  '07.3.1.1.1',
+  '07.3.4.1',
+  '08.2.0.2',
+  '09.1.4.1.2',
+  '10.2',
+  '11.1.1.1.3',
+  '11.1.1.1.8',
+  '12.4.0']]
+
+
+
+example_basket_3 = [c for c in data_en.columns if c.split()[0] in ['01.1.1.2.1',
+ '01.1.9.3',
+ '01.2.2.3',
+ '04.5.3.1.1',
+ '05.3',
+ '05.4.0',
+ '05.4.0.4.1',
+ '06.2.3.3',
+ '07.3.1',
+ '07.3.4',
+ '09.1.3.1',
+ '09.1.3.1.1',
+ '09.2.1.3',
+ '09.4.1',
+ '09.4.1.1.2',
+ '09.5.2.1.2',
+ '11.2.0.2',
+ '12',
+ '12.1.1.1.1',
+ '12.1.3.2',
+ '12.3.2.2',
+ '12.7.0.1']]
+
+initial_features_en = example_basket_1
+
+example_basket_1_options = [{'label':c, 'value':c} for c in example_basket_1]
+example_basket_2_options = [{'label':c, 'value':c} for c in example_basket_2]
+example_basket_3_options = [{'label':c, 'value':c} for c in example_basket_3]
 
 
 def layout():
@@ -1863,6 +1918,8 @@ def layout():
                                         style = p_style),
                                 html.P("You can select or sort the product menu from the drop-down menu above. You can choose either alphabetical order, correlation order (according to Pearson's correlation coefficient) or delineation according to Statistics Finland's commodity hierarchy. The correlation order here refers to the correlation coefficient between the values of the price index of each commodity and the unemployment rates at the same time, calculated using the Pearson method. These can be sorted in descending or ascending order by either the actual value (highest positive - lowest negative) or the absolute value (without +/-).",
                                         style = p_style),
+                                html.P("There are also a few sample baskets that you can access by selecting one from the drop-down menu and using the Select All command.",
+                                        style = p_style),
 
                                 html.Br(),
                                 
@@ -1926,6 +1983,21 @@ def layout():
                                                       }
                                                       ),
                                                   dbc.DropdownMenuItem("5. class", id = 'fifth_class_en',style={
+                                                      'font-size':"0.9rem", 
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
+                                                  dbc.DropdownMenuItem("Example basket 1", id = 'example_basket_1_en',style={
+                                                      'font-size':"0.9rem", 
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
+                                                  dbc.DropdownMenuItem("Example basket 2", id = 'example_basket_2_en',style={
+                                                      'font-size':"0.9rem", 
+                                                      #'font-family':'Cadiz Book'
+                                                      }
+                                                      ),
+                                                  dbc.DropdownMenuItem("Example basket 3", id = 'example_basket_3_en',style={
                                                       'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
                                                       }
@@ -3090,9 +3162,21 @@ def en_update_test_results(n_clicks,
                         
                         ),
                     html.Br(),
-                    html.P('The mean absolute percentage error (MAPE) is the average of the relative errors of all forecast values. The accuracy in this case is calculated by the formula: 1 - MAPE.', 
-                           style = p_style,
-                           className="card-text"),
+                    # html.P('The mean absolute percentage error (MAPE) is the average of the relative errors of all forecast values. The accuracy in this case is calculated by the formula: 1 - MAPE.', 
+                    #        style = p_style,
+                    #        className="card-text"),
+                    html.Div([
+                        html.Label([html.A('The mean absolute percentage error ( '),
+                                html.A('MAPE', 
+                                       href = 'https://en.wikipedia.org/wiki/Mean_absolute_percentage_error',
+                                       target='_blank'),
+                                html.A(' ) is the average of the relative errors of all forecast values. The accuracy in this case is calculated by the formula: 1 - MAPE.', 
+                           )
+                            ],
+                                   style ={'font-size':'1.2rem'}
+                           )
+                        ],style = {'text-align':'center'},
+                        className="card-text"),
                     html.Br(),
 
                     
@@ -5042,7 +5126,10 @@ def en_update_commodity_unemployment_graph(values, label):
      Input('second_class_en', 'n_clicks'),
      Input('third_class_en', 'n_clicks'),
      Input('fourth_class_en', 'n_clicks'),
-     Input('fifth_class_en', 'n_clicks')
+     Input('fifth_class_en', 'n_clicks'),
+     Input('example_basket_1_en', 'n_clicks'),
+     Input('example_basket_2_en', 'n_clicks'),
+     Input('example_basket_3_en', 'n_clicks')
     ]
 )
 def en_update_selections(*args):
@@ -5073,6 +5160,12 @@ def en_update_selections(*args):
         return third_class_options_en, "3. class",#[f['value'] for f in third_class_options[:4]]
     elif button_id == 'fourth_class_en':
         return fourth_class_options_en, "4. class"#,[f['value'] for f in fourth_class_options[:4]]
+    elif button_id == 'fifth_class_en':
+        return fifth_class_options_en, "5. class"#,[f['value'] for f in fifth_class_options[:4]]
+    elif button_id == 'example_basket_1_en':
+        return example_basket_1_options, "Example basket 1"#,[f['value'] for f in fifth_class_options[:4]]
+    elif button_id == 'example_basket_2_en':
+        return example_basket_2_options, "Example basket 2"#,[f['value'] for f in fifth_class_options[:4]]
     else:
-        return fifth_class_options_en, "5. class",#[f['value'] for f in fifth_class_options[:4]]
+        return example_basket_3_options, "Example basket 3"#,[f['value'] for f in fifth_class_options[:4]]
     
