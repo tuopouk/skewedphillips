@@ -4790,13 +4790,13 @@ def en_update_slider_prompt(value, averaging):
                       style = p_center_style),
                 html.Br(),
                 html.P('You can still adjust individual values on the input boxes.',
-                       style = p_style)]
+                       style = p_center_style)]
     else:
         return [html.Br(),html.P('You selected the estimated monthly change to be  {} %.'.format(value),
                       style = p_center_style),
                 html.Br(),
                 html.P('You can still adjust individual values on the input boxes.',
-                       style = p_style)]
+                       style = p_center_style)]
         
  
 

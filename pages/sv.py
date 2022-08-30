@@ -4779,13 +4779,13 @@ def sv_update_slider_prompt(value, averaging):
                       style = p_center_style),
                 html.Br(),
                 html.P('Du kan fortfarande justera enskilda värden på inmatningsrutan.',
-                       style = p_style)]
+                       style = p_center_style)]
     else:
         return [html.Br(),html.P('Du valde den beräknade månatliga förändringen till {} %.'.format(value),
                       style = p_center_style),
                 html.Br(),
                 html.P('Du kan fortfarande justera enskilda värden på inmatningsrutan.',
-                       style = p_style)]
+                       style = p_center_style)]
         
  
 
