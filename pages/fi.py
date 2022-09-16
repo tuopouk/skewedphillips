@@ -45,9 +45,9 @@ np.seterr(invalid='ignore')
 # riippu ollaanko Windows vai Linux -ympäristössä, mitä locale-koodausta käytetään.
 
 try:
-    locale.setlocale(locale.LC_ALL, 'fi_FI.UTF-8')
+    locale.setlocale(locale.LC_ALL, 'fi_FI.utf8')
 except:
-    locale.setlocale(locale.LC_ALL, 'fi-FI.UTF-8')
+    locale.setlocale(locale.LC_ALL, 'fi-FI.utf8')
 
 
 
@@ -406,9 +406,9 @@ data = get_data()
 def draw_phillips_curve():
     
   try:
-      locale.setlocale(locale.LC_ALL, 'fi_FI.UTF-8')
+      locale.setlocale(locale.LC_ALL, 'fi_FI.utf8')
   except:
-      locale.setlocale(locale.LC_ALL, 'fi-FI.UTF-8')
+      locale.setlocale(locale.LC_ALL, 'fi-FI.utf8')
       
   data_ = data[(data.Työttömyysaste.notna())&(data.Inflaatio.notna())].copy()
     
@@ -641,9 +641,9 @@ def plot_test_results(df, chart_type = 'lines+bars'):
     
     
     try:
-        locale.setlocale(locale.LC_ALL, 'fi_FI.UTF-8')
+        locale.setlocale(locale.LC_ALL, 'fi_FI.utf8')
     except:
-        locale.setlocale(locale.LC_ALL, 'fi-FI.UTF-8')
+        locale.setlocale(locale.LC_ALL, 'fi-FI.utf8')
     
     
     hovertemplate = ['<b>{}</b>:<br>Toteutunut: {}<br>Ennuste: {}'.format(df.index[i].strftime('%B %Y'),df.Työttömyysaste.values[i], df.Ennuste.values[i]) for i in range(len(df))]
@@ -878,9 +878,9 @@ def plot_test_results(df, chart_type = 'lines+bars'):
 def plot_forecast_data(df, chart_type):
     
     try:
-        locale.setlocale(locale.LC_ALL, 'fi_FI.UTF-8')
+        locale.setlocale(locale.LC_ALL, 'fi_FI.utf8')
     except:
-        locale.setlocale(locale.LC_ALL, 'fi-FI.UTF-8')
+        locale.setlocale(locale.LC_ALL, 'fi-FI.utf8')
     
     
     hover_true = ['<b>{}</b><br>Työttömyysaste: {} %'.format(data.index[i].strftime('%B %Y'), data.Työttömyysaste.values[i]) for i in range(len(data))]
@@ -3100,9 +3100,9 @@ def update_test_results(n_clicks,
     
         
         try:
-            locale.setlocale(locale.LC_ALL, 'fi_FI.UTF-8')
+            locale.setlocale(locale.LC_ALL, 'fi_FI.utf8')
         except:
-            locale.setlocale(locale.LC_ALL, 'fi-FI.UTF-8')
+            locale.setlocale(locale.LC_ALL, 'fi-FI.utf8')
 
     
         
@@ -3289,9 +3289,9 @@ def update_forecast_results(n_clicks,
     if n_clicks > 0:
         
         try:
-            locale.setlocale(locale.LC_ALL, 'fi_FI.UTF-8')
+            locale.setlocale(locale.LC_ALL, 'fi_FI.utf8')
         except:
-            locale.setlocale(locale.LC_ALL, 'fi-FI.UTF-8')
+            locale.setlocale(locale.LC_ALL, 'fi-FI.utf8')
         
         features = sorted(list(weights_dict.keys()))
         
@@ -3412,9 +3412,9 @@ def update_shap_results(n_clicks, shap, local_shap_data):
     if n_clicks > 0:
         
         try:
-            locale.setlocale(locale.LC_ALL, 'fi_FI.UTF-8')
+            locale.setlocale(locale.LC_ALL, 'fi_FI.utf8')
         except:
-            locale.setlocale(locale.LC_ALL, 'fi-FI.UTF-8')
+            locale.setlocale(locale.LC_ALL, 'fi-FI.utf8')
         
     
         shap_df = pd.DataFrame(shap)
@@ -3538,9 +3538,9 @@ def update_forecast_shap_results(n_clicks, shap, local_shap_data):
     if n_clicks > 0:
         
         try:
-            locale.setlocale(locale.LC_ALL, 'fi_FI.UTF-8')
+            locale.setlocale(locale.LC_ALL, 'fi_FI.utf8')
         except:
-            locale.setlocale(locale.LC_ALL, 'fi-FI.UTF-8')
+            locale.setlocale(locale.LC_ALL, 'fi-FI.utf8')
         
     
         shap_df = pd.DataFrame(shap)
@@ -3939,9 +3939,9 @@ def update_local_shap_graph(cut_off, only_commodities, date, local_shap_data):
         raise PreventUpdate
     
     try:
-        locale.setlocale(locale.LC_ALL, 'fi_FI.UTF-8')
+        locale.setlocale(locale.LC_ALL, 'fi_FI.utf8')
     except:
-        locale.setlocale(locale.LC_ALL, 'fi-FI.UTF-8')   
+        locale.setlocale(locale.LC_ALL, 'fi-FI.utf8')   
         
     
     
@@ -4102,9 +4102,9 @@ def update_local_forecast_shap_graph(cut_off, only_commodities, date, local_shap
         raise PreventUpdate
     
     try:
-        locale.setlocale(locale.LC_ALL, 'fi_FI.UTF-8')
+        locale.setlocale(locale.LC_ALL, 'fi_FI.utf8')
     except:
-        locale.setlocale(locale.LC_ALL, 'fi-FI.UTF-8')   
+        locale.setlocale(locale.LC_ALL, 'fi-FI.utf8')   
         
     
     forecast_data = pd.DataFrame(forecast_data).set_index('Aika')
