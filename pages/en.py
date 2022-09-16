@@ -41,9 +41,9 @@ np.seterr(invalid='ignore')
 # riippu ollaanko Windows vai Linux -ympäristössä, mitä locale-koodausta käytetään.
 
 try:
-    locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+    locale.setlocale(locale.LC_ALL, 'en_US')
 except:
-    locale.setlocale(locale.LC_ALL, 'en-US.utf8')
+    locale.setlocale(locale.LC_ALL, 'en-US')
 
 in_dev = True
 
@@ -391,9 +391,9 @@ data_en = en_get_data()
 def en_draw_phillips_curve():
     
   try:
-      locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+      locale.setlocale(locale.LC_ALL, 'en_US')
   except:
-      locale.setlocale(locale.LC_ALL, 'en-US.utf8')  
+      locale.setlocale(locale.LC_ALL, 'en-US')  
      
   data_ = data_en[(data_en.Työttömyysaste.notna())&(data_en.Inflaatio.notna())].copy()
     
@@ -621,9 +621,9 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
     
     
     try:
-        locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+        locale.setlocale(locale.LC_ALL, 'en_US')
     except:
-        locale.setlocale(locale.LC_ALL, 'en-US.utf8')
+        locale.setlocale(locale.LC_ALL, 'en-US')
     
     hovertemplate = ['<b>{}</b>:<br>True: {}<br>Predicted: {}'.format(df.index[i].strftime('%B %Y'),df.Työttömyysaste.values[i], df.Ennuste.values[i]) for i in range(len(df))]
     
@@ -857,9 +857,9 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
 def en_plot_forecast_data(df, chart_type):
     
     try:
-        locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+        locale.setlocale(locale.LC_ALL, 'en_US')
     except:
-        locale.setlocale(locale.LC_ALL, 'en-US.utf8')
+        locale.setlocale(locale.LC_ALL, 'en-US')
     
     hover_true = ['<b>{}</b><br>Unemployment Rate: {} %'.format(data_en.index[i].strftime('%B %Y'), data_en.Työttömyysaste.values[i]) for i in range(len(data_en))]
     hover_pred = ['<b>{}</b><br>Unemployment Rate: {} %'.format(df.index[i].strftime('%B %Y'), round(df.Työttömyysaste.values[i],1)) for i in range(len(df))]
@@ -3049,9 +3049,9 @@ def en_update_test_results(n_clicks,
     if n_clicks > 0:
     
         try:
-            locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+            locale.setlocale(locale.LC_ALL, 'en_US')
         except:
-            locale.setlocale(locale.LC_ALL, 'en-US.utf8')
+            locale.setlocale(locale.LC_ALL, 'en-US')
         
         
         features = sorted(list(features_values.keys()))
@@ -3229,9 +3229,9 @@ def en_update_forecast_results(n_clicks,
     if n_clicks > 0:
         
         try:
-            locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+            locale.setlocale(locale.LC_ALL, 'en_US')
         except:
-            locale.setlocale(locale.LC_ALL, 'en-US.utf8')
+            locale.setlocale(locale.LC_ALL, 'en-US')
         
         features = sorted(list(weights_dict.keys()))
         
@@ -3352,9 +3352,9 @@ def en_update_shap_results(n_clicks, shap, local_shap_data):
     if n_clicks > 0:
         
         try:
-            locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+            locale.setlocale(locale.LC_ALL, 'en_US')
         except:
-            locale.setlocale(locale.LC_ALL, 'en-US.utf8')
+            locale.setlocale(locale.LC_ALL, 'en-US')
         
     
         shap_df = pd.DataFrame(shap)
@@ -3482,9 +3482,9 @@ def en_update_forecast_shap_results(n_clicks, shap, local_shap_data):
     if n_clicks > 0:
         
         try:
-            locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+            locale.setlocale(locale.LC_ALL, 'en_US')
         except:
-            locale.setlocale(locale.LC_ALL, 'en-US.utf8')
+            locale.setlocale(locale.LC_ALL, 'en-US')
         
     
         shap_df = pd.DataFrame(shap)
@@ -3600,9 +3600,9 @@ def en_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
         raise PreventUpdate
     
     try:
-        locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+        locale.setlocale(locale.LC_ALL, 'en_US')
     except:
-        locale.setlocale(locale.LC_ALL, 'en-US.utf8')    
+        locale.setlocale(locale.LC_ALL, 'en-US')    
     
     local_shap_df = pd.DataFrame(local_shap_data)
     local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
@@ -3761,9 +3761,9 @@ def en_update_forecast_local_shap_graph(cut_off, only_commodities, date, local_s
         raise PreventUpdate
     
     try:
-        locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+        locale.setlocale(locale.LC_ALL, 'en_US')
     except:
-        locale.setlocale(locale.LC_ALL, 'en-US.utf8')    
+        locale.setlocale(locale.LC_ALL, 'en-US')    
         
     forecast_data = pd.DataFrame(forecast_data).set_index('Aika')
     forecast_data.index = pd.to_datetime(forecast_data.index )
