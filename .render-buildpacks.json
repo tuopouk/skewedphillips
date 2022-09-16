@@ -1,6 +1,0 @@
-{
-  "buildpacks": [
-    "heroku/python",
-    "https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku-community/locale.tgz"
-  ]
-}
