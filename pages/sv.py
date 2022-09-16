@@ -43,9 +43,9 @@ np.seterr(invalid='ignore')
 # riippu ollaanko Windows vai Linux -ympäristössä, mitä locale-koodausta käytetään.
 
 try:
-    locale.setlocale(locale.LC_ALL, 'sv-FI')
+    locale.setlocale(locale.LC_ALL, 'sv-FI.UTF-8')
 except:
-    locale.setlocale(locale.LC_ALL, 'sv_FI')
+    locale.setlocale(locale.LC_ALL, 'sv_FI.UTF-8')
 
 in_dev = True
 
@@ -389,9 +389,9 @@ data_sv = sv_get_data()
 def sv_draw_phillips_curve():
     
   try:
-      locale.setlocale(locale.LC_ALL, 'sv_FI')
+      locale.setlocale(locale.LC_ALL, 'sv_FI.UTF-8')
   except:
-      locale.setlocale(locale.LC_ALL, 'sv-FI')
+      locale.setlocale(locale.LC_ALL, 'sv-FI.UTF-8')
       
       
   data_ = data_sv[(data_sv.Työttömyysaste.notna())&(data_sv.Inflaatio.notna())].copy()
@@ -618,9 +618,9 @@ def sv_get_param_options(model_name):
 def sv_plot_test_results(df, chart_type = 'lines+bars'):
     
     try:
-        locale.setlocale(locale.LC_ALL, 'sv-FI')
+        locale.setlocale(locale.LC_ALL, 'sv-FI.UTF-8')
     except:
-        locale.setlocale(locale.LC_ALL, 'sv_FI')
+        locale.setlocale(locale.LC_ALL, 'sv_FI.UTF-8')
     
    
     hovertemplate = ['<b>{}</b>:<br>Sant: {}<br>Förutsägt: {}'.format(df.index[i].strftime('%B %Y'),df.Työttömyysaste.values[i], df.Ennuste.values[i]) for i in range(len(df))]
@@ -855,9 +855,9 @@ def sv_plot_test_results(df, chart_type = 'lines+bars'):
 def sv_plot_forecast_data(df, chart_type):
     
     try:
-        locale.setlocale(locale.LC_ALL, 'sv-FI')
+        locale.setlocale(locale.LC_ALL, 'sv-FI.UTF-8')
     except:
-        locale.setlocale(locale.LC_ALL, 'sv_FI')
+        locale.setlocale(locale.LC_ALL, 'sv_FI.UTF-8')
     
     
     hover_true = ['<b>{}</b><br>Arbetslöshet: {} %'.format(data_sv.index[i].strftime('%B %Y'), data_sv.Työttömyysaste.values[i]) for i in range(len(data_sv))]
@@ -3048,9 +3048,9 @@ def sv_update_test_results(n_clicks,
     if n_clicks > 0:
     
         try:
-            locale.setlocale(locale.LC_ALL, 'sv-FI')
+            locale.setlocale(locale.LC_ALL, 'sv-FI.UTF-8')
         except:
-            locale.setlocale(locale.LC_ALL, 'sv_FI')
+            locale.setlocale(locale.LC_ALL, 'sv_FI.UTF-8')
         
         
         features = sorted(list(features_values.keys()))
@@ -3227,9 +3227,9 @@ def sv_update_forecast_results(n_clicks,
     if n_clicks > 0:
         
         try:
-            locale.setlocale(locale.LC_ALL, 'sv-FI')
+            locale.setlocale(locale.LC_ALL, 'sv-FI.UTF-8')
         except:
-            locale.setlocale(locale.LC_ALL, 'sv_FI')
+            locale.setlocale(locale.LC_ALL, 'sv_FI.UTF-8')
         
         features = sorted(list(weights_dict.keys()))
         
@@ -3347,9 +3347,9 @@ def sv_update_shap_results(n_clicks, shap, local_shap_data):
     if n_clicks > 0:
         
         try:
-            locale.setlocale(locale.LC_ALL, 'sv_FI')
+            locale.setlocale(locale.LC_ALL, 'sv_FI.UTF-8')
         except:
-            locale.setlocale(locale.LC_ALL, 'sv-FI')
+            locale.setlocale(locale.LC_ALL, 'sv-FI.UTF-8')
     
         shap_df = pd.DataFrame(shap)
         
@@ -3468,9 +3468,9 @@ def sv_update_forecast_shap_results(n_clicks, shap, local_shap_data):
     if n_clicks > 0:
         
         try:
-            locale.setlocale(locale.LC_ALL, 'sv_FI')
+            locale.setlocale(locale.LC_ALL, 'sv_FI.UTF-8')
         except:
-            locale.setlocale(locale.LC_ALL, 'sv-FI')
+            locale.setlocale(locale.LC_ALL, 'sv-FI.UTF-8')
     
         shap_df = pd.DataFrame(shap)
         
@@ -3581,9 +3581,9 @@ def sv_update_local_shap_graph(cut_off, only_commodities, date, local_shap_data)
         raise PreventUpdate
     
     try:
-        locale.setlocale(locale.LC_ALL, 'sv_FI')
+        locale.setlocale(locale.LC_ALL, 'sv_FI.UTF-8')
     except:
-        locale.setlocale(locale.LC_ALL, 'sv-FI')    
+        locale.setlocale(locale.LC_ALL, 'sv-FI.UTF-8')    
     
     local_shap_df = pd.DataFrame(local_shap_data)
     local_shap_df = local_shap_df.set_index(local_shap_df.columns[0])
