@@ -381,6 +381,7 @@ def en_get_data():
   
   
   # data = data.T.drop_duplicates().T
+  # data=data.iloc[:-2,:]
 
   return data
 
@@ -5031,6 +5032,8 @@ def en_update_commodity_unemployment_graph(values, label):
                          marker_symbol = random.choice(symbols),
                          hovertemplate = "<b>{}</b>:".format(value)+" %{x}"+"<br><b>"+label_str+"</b>: %{y}"+"<br>(Correlation: {:.2f})".format(sorted(data_en[[label, value]].corr()[value].values)[0])) for value in values]
     
+    text = 'Selected commodities vs.<br>'+label_str
+    
     if len(values)==1:
         data_ = data_en[(data_en[label].notna())].copy()
         
@@ -5050,9 +5053,11 @@ def en_update_commodity_unemployment_graph(values, label):
                                       name = 'Logarithmic<br>trendline',
                                       line = dict(width=5),
                                       hovertemplate=[]))
+        text = f"{' '.join(values[0].split()[1:]).capitalize()} vs.<br>"+label_str
+    
     
     return [dcc.Graph(figure = go.Figure(data = traces,
-          layout = go.Layout(title = dict(text = 'Selected commodities vs.<br>'+label_str, 
+          layout = go.Layout(title = dict(text = text, 
                                           x=.5, 
                                           font=dict(
                                               family='Cadiz Semibold',

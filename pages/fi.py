@@ -5096,7 +5096,7 @@ def update_commodity_unemployment_graph(values, label):
                          marker = dict(size=10),
                          marker_symbol = random.choice(symbols),
                          hovertemplate = "<b>{}</b>:".format(value)+" %{x}"+"<br><b>"+label_str+"</b>: %{y}"+"<br>(Korrelaatio: {:.2f})".format(sorted(data[[label, value]].corr()[value].values)[0])) for value in values]
-    
+    text='Valitut hyödykkeet vs.<br>'+label_str
     if len(values)==1:
         data_ = data[(data[label].notna())].copy()
         
@@ -5116,10 +5116,11 @@ def update_commodity_unemployment_graph(values, label):
                                       name = 'Logaritminen<br>trendiviiva',
                                       line = dict(width=5),
                                       hovertemplate=[]))
+        text = f"{' '.join(values[0].split()[1:]).capitalize()} vs.<br>"+label_str
     
     
     return [dcc.Graph(figure = go.Figure(data = traces,
-          layout = go.Layout(title = dict(text = 'Valitut hyödykkeet vs.<br>'+label_str, 
+          layout = go.Layout(title = dict(text = text, 
                                           x=.5, 
                                           font=dict(
                                               family='Cadiz Semibold',
