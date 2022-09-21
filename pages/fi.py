@@ -243,9 +243,9 @@ def set_color(x,y):
         return 'black'
     elif y < 0:
         
-        return '#32CD32'
+        return '#117733'
     elif y >= 0:
-        return '#E34234'
+        return '#882255'
 
 
 
@@ -440,7 +440,8 @@ def draw_phillips_curve():
                                           ),
                             showlegend=False,
                             hovertemplate=hovertemplate,
-                            marker = dict(color = 'red', symbol='diamond', 
+                            marker = dict( symbol='diamond', 
+                                          color = '#E66100',
                                            size = 10
                                           )
                             ),
@@ -451,7 +452,8 @@ def draw_phillips_curve():
                             line = dict(width=5),
                             showlegend=True,
                             hovertemplate=[], 
-                            marker = dict(color = 'blue'))
+                            marker = dict(color = '#5D3A9B')
+                            )
                   ],
             layout = go.Layout(
                                xaxis=dict(showspikes=True,
@@ -660,15 +662,16 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                hovertemplate = hovertemplate,
                                textfont = dict(
                                     family='Cadiz Semibold', 
-                                   size = 16,color='green'), 
-                               marker = dict(color='#008000',size=12),
+                                   size = 16#,color='#1A85FF'
+                                   ), 
+                               marker = dict(color='#1A85FF',size=12),
                                line = dict(width=5)),
                     
                     go.Bar(x=df.index.strftime('%B %Y'), 
                            y = df.Ennuste, 
                            name = 'Ennuste',
                            showlegend=True, 
-                           marker = dict(color='red'), 
+                           marker = dict(color='#D41159'), 
                            text=[str(round(c,2))+' %' for c in df.Ennuste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
@@ -737,8 +740,9 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                 hovertemplate = hovertemplate,
                                 textfont = dict(
                                      family='Cadiz Semibold', 
-                                    size = 16,color='green'), 
-                                marker = dict(color='#008000',size=10),
+                                    size = 16#,color='#1A85FF'
+                                    ), 
+                                marker = dict(color='#1A85FF',size=10),
                                 line = dict(width=2)),
                     
                     go.Scatter(x=df.index, 
@@ -746,14 +750,16 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                             name = 'Ennuste',
                             showlegend=True,
                             mode = 'lines+markers+text',
-                            marker = dict(color='red',size=10), 
+                            marker = dict(color='#D41159',size=10), 
                             text=[str(round(c,2))+' %' for c in df.Ennuste], 
                             # textposition='inside',
                             hovertemplate = hovertemplate,
                             line = dict(width=2),
                             textfont = dict(
                                  family='Cadiz Semibold', 
-                                size = 16,color='red'))
+                                size = 16#,color='#D41159'
+                                )
+                            )
                     ],layout=go.Layout(xaxis = dict(title = dict(text='Aika',font=dict(size=20, 
                                                                                        family = 'Cadiz Semibold'
                                                                                        )),
@@ -805,7 +811,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                     y = df.Työttömyysaste, 
                                     name = 'Toteutunut',
                            showlegend=True, 
-                           marker = dict(color='green'), 
+                           marker = dict(color='#1A85FF'), 
                            text=[str(round(c,2))+' %' for c in df.Työttömyysaste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
@@ -818,7 +824,7 @@ def plot_test_results(df, chart_type = 'lines+bars'):
                                 y = df.Ennuste, 
                                 name = 'Ennuste',
                            showlegend=True, 
-                           marker = dict(color='red'), 
+                           marker = dict(color='#D41159'), 
                            text=[str(round(c,2))+' %' for c in df.Ennuste], 
                            textposition='inside',
                            hovertemplate = hovertemplate,
@@ -896,14 +902,14 @@ def plot_forecast_data(df, chart_type):
                                           showlegend=True,
                                           mode="lines", 
                                           hovertemplate =  hover_true,##'<b>%{x}</b>: %{y}%',
-                                          marker = dict(color='green')),
+                                          marker = dict(color='#1A85FF')),
                     go.Scatter(x=df.index, 
                                y = np.round(df.Työttömyysaste,1), 
                                name = 'Ennuste',
                                showlegend=True,
                                mode="lines", 
                                hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
-                               marker = dict(color='red'))
+                               marker = dict(color='#D41159'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',font=dict(
                          size=16, 
                         family = 'Cadiz Semibold'
@@ -998,7 +1004,7 @@ def plot_forecast_data(df, chart_type):
                                           mode="lines", 
                                           fill='tozeroy',
                                           hovertemplate =  hover_true,##'<b>%{x}</b>: %{y}%',
-                                          marker = dict(color='green')),
+                                          marker = dict(color='#1A85FF')),
                     go.Scatter(x=df.index, 
                                y = np.round(df.Työttömyysaste,1), 
                                name = 'Ennuste',
@@ -1006,7 +1012,7 @@ def plot_forecast_data(df, chart_type):
                                mode="lines", 
                                fill='tozeroy',
                                hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
-                               marker = dict(color='red'))
+                               marker = dict(color='#D41159'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',font=dict(
                          size=16, 
                         family = 'Cadiz Semibold'
@@ -1102,14 +1108,14 @@ def plot_forecast_data(df, chart_type):
                                           showlegend=True,
                                           # mode="lines", 
                                           hovertemplate = hover_true,#'<b>%{x}</b>: %{y}%',
-                                          marker = dict(color='green')),
+                                          marker = dict(color='#1A85FF')),
                     go.Bar(x=df.index, 
                                y = np.round(df.Työttömyysaste,1), 
                                name = 'Ennuste',
                                showlegend=True,
                                # mode="lines", 
                                hovertemplate = hover_pred,#'<b>%{x}</b>: %{y}%',
-                               marker = dict(color='red'))
+                               marker = dict(color='#D41159'))
                     ],layout=go.Layout(xaxis = dict(title = dict(text = 'Aika',
                                                                  font=dict(
                                                                      size=16, 
@@ -2221,13 +2227,13 @@ def layout():
                                                                                name = 'Työttömyysaste',
                                                                                mode = 'lines',
                                                                                hovertemplate = '%{x}'+'<br>%{y}',
-                                                                               marker = dict(color ='red')),
+                                                                               marker = dict(color ='#000000')),
                                                                     go.Scatter(x = data.index,
                                                                                y = data.Inflaatio,
                                                                                name = 'Inflaatio',
                                                                                hovertemplate = '%{x}'+'<br>%{y}',
                                                                                mode ='lines',
-                                                                               marker = dict(color = 'purple'))],
+                                                                               marker = dict(color = '#CC79A7'))],
                                                               layout = go.Layout(title = dict(text = 'Työttömyysaste ja inflaatio kuukausittain<br>{} - {}'.format(data.index.strftime('%B %Y').values[0],data.index.strftime('%B %Y').values[-1]),
                                                                                               x=.5,
                                                                                               font=dict(
@@ -3462,7 +3468,7 @@ def update_shap_results(n_clicks, shap, local_shap_data):
                                                                               # #'fontFamily':'Cadiz Semibold'
                                                                               }), 
                                                         on = False, 
-                                                        color = 'red')
+                                                        color = '#D41159')
                                 ],xs =12, sm=12, md=12, lg=3, xl=3)
                         ]),
                     html.Br()
@@ -3590,7 +3596,7 @@ def update_forecast_shap_results(n_clicks, shap, local_shap_data):
                                                                               # #'fontFamily':'Cadiz Semibold'
                                                                               }), 
                                                         on = False, 
-                                                        color = 'red')
+                                                        color = '#D41159')
                                 ],xs =12, sm=12, md=12, lg=3, xl=3)
                         ]),
                     html.Br()
