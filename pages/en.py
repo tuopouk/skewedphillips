@@ -4677,7 +4677,7 @@ def en_update_time_series(values):
                          name = ' '.join(value.split()[1:]),
                          mode = 'lines+markers') for value in values]
     return html.Div([dcc.Graph(figure=go.Figure(data=traces,
-                                      layout = go.Layout(title = dict(text = 'Indexes of<br>selected commodities',
+                                      layout = go.Layout(title = dict(text = 'Indices of<br>selected commodities',
                                                                       x=.5,
                                                                       font=dict(
                                                                            family='Cadiz Semibold',
