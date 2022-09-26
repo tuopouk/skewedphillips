@@ -18,14 +18,14 @@ layout = html.Div([
     html.H1('Oops!'),
     
     html.H2('Siirry osoitteeseen:'),
-    html.A([html.P('https://skewedphillips.herokuapp.com/')],
-           href = 'https://skewedphillips.herokuapp.com/'),
+    html.A([html.P('https://skewedphillips.onrender.com/')],
+           href = 'https://skewedphillips.onrender.com/'),
     html.Br(),
     html.H2('Please go to:'),
-    html.A([html.P('https://skewedphillips.herokuapp.com/en')],
-           href = 'https://skewedphillips.herokuapp.com/en'),
+    html.A([html.P('https://skewedphillips.onrender.com/en')],
+           href = 'https://skewedphillips.onrender.com/en'),
     html.H2('Gå till:'),
-    html.A([html.P('https://skewedphillips.herokuapp.com/sv')],
-           href = 'https://skewedphillips.herokuapp.com/sv'),
+    html.A([html.P('https://skewedphillips.onrender.com/sv')],
+           href = 'https://skewedphillips.onrender.com/sv'),
     
     ])
