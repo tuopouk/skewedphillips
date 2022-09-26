@@ -1,0 +1,6 @@
+{
+  "buildpacks": [
+    "heroku/python",
+    "https://github.com/heroku/heroku-buildpack-locale.git"
+  ]
+}
