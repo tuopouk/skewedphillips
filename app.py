@@ -124,14 +124,14 @@ navbar = dbc.Navbar(
     
     dbc.Row([
         
-        dbc.Col([
-            html.A([
-                html.Img(src = dash.get_asset_url('gofore_logo_white.svg'),
-                          height="60px")
-                ],
-                href = 'https://gofore.com/', 
-                target='_blank')
-            ]),#xl = 4, lg = 4, md = 12, sm = 12),
+        # dbc.Col([
+        #     html.A([
+        #         html.Img(src = dash.get_asset_url('gofore_logo_white.svg'),
+        #                   height="60px")
+        #         ],
+        #         href = 'https://gofore.com/', 
+        #         target='_blank')
+        #     ]),#xl = 4, lg = 4, md = 12, sm = 12),
    
         dbc.Col([
             dbc.NavItem(theme_changer),
@@ -158,7 +158,7 @@ navbar = dbc.Navbar(
                                 dbc.NavItem(dbc.NavLink(html.I(className="bi bi-github"), href="https://github.com/tuopouk/skewedphillips",external_link=True, target='_blank') ),
                                 dbc.NavItem(dbc.NavLink(html.I(className="bi bi bi-twitter"), href="https://twitter.com/TuomasPoukkula",external_link=True, target='_blank') ),
                                 dbc.NavItem(dbc.NavLink(html.I(className="bi bi-linkedin"), href="https://www.linkedin.com/in/tuomaspoukkula/",external_link=True, target='_blank') ),
-                                dbc.NavItem(id = 'email',children = [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skewed Phillips",external_link=True, target='_blank')] ),
+                                # dbc.NavItem(id = 'email',children = [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skewed Phillips",external_link=True, target='_blank')] ),
                                 
                             ]
                             ),
@@ -791,22 +791,22 @@ def toggle_offcanvas(n1, is_open):
         return not is_open
     return is_open
 
-@dash.callback(
-    Output('email','children'),
-    [Input('location','pathname')]
+# @dash.callback(
+#     Output('email','children'),
+#     [Input('location','pathname')]
     
-    )
-def update_email_topic(label):
+#     )
+# def update_email_topic(label):
         
 
-    if label == '/':
-        return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Phillipsin vinouma",external_link=True, target='_blank')]
-    elif label == '/en':
-        return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skewed Phillips",external_link=True, target='_blank')]
-    elif label == '/sv':
-        return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skev Phillips",external_link=True, target='_blank')]
-    else:
-       return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=https://skewedphillips.herokuapp.com/",external_link=True, target='_blank')] 
+#     if label == '/':
+#         return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Phillipsin vinouma",external_link=True, target='_blank')]
+#     elif label == '/en':
+#         return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skewed Phillips",external_link=True, target='_blank')]
+#     elif label == '/sv':
+#         return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=Skev Phillips",external_link=True, target='_blank')]
+#     else:
+#        return [dbc.NavLink(html.I(className="bi bi-envelope"), href="mailto:tuomas.poukkula@gofore.com?subject=https://skewedphillips.herokuapp.com/",external_link=True, target='_blank')] 
 
 
 
