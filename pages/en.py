@@ -17,9 +17,9 @@ import requests
 import plotly.graph_objs as go
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_percentage_error
-# from sklearn.svm import SVR
+from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-# from sklearn.neighbors import KNeighborsRegressor
+from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.decomposition import PCA
 import dash_daq
@@ -75,21 +75,21 @@ MODELS_en = {
         #              'constant_hyperparameters':{'random_state':42,
         #                                          }
         #              },
-        # 'K Nearest Neighbors':{'model':KNeighborsRegressor,
-        #                        'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html',
-        #                         'video':'https://www.youtube.com/embed/jw5LhTWUoG4?list=PLRZZr7RFUUmXfON6dvwtkaaqf9oV_C1LF',
-        #                         'explainer':shap.KernelExplainer,
-        #                        'constant_hyperparameters': {
-        #                                                    'n_jobs':-1
-        #                                                     }
-        #                        },
-        # 'Support Vector Machine':{'model':SVR,
-        #                    'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html',
-        #                    'video':"https://www.youtube.com/embed/_YPScrckx28",
-        #                     'explainer':shap.KernelExplainer,
-        #                        'constant_hyperparameters': {
-        #                                                     }
-        #                        },
+        'K Nearest Neighbors':{'model':KNeighborsRegressor,
+                                'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html',
+                                'video':'https://www.youtube.com/embed/jw5LhTWUoG4?list=PLRZZr7RFUUmXfON6dvwtkaaqf9oV_C1LF',
+                                'explainer':shap.KernelExplainer,
+                                'constant_hyperparameters': {
+                                                            'n_jobs':-1
+                                                            }
+                                },
+        'Support Vector Machine':{'model':SVR,
+                            'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html',
+                            'video':"https://www.youtube.com/embed/_YPScrckx28",
+                            'explainer':shap.KernelExplainer,
+                                'constant_hyperparameters': {
+                                                            }
+                                },
         'Gradient Boost':{'model':GradientBoostingRegressor,
                           'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html',
                           'video':"https://www.youtube.com/embed/TyvYZ26alZs",
@@ -381,7 +381,7 @@ def en_get_data():
   
   
   # data = data.T.drop_duplicates().T
-  # data=data.iloc[:-2,:]
+  data=data.iloc[:-2,:]
 
   return data
 
@@ -1786,11 +1786,11 @@ def layout():
                                               html.Br(),
                                               html.P("Data Scientist",
                                                      style = p_center_style),
-                                              html.P("Gofore Ltd",
-                                                     style = p_center_style),
-                                              html.A([html.P('Contact via e-mail',style = p_center_style)],
-                                                     href = 'mailto:tuomas.poukkula@gofore.com?subject=Phillips: Q&A',
-                                                     target='_blank')
+                                              # html.P("Gofore Ltd",
+                                              #        style = p_center_style),
+                                              # html.A([html.P('Contact via e-mail',style = p_center_style)],
+                                              #        href = 'mailto:tuomas.poukkula@gofore.com?subject=Phillips: Q&A',
+                                              #        target='_blank')
                                               ]),
                                           
                                                      
@@ -1844,22 +1844,22 @@ def layout():
                                       
                                       ),
                                   dbc.Row([
-                                      dbc.Col([
-                                      html.Div([
-                                          html.A([
-                                               html.Img(
-                                                   src='/assets/gofore_logo_orange.svg',
-                                                   style={
+                                      # dbc.Col([
+                                      # html.Div([
+                                      #     html.A([
+                                      #          html.Img(
+                                      #              src='/assets/gofore_logo_orange.svg',
+                                      #              style={
                                                      
-                                                         'text-align':'center',
-                                                         'float' : 'center',
-                                                         'position' : 'center',
-                                                         'padding-top' : '20px',
-                                                          'padding-bottom' : '20px'
-                                                   }
-                                                   )
-                                      ], href='https://gofore.com/',target = '_blank', style = {'textAlign':'center'})
-                                      ],style={'textAlign':'center'})],xs =12, sm=12, md=12, lg=6, xl=6)
+                                      #                    'text-align':'center',
+                                      #                    'float' : 'center',
+                                      #                    'position' : 'center',
+                                      #                    'padding-top' : '20px',
+                                      #                     'padding-bottom' : '20px'
+                                      #              }
+                                      #              )
+                                      # ], href='https://gofore.com/',target = '_blank', style = {'textAlign':'center'})
+                                      # ],style={'textAlign':'center'})],xs =12, sm=12, md=12, lg=6, xl=6)
                                       
                                       ],
                                   justify='center'),
@@ -4320,7 +4320,7 @@ def en_download_forecast_data(n_clicks, df, method_selection_results, weights_di
             "title": "Skewed Phillips",
             "subject": "Forecast Results",
             "author": "Tuomas Poukkula",
-            "company": "Gofore Ltd.",
+            # "company": "Gofore Ltd.",
             "keywords": "XAI, Predictive analytics",
             "comments": "Check out the app on: https://skewedphillips.herokuapp.com"
         }
@@ -4439,7 +4439,7 @@ def en_download_test_data(n_clicks,
             "title": "Skewed Phillips",
             "subject": "Test Results",
             "author": "Tuomas Poukkula",
-            "company": "Gofore Ltd.",
+            # "company": "Gofore Ltd.",
             "keywords": "XAI, Predictive analytics",
             "comments": "Check out the app on: https://skewedphillips.herokuapp.com"
         }
