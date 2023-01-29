@@ -75,21 +75,21 @@ MODELS_en = {
         #              'constant_hyperparameters':{'random_state':42,
         #                                          }
         #              },
-        'K Nearest Neighbors':{'model':KNeighborsRegressor,
-                                'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html',
-                                'video':'https://www.youtube.com/embed/jw5LhTWUoG4?list=PLRZZr7RFUUmXfON6dvwtkaaqf9oV_C1LF',
-                                'explainer':shap.KernelExplainer,
-                                'constant_hyperparameters': {
-                                                            'n_jobs':-1
-                                                            }
-                                },
-        'Support Vector Machine':{'model':SVR,
-                            'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html',
-                            'video':"https://www.youtube.com/embed/_YPScrckx28",
-                            'explainer':shap.KernelExplainer,
-                                'constant_hyperparameters': {
-                                                            }
-                                },
+        # 'K Nearest Neighbors':{'model':KNeighborsRegressor,
+        #                         'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html',
+        #                         'video':'https://www.youtube.com/embed/jw5LhTWUoG4?list=PLRZZr7RFUUmXfON6dvwtkaaqf9oV_C1LF',
+        #                         'explainer':shap.KernelExplainer,
+        #                         'constant_hyperparameters': {
+        #                                                     'n_jobs':-1
+        #                                                     }
+        #                         },
+        # 'Support Vector Machine':{'model':SVR,
+        #                     'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html',
+        #                     'video':"https://www.youtube.com/embed/_YPScrckx28",
+        #                     'explainer':shap.KernelExplainer,
+        #                         'constant_hyperparameters': {
+        #                                                     }
+        #                         },
         'Gradient Boost':{'model':GradientBoostingRegressor,
                           'doc':'https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html',
                           'video':"https://www.youtube.com/embed/TyvYZ26alZs",
@@ -1119,7 +1119,7 @@ def en_get_data():
   
   
   # data = data.T.drop_duplicates().T
-  data=data.iloc[:-2,:]
+  #data=data.iloc[:-2,:]
 
   return data
 
