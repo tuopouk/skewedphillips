@@ -219,7 +219,7 @@ footer = dbc.Card([
         dbc.Row([
             
             dbc.Col(dbc.NavLink(DashIconify(icon="logos:github"), href="https://github.com/tuopouk/skewedphillips",external_link=True, target='_blank',className="btn btn-link btn-floating btn-lg text-dark m-1"),className="mb-4" ,xl=1,lg=1,md=4,sm=4,xs=4),
-            dbc.Col(dbc.NavLink(DashIconify(icon="logos:twitter"), href="https://twitter.com/TuomasPoukkula",external_link=True, target='_blank',className="btn btn-link btn-floating btn-lg text-dark m-1"),className="mb-4",xl=1,lg=1,md=4,sm=4,xs=4   ),
+            dbc.Col(dbc.NavLink(DashIconify(icon="line-md:twitter-x-alt"), href="https://twitter.com/TuomasPoukkula",external_link=True, target='_blank',className="btn btn-link btn-floating btn-lg text-dark m-1"),className="mb-4",xl=1,lg=1,md=4,sm=4,xs=4   ),
             dbc.Col(dbc.NavLink(DashIconify(icon="logos:linkedin"), href="https://www.linkedin.com/in/tuomaspoukkula/",external_link=True, target='_blank',className="btn btn-link btn-floating btn-lg text-dark m-1"),className="mb-4",xl=1,lg=1,md=4,sm=4,xs=4  )
             
             
@@ -917,7 +917,157 @@ def en_get_inflation():
           "09.6.0.1.1",
           "09.6.0.2",
           "09.6.0.2.1",
-          "09.6.0.2.2",
+          "09.6.0.2.2"
+          # "10",
+          # "10.2",
+          # "10.2.0",
+          # "10.2.0.1",
+          # "10.2.0.1.2",
+          # "10.5",
+          # "10.5.0",
+          # "10.5.0.1",
+          # "10.5.0.1.1",
+          # "11",
+          # "11.1",
+          # "11.1.1",
+          # "11.1.1.1",
+          # "11.1.1.1.1",
+          # "11.1.1.1.2",
+          # "11.1.1.1.3",
+          # "11.1.1.1.4",
+          # "11.1.1.1.5",
+          # "11.1.1.1.6",
+          # "11.1.1.1.7",
+          # "11.1.1.1.8",
+          # "11.1.1.1.9",
+          # "11.1.1.2",
+          # "11.1.1.2.1",
+          # "11.1.1.3",
+          # "11.1.1.3.1",
+          # "11.1.1.4",
+          # "11.1.1.4.1",
+          # "11.1.1.4.2",
+          # "11.1.1.4.3",
+          # "11.1.2",
+          # "11.1.2.1",
+          # "11.1.2.1.1",
+          # "11.2",
+          # "11.2.0",
+          # "11.2.0.1",
+          # "11.2.0.1.1",
+          # "11.2.0.2",
+          # "11.2.0.2.1",
+          # "11.2.0.3",
+          # "11.2.0.3.1",
+          # "12",
+          # "12.1",
+          # "12.1.1",
+          # "12.1.1.1",
+          # "12.1.1.1.1",
+          # "12.1.1.2",
+          # "12.1.1.2.1",
+          # "12.1.1.2.3",
+          # "12.1.1.3",
+          # "12.1.1.3.1",
+          # "12.1.2",
+          # "12.1.2.1",
+          # "12.1.2.1.1",
+          # "12.1.2.2",
+          # "12.1.2.2.1",
+          # "12.1.2.3",
+          # "12.1.2.3.1",
+          # "12.1.3",
+          # "12.1.3.2",
+          # "12.1.3.2.1",
+          # "12.1.3.2.2",
+          # "12.1.3.3",
+          # "12.1.3.3.1",
+          # "12.1.3.3.2",
+          # "12.1.3.3.3",
+          # "12.1.3.3.4",
+          # "12.3",
+          # "12.3.1",
+          # "12.3.1.1",
+          # "12.3.1.1.2",
+          # "12.3.1.1.3",
+          # "12.3.2",
+          # "12.3.2.1",
+          # "12.3.2.1.1",
+          # "12.3.2.1.2",
+          # "12.3.2.2",
+          # "12.3.2.2.1",
+          # "12.3.2.3",
+          # "12.3.2.3.3",
+          # "12.4",
+          # "12.4.0",
+          # "12.4.0.1",
+          # "12.4.0.1.1",
+          # "12.4.0.2",
+          # "12.4.0.2.1",
+          # "12.5",
+          # "12.5.2",
+          # "12.5.2.1",
+          # "12.5.2.1.1",
+          # "12.5.3",
+          # "12.5.3.1",
+          # "12.5.3.1.1",
+          # "12.5.4",
+          # "12.5.4.1",
+          # "12.5.4.1.1",
+          # "12.6",
+          # "12.6.2",
+          # "12.6.2.1",
+          # "12.6.2.1.1",
+          # "12.7",
+          # "12.7.0",
+          # "12.7.0.1",
+          # "12.7.0.1.2",
+          # "12.7.0.4",
+          # "12.7.0.4.1"
+        ]
+      }
+    },
+    {
+      "code": "Tiedot",
+      "selection": {
+        "filter": "item",
+        "values": [
+          "pisteluku"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "format": "json-stat2"
+  }
+}
+  
+  data_json = requests.post(url,json=payload,headers=headers)
+
+  data = data_json.json()
+  
+  
+
+  hyödyke_df = pd.DataFrame(data['dimension']['Hyödyke']['category']['label'].values(), columns = ['Hyödyke'])
+  tiedot_df = pd.DataFrame(data['dimension']['Tiedot']['category']['label'].values(), columns = ['Tiedot'])
+  kuukausi_df = pd.DataFrame(data['dimension']['Kuukausi']['category']['index'].keys(), columns = ['Aika'])
+  
+  kuukausi_df.Aika = pd.to_datetime(kuukausi_df.Aika.str.replace('M','-'))
+
+  hyödyke_df['index'] = kuukausi_df['index'] = tiedot_df['index'] = 0
+  df = pd.merge(left = pd.merge(left = kuukausi_df, right = hyödyke_df, on = 'index', how = 'outer'), right = tiedot_df, on = 'index', how ='outer').drop('index',axis=1).set_index('Aika')
+
+  df['Pisteluku'] = data['value']
+
+
+  payload = {
+  "query": [
+    {
+      "code": "Hyödyke",
+      "selection": {
+        "filter": "item",
+        "values": [
+         
           "10",
           "10.2",
           "10.2.0",
@@ -1041,9 +1191,8 @@ def en_get_inflation():
     "format": "json-stat2"
   }
 }
-
   data_json = requests.post(url,json=payload,headers=headers)
-  
+
   data = data_json.json()
   
   
@@ -1055,16 +1204,18 @@ def en_get_inflation():
   kuukausi_df.Aika = pd.to_datetime(kuukausi_df.Aika.str.replace('M','-'))
 
   hyödyke_df['index'] = kuukausi_df['index'] = tiedot_df['index'] = 0
-  df = pd.merge(left = pd.merge(left = kuukausi_df, right = hyödyke_df, on = 'index', how = 'outer'), right = tiedot_df, on = 'index', how ='outer').drop('index',axis=1).set_index('Aika')
+  df2 = pd.merge(left = pd.merge(left = kuukausi_df, right = hyödyke_df, on = 'index', how = 'outer'), right = tiedot_df, on = 'index', how ='outer').drop('index',axis=1).set_index('Aika')
 
-  df['Pisteluku'] = data['value']
+
+
+
   # df['name'] = [' '.join(c.split()[1:]) for c in df.Hyödyke]
   # df =df .reset_index()
   # df =df.drop_duplicates(subset=['Aika','name'],keep='first')
   # df = df.set_index('Aika')
   # df = df.drop('name',axis=1)
 
-  return df
+  return pd.concat([df,df2])
 
 def en_get_inflation_percentage():
 
