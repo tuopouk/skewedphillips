@@ -292,7 +292,7 @@ def get_unemployment():
 
 def get_inflation():
 
-  url = 'https://pxdata.stat.fi:443/PxWeb/api/v1/fi/StatFin/khi/statfin_khi_pxt_11xd.px'
+  url = 'https://statfin.stat.fi/PxWeb/api/v1/fi/StatFin_Passiivi/khi/statfinpas_khi_pxt_11xd_2025m12.px'
   headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
                                     'Content-Type':'application/json'
                                    }
