@@ -9,7 +9,7 @@ Sovelluksessa voi valita hyödykkeet ja algoritmin, säätää hyperparametrit j
 Aineistona toimii Tilastokeskuksen avoimet tietoaineistot kuluttajahintaindeksistä ja työttömyysasteesta
 
 https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__tyti/statfin_tyti_pxt_135z.px/
-https://statfin.stat.fi/PxWeb/pxweb/fi/StatFin/StatFin__khi/statfin_khi_pxt_11xd.px/
+https://pxdata.stat.fi/PxWeb/api/v1/fi/StatFin/khi/statfin_khi_pxt_15b5.px/
 
 Sovellus löytyy osoitteesta: 
 
