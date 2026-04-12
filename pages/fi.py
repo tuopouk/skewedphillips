@@ -290,939 +290,114 @@ def get_unemployment():
 
   return df
 
-def get_inflation():
+import requests
+import pandas as pd
+import math
 
-  url = 'https://statfin.stat.fi/PxWeb/api/v1/fi/StatFin_Passiivi/khi/statfinpas_khi_pxt_11xd_2025m12.px'
-  headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
-                                    'Content-Type':'application/json'
-                                   }
-  payload = {
-  "query": [
-    {
-      "code": "Hyödyke",
-      "selection": {
-        "filter": "item",
-        "values": [
-          "0",
-          "01",
-          "01.1",
-          "01.1.1",
-          "01.1.1.1",
-          "01.1.1.1.1",
-          "01.1.1.2",
-          "01.1.1.2.1",
-          "01.1.1.2.2",
-          "01.1.1.3",
-          "01.1.1.3.1",
-          "01.1.1.3.2",
-          "01.1.1.4",
-          "01.1.1.4.2",
-          "01.1.1.4.3",
-          "01.1.1.4.4",
-          "01.1.1.4.5",
-          "01.1.1.5",
-          "01.1.1.5.1",
-          "01.1.1.5.2",
-          "01.1.1.6",
-          "01.1.1.6.1",
-          "01.1.1.7",
-          "01.1.1.7.1",
-          "01.1.1.7.2",
-          "01.1.1.8",
-          "01.1.1.8.1",
-          "01.1.2",
-          "01.1.2.1",
-          "01.1.2.1.1",
-          "01.1.2.2",
-          "01.1.2.2.1",
-          "01.1.2.4",
-          "01.1.2.4.1",
-          "01.1.2.5",
-          "01.1.2.5.2",
-          "01.1.2.7",
-          "01.1.2.7.1",
-          "01.1.2.7.2",
-          "01.1.2.7.3",
-          "01.1.2.8",
-          "01.1.2.8.1",
-          "01.1.3",
-          "01.1.3.1",
-          "01.1.3.1.1",
-          "01.1.3.1.2",
-          "01.1.3.3",
-          "01.1.3.3.1",
-          "01.1.3.4",
-          "01.1.3.4.1",
-          "01.1.4",
-          "01.1.4.1",
-          "01.1.4.1.2",
-          "01.1.4.3",
-          "01.1.4.3.1",
-          "01.1.4.4",
-          "01.1.4.4.1",
-          "01.1.4.4.2",
-          "01.1.4.4.3",
-          "01.1.4.5",
-          "01.1.4.5.1",
-          "01.1.4.5.2",
-          "01.1.4.5.3",
-          "01.1.4.5.4",
-          "01.1.4.6",
-          "01.1.4.6.1",
-          "01.1.5",
-          "01.1.5.1",
-          "01.1.5.1.1",
-          "01.1.5.2",
-          "01.1.5.2.1",
-          "01.1.5.2.2",
-          "01.1.5.2.3",
-          "01.1.5.2.4",
-          "01.1.5.4",
-          "01.1.5.4.1",
-          "01.1.6",
-          "01.1.6.1",
-          "01.1.6.1.1",
-          "01.1.6.1.2",
-          "01.1.6.1.3",
-          "01.1.6.1.4",
-          "01.1.6.1.6",
-          "01.1.6.1.7",
-          "01.1.6.2",
-          "01.1.6.2.1",
-          "01.1.6.3",
-          "01.1.6.3.1",
-          "01.1.6.3.2",
-          "01.1.6.4",
-          "01.1.6.4.1",
-          "01.1.7",
-          "01.1.7.1",
-          "01.1.7.1.1",
-          "01.1.7.1.2",
-          "01.1.7.1.3",
-          "01.1.7.1.4",
-          "01.1.7.2",
-          "01.1.7.2.1",
-          "01.1.7.3",
-          "01.1.7.3.2",
-          "01.1.7.4",
-          "01.1.7.4.1",
-          "01.1.7.4.3",
-          "01.1.7.5",
-          "01.1.7.5.1",
-          "01.1.8",
-          "01.1.8.1",
-          "01.1.8.1.1",
-          "01.1.8.2",
-          "01.1.8.2.1",
-          "01.1.8.3",
-          "01.1.8.3.1",
-          "01.1.8.4",
-          "01.1.8.4.1",
-          "01.1.8.4.2",
-          "01.1.8.5",
-          "01.1.8.5.1",
-          "01.1.9",
-          "01.1.9.1",
-          "01.1.9.1.1",
-          "01.1.9.2",
-          "01.1.9.2.1",
-          "01.1.9.3",
-          "01.1.9.3.1",
-          "01.1.9.4",
-          "01.1.9.4.1",
-          "01.1.9.5",
-          "01.1.9.5.1",
-          "01.2",
-          "01.2.1",
-          "01.2.1.1",
-          "01.2.1.1.1",
-          "01.2.1.2",
-          "01.2.1.2.1",
-          "01.2.1.3",
-          "01.2.1.3.2",
-          "01.2.2",
-          "01.2.2.1",
-          "01.2.2.1.1",
-          "01.2.2.2",
-          "01.2.2.2.1",
-          "01.2.2.2.3",
-          "01.2.2.3",
-          "01.2.2.3.1",
-          "02",
-          "02.1",
-          "02.1.1",
-          "02.1.1.1",
-          "02.1.1.1.1",
-          "02.1.1.2",
-          "02.1.1.2.1",
-          "02.1.2",
-          "02.1.2.1",
-          "02.1.2.1.1",
-          "02.1.2.2",
-          "02.1.2.2.1",
-          "02.1.2.3",
-          "02.1.2.3.1",
-          "02.1.2.4",
-          "02.1.2.4.1",
-          "02.1.3",
-          "02.1.3.1",
-          "02.1.3.1.1",
-          "02.1.3.3",
-          "02.1.3.3.1",
-          "02.2",
-          "02.2.0",
-          "02.2.0.1",
-          "02.2.0.1.1",
-          "02.2.0.2",
-          "02.2.0.2.1",
-          "02.2.0.3",
-          "02.2.0.3.1",
-          "03",
-          "03.1",
-          "03.1.1",
-          "03.1.1.1",
-          "03.1.1.1.1",
-          "03.1.2",
-          "03.1.2.1",
-          "03.1.2.1.1",
-          "03.1.2.1.2",
-          "03.1.2.1.3",
-          "03.1.2.1.5",
-          "03.1.2.1.6",
-          "03.1.2.1.7",
-          "03.1.2.2",
-          "03.1.2.2.1",
-          "03.1.2.2.2",
-          "03.1.2.2.3",
-          "03.1.2.2.4",
-          "03.1.2.2.5",
-          "03.1.2.2.6",
-          "03.1.2.2.7",
-          "03.1.2.3",
-          "03.1.2.3.1",
-          "03.1.2.3.2",
-          "03.1.2.4",
-          "03.1.2.4.1",
-          "03.1.2.4.2",
-          "03.1.3",
-          "03.1.3.1",
-          "03.1.3.1.1",
-          "03.1.3.1.2",
-          "03.1.3.2",
-          "03.1.3.2.1",
-          "03.1.4",
-          "03.1.4.1",
-          "03.1.4.1.1",
-          "03.2",
-          "03.2.1",
-          "03.2.1.1",
-          "03.2.1.1.2",
-          "03.2.1.1.4",
-          "03.2.1.2",
-          "03.2.1.2.2",
-          "03.2.1.2.3",
-          "03.2.1.3",
-          "03.2.1.3.2",
-          "04",
-          "04.1",
-          "04.1.1",
-          "04.1.1.1",
-          "04.1.1.1.1",
-          "04.1.2",
-          "04.1.2.2",
-          "04.1.2.2.2",
-          "04.2",
-          "04.2.1",
-          "04.2.1.1",
-          "04.2.1.1.1",
-          "04.2.1.1.2",
-          "04.2.2",
-          "04.2.2.1",
-          "04.2.2.1.1",
-          "04.2.2.1.2",
-          "04.2.3",
-          "04.2.3.1",
-          "04.2.3.1.1",
-          "04.2.4",
-          "04.2.4.1",
-          "04.2.4.1.1",
-          "04.3",
-          "04.3.1",
-          "04.3.1.1",
-          "04.3.1.1.1",
-          "04.3.1.1.2",
-          "04.3.1.1.4",
-          "04.3.1.1.7",
-          "04.3.2",
-          "04.3.2.3",
-          "04.3.2.3.1",
-          "04.4",
-          "04.4.1",
-          "04.4.1.1",
-          "04.4.1.1.1",
-          "04.4.2",
-          "04.4.2.1",
-          "04.4.2.1.1",
-          "04.4.3",
-          "04.4.3.1",
-          "04.4.3.1.1",
-          "04.4.4",
-          "04.4.4.1",
-          "04.4.4.1.1",
-          "04.4.4.3",
-          "04.4.4.3.1",
-          "04.5",
-          "04.5.1",
-          "04.5.1.1",
-          "04.5.1.1.1",
-          "04.5.3",
-          "04.5.3.1",
-          "04.5.3.1.1",
-          "04.5.5",
-          "04.5.5.1",
-          "04.5.5.1.1",
-          "05",
-          "05.1",
-          "05.1.1",
-          "05.1.1.1",
-          "05.1.1.1.1",
-          "05.1.1.1.2",
-          "05.1.1.1.3",
-          "05.1.1.1.4",
-          "05.1.1.2",
-          "05.1.1.2.1",
-          "05.1.1.5",
-          "05.1.1.5.1",
-          "05.1.1.6",
-          "05.1.1.6.1",
-          "05.1.1.7",
-          "05.1.1.7.2",
-          "05.1.1.7.3",
-          "05.1.2",
-          "05.1.2.1",
-          "05.1.2.1.1",
-          "05.1.3",
-          "05.1.3.1",
-          "05.1.3.1.1",
-          "05.2",
-          "05.2.0",
-          "05.2.0.1",
-          "05.2.0.1.1",
-          "05.2.0.2",
-          "05.2.0.2.1",
-          "05.2.0.2.2",
-          "05.2.0.2.3",
-          "05.2.0.3",
-          "05.2.0.3.1",
-          "05.2.0.3.2",
-          "05.3",
-          "05.3.1",
-          "05.3.1.1",
-          "05.3.1.1.1",
-          "05.3.1.1.3",
-          "05.3.1.2",
-          "05.3.1.2.1",
-          "05.3.1.2.2",
-          "05.3.1.3",
-          "05.3.1.3.3",
-          "05.3.1.3.4",
-          "05.3.1.5",
-          "05.3.1.5.1",
-          "05.3.2",
-          "05.3.2.2",
-          "05.3.2.2.1",
-          "05.3.2.3",
-          "05.3.2.3.1",
-          "05.3.3",
-          "05.3.3.1",
-          "05.3.3.1.1",
-          "05.4",
-          "05.4.0",
-          "05.4.0.1",
-          "05.4.0.1.1",
-          "05.4.0.1.3",
-          "05.4.0.1.4",
-          "05.4.0.1.5",
-          "05.4.0.2",
-          "05.4.0.2.1",
-          "05.4.0.2.2",
-          "05.4.0.3",
-          "05.4.0.3.1",
-          "05.4.0.4",
-          "05.4.0.4.1",
-          "05.5",
-          "05.5.1",
-          "05.5.1.1",
-          "05.5.1.1.1",
-          "05.5.2",
-          "05.5.2.1",
-          "05.5.2.1.1",
-          "05.5.2.1.2",
-          "05.5.2.2",
-          "05.5.2.2.1",
-          "05.5.2.2.2",
-          "05.6",
-          "05.6.1",
-          "05.6.1.1",
-          "05.6.1.1.1",
-          "05.6.1.1.2",
-          "05.6.1.2",
-          "05.6.1.2.1",
-          "05.6.1.2.2",
-          "05.6.1.2.4",
-          "05.6.1.2.5",
-          "05.6.1.2.7",
-          "05.6.1.2.8",
-          "05.6.2",
-          "05.6.2.1",
-          "05.6.2.1.1",
-          "06",
-          "06.1",
-          "06.1.1",
-          "06.1.1.1",
-          "06.1.1.1.1",
-          "06.1.1.1.2",
-          "06.1.1.1.3",
-          "06.1.1.3",
-          "06.1.1.3.1",
-          "06.1.1.4",
-          "06.1.1.4.1",
-          "06.1.2",
-          "06.1.2.1",
-          "06.1.2.1.2",
-          "06.1.3",
-          "06.1.3.1",
-          "06.1.3.1.1",
-          "06.1.3.1.2",
-          "06.1.3.2",
-          "06.1.3.2.1",
-          "06.2",
-          "06.2.1",
-          "06.2.1.1",
-          "06.2.1.1.1",
-          "06.2.1.2",
-          "06.2.1.2.1",
-          "06.2.2",
-          "06.2.2.1",
-          "06.2.2.1.1",
-          "06.2.3",
-          "06.2.3.1",
-          "06.2.3.1.1",
-          "06.2.3.3",
-          "06.2.3.3.1",
-          "06.3",
-          "06.3.0",
-          "06.3.0.1",
-          "06.3.0.1.1",
-          "07",
-          "07.1",
-          "07.1.1",
-          "07.1.1.1",
-          "07.1.1.1.1",
-          "07.1.1.2",
-          "07.1.1.2.1",
-          "07.1.2",
-          "07.1.2.1",
-          "07.1.2.1.2",
-          "07.1.3",
-          "07.1.3.1",
-          "07.1.3.1.1",
-          "07.2",
-          "07.2.1",
-          "07.2.1.1",
-          "07.2.1.1.1",
-          "07.2.1.2",
-          "07.2.1.2.1",
-          "07.2.1.3",
-          "07.2.1.3.1",
-          "07.2.2",
-          "07.2.2.1",
-          "07.2.2.1.1",
-          "07.2.2.2",
-          "07.2.2.2.1",
-          "07.2.2.4",
-          "07.2.2.4.1",
-          "07.2.3",
-          "07.2.3.1",
-          "07.2.3.1.1",
-          "07.2.3.1.2",
-          "07.2.3.2",
-          "07.2.3.2.1",
-          "07.2.4",
-          "07.2.4.1",
-          "07.2.4.1.1",
-          "07.2.4.2",
-          "07.2.4.2.1",
-          "07.2.4.3",
-          "07.2.4.3.1",
-          "07.2.4.3.2",
-          "07.3",
-          "07.3.1",
-          "07.3.1.1",
-          "07.3.1.1.1",
-          "07.3.2",
-          "07.3.2.1",
-          "07.3.2.1.1",
-          "07.3.2.1.2",
-          "07.3.2.2",
-          "07.3.2.2.1",
-          "07.3.3",
-          "07.3.3.1",
-          "07.3.3.1.1",
-          "07.3.3.2",
-          "07.3.3.2.1",
-          "07.3.4",
-          "07.3.4.1",
-          "07.3.4.1.1",
-          "08",
-          "08.1",
-          "08.1.0",
-          "08.1.0.1",
-          "08.1.0.1.1",
-          "08.1.0.2",
-          "08.1.0.2.1",
-          "08.2",
-          "08.2.0",
-          "08.2.0.2",
-          "08.2.0.2.1",
-          "08.3",
-          "08.3.0",
-          "08.3.0.1",
-          "08.3.0.1.1",
-          "08.3.0.2",
-          "08.3.0.2.1",
-          "08.3.0.3",
-          "08.3.0.3.1",
-          "09",
-          "09.1",
-          "09.1.1",
-          "09.1.1.1",
-          "09.1.1.1.3",
-          "09.1.1.2",
-          "09.1.1.2.1",
-          "09.1.1.2.2",
-          "09.1.1.2.3",
-          "09.1.1.2.4",
-          "09.1.1.3",
-          "09.1.1.3.1",
-          "09.1.1.4",
-          "09.1.1.4.1",
-          "09.1.2",
-          "09.1.2.1",
-          "09.1.2.1.1",
-          "09.1.2.1.2",
-          "09.1.3",
-          "09.1.3.1",
-          "09.1.3.1.1",
-          "09.1.3.2",
-          "09.1.3.2.3",
-          "09.1.4",
-          "09.1.4.1",
-          "09.1.4.1.1",
-          "09.1.4.1.2",
-          "09.1.4.2",
-          "09.1.4.2.2",
-          "09.1.4.3",
-          "09.1.4.3.1",
-          "09.1.5",
-          "09.1.5.1",
-          "09.1.5.1.1",
-          "09.2",
-          "09.2.1",
-          "09.2.1.1",
-          "09.2.1.1.1",
-          "09.2.1.3",
-          "09.2.1.3.1",
-          "09.2.1.3.2",
-          "09.2.2",
-          "09.2.2.1",
-          "09.2.2.1.1",
-          "09.3",
-          "09.3.1",
-          "09.3.1.1",
-          "09.3.1.1.1",
-          "09.3.1.1.2",
-          "09.3.1.2",
-          "09.3.1.2.1",
-          "09.3.1.2.3",
-          "09.3.1.2.4",
-          "09.3.2",
-          "09.3.2.1",
-          "09.3.2.1.1",
-          "09.3.2.1.2",
-          "09.3.2.2",
-          "09.3.2.2.4",
-          "09.3.3",
-          "09.3.3.1",
-          "09.3.3.1.2",
-          "09.3.3.2",
-          "09.3.3.2.1",
-          "09.3.3.2.2",
-          "09.3.3.3",
-          "09.3.3.3.1",
-          "09.3.3.3.2",
-          "09.3.4",
-          "09.3.4.2",
-          "09.3.4.2.1",
-          "09.3.4.2.2",
-          "09.3.5",
-          "09.3.5.1",
-          "09.3.5.1.1",
-          "09.4",
-          "09.4.1",
-          "09.4.1.1",
-          "09.4.1.1.1",
-          "09.4.1.1.2",
-          "09.4.1.2",
-          "09.4.1.2.1",
-          "09.4.1.2.2",
-          "09.4.1.2.5",
-          "09.4.2",
-          "09.4.2.1",
-          "09.4.2.1.1",
-          "09.4.2.1.2",
-          "09.4.2.2",
-          "09.4.2.2.1",
-          "09.4.2.3",
-          "09.4.2.3.3",
-          "09.4.2.4",
-          "09.4.2.4.1",
-          "09.4.2.5",
-          "09.4.2.5.1",
-          "09.4.2.7",
-          "09.4.2.7.1",
-          "09.4.3",
-          "09.4.3.1",
-          "09.4.3.1.1",
-          "09.5",
-          "09.5.1",
-          "09.5.1.1",
-          "09.5.1.1.1",
-          "09.5.1.1.2",
-          "09.5.1.2",
-          "09.5.1.2.2",
-          "09.5.1.3",
-          "09.5.1.3.1",
-          "09.5.2",
-          "09.5.2.1",
-          "09.5.2.1.1",
-          "09.5.2.1.2",
-          "09.5.2.2",
-          "09.5.2.2.1",
-          "09.5.2.2.2",
-          "09.5.3",
-          "09.5.3.1",
-          "09.5.3.1.1",
-          "09.5.4",
-          "09.5.4.1",
-          "09.5.4.1.1",
-          "09.5.4.2",
-          "09.5.4.2.1",
-          "09.6",
-          "09.6.0",
-          "09.6.0.1",
-          "09.6.0.1.1",
-          "09.6.0.2",
-          "09.6.0.2.1",
-          "09.6.0.2.2"
-          # "10",
-          # "10.2",
-          # "10.2.0",
-          # "10.2.0.1",
-          # "10.2.0.1.2",
-          # "10.5",
-          # "10.5.0",
-          # "10.5.0.1",
-          # "10.5.0.1.1",
-          # "11",
-          # "11.1",
-          # "11.1.1",
-          # "11.1.1.1",
-          # "11.1.1.1.1",
-          # "11.1.1.1.2",
-          # "11.1.1.1.3",
-          # "11.1.1.1.4",
-          # "11.1.1.1.5",
-          # "11.1.1.1.6",
-          # "11.1.1.1.7",
-          # "11.1.1.1.8",
-          # "11.1.1.1.9",
-          # "11.1.1.2",
-          # "11.1.1.2.1",
-          # "11.1.1.3",
-          # "11.1.1.3.1",
-          # "11.1.1.4",
-          # "11.1.1.4.1",
-          # "11.1.1.4.2",
-          # "11.1.1.4.3",
-          # "11.1.2",
-          # "11.1.2.1",
-          # "11.1.2.1.1",
-          # "11.2",
-          # "11.2.0",
-          # "11.2.0.1",
-          # "11.2.0.1.1",
-          # "11.2.0.2",
-          # "11.2.0.2.1",
-          # "11.2.0.3",
-          # "11.2.0.3.1",
-          # "12",
-          # "12.1",
-          # "12.1.1",
-          # "12.1.1.1",
-          # "12.1.1.1.1",
-          # "12.1.1.2",
-          # "12.1.1.2.1",
-          # "12.1.1.2.3",
-          # "12.1.1.3",
-          # "12.1.1.3.1",
-          # "12.1.2",
-          # "12.1.2.1",
-          # "12.1.2.1.1",
-          # "12.1.2.2",
-          # "12.1.2.2.1",
-          # "12.1.2.3",
-          # "12.1.2.3.1",
-          # "12.1.3",
-          # "12.1.3.2",
-          # "12.1.3.2.1",
-          # "12.1.3.2.2",
-          # "12.1.3.3",
-          # "12.1.3.3.1",
-          # "12.1.3.3.2",
-          # "12.1.3.3.3",
-          # "12.1.3.3.4",
-          # "12.3",
-          # "12.3.1",
-          # "12.3.1.1",
-          # "12.3.1.1.2",
-          # "12.3.1.1.3",
-          # "12.3.2",
-          # "12.3.2.1",
-          # "12.3.2.1.1",
-          # "12.3.2.1.2",
-          # "12.3.2.2",
-          # "12.3.2.2.1",
-          # "12.3.2.3",
-          # "12.3.2.3.3",
-          # "12.4",
-          # "12.4.0",
-          # "12.4.0.1",
-          # "12.4.0.1.1",
-          # "12.4.0.2",
-          # "12.4.0.2.1",
-          # "12.5",
-          # "12.5.2",
-          # "12.5.2.1",
-          # "12.5.2.1.1",
-          # "12.5.3",
-          # "12.5.3.1",
-          # "12.5.3.1.1",
-          # "12.5.4",
-          # "12.5.4.1",
-          # "12.5.4.1.1",
-          # "12.6",
-          # "12.6.2",
-          # "12.6.2.1",
-          # "12.6.2.1.1",
-          # "12.7",
-          # "12.7.0",
-          # "12.7.0.1",
-          # "12.7.0.1.2",
-          # "12.7.0.4",
-          # "12.7.0.4.1"
-        ]
-      }
-    },
-    {
-      "code": "Tiedot",
-      "selection": {
-        "filter": "item",
-        "values": [
-          "pisteluku"
-        ]
-      }
+def get_inflation(num_chunks=2, lang='fi'):
+    url = f'https://pxdata.stat.fi/PxWeb/api/v1/{lang}/StatFin/khi/statfin_khi_pxt_15b5.px'
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+        'Content-Type': 'application/json'
     }
-  ],
-  "response": {
-    "format": "json-stat2"
-  }
-}
-  
-  data_json = requests.post(url,json=payload,headers=headers)
 
-  data = data_json.json()
-  
-  
+    # 1. Haetaan rajapinnan metatiedot (GET-pyyntö), jotta saadaan kaikki Hyödyke-koodit
+    print("Haetaan metatiedot ja hyödykekoodit...")
+    meta_resp = requests.get(url)
+    if meta_resp.status_code != 200:
+        raise Exception(f"Metatietojen haku epäonnistui: {meta_resp.status_code}")
+    
+    meta_json = meta_resp.json()
+    
+    # Etsitään "Hyödyke"-muuttujan sallitut arvot
+    hyodyke_koodit = []
+    for var in meta_json['variables']:
+        if var['code'] == 'Hyödyke':
+            hyodyke_koodit = var['values']
+            break
+            
+    if not hyodyke_koodit:
+        raise Exception("Hyödykekoodien listaa ei löytynyt metatiedoista.")
+        
+    print(f"Löydettiin yhteensä {len(hyodyke_koodit)} hyödykettä. Jaetaan {num_chunks} osaan.")
 
-  hyödyke_df = pd.DataFrame(data['dimension']['Hyödyke']['category']['label'].values(), columns = ['Hyödyke'])
-  tiedot_df = pd.DataFrame(data['dimension']['Tiedot']['category']['label'].values(), columns = ['Tiedot'])
-  kuukausi_df = pd.DataFrame(data['dimension']['Kuukausi']['category']['index'].keys(), columns = ['Aika'])
-  
-  kuukausi_df.Aika = pd.to_datetime(kuukausi_df.Aika.str.replace('M','-'))
+    # 2. Jaetaan hyödykekoodit tasaisesti osiin (chunks)
+    chunk_size = math.ceil(len(hyodyke_koodit) / num_chunks)
+    chunks = [hyodyke_koodit[i:i + chunk_size] for i in range(0, len(hyodyke_koodit), chunk_size)]
 
-  hyödyke_df['index'] = kuukausi_df['index'] = tiedot_df['index'] = 0
-  df = pd.merge(left = pd.merge(left = kuukausi_df, right = hyödyke_df, on = 'index', how = 'outer'), right = tiedot_df, on = 'index', how ='outer').drop('index',axis=1).set_index('Aika')
+    results = []
 
-  df['Pisteluku'] = data['value']
+    # 3. Tehdään POST-pyyntö jokaiselle palaselle erikseen
+    for idx, chunk in enumerate(chunks):
+        print(f"Haetaan osa {idx + 1}/{len(chunks)} ({len(chunk)} hyödykettä)...")
+        
+        payload = {
+            "query": [
+                {
+                    "code": "Hyödyke", 
+                    "selection": {
+                        "filter": "item", 
+                        "values": chunk # Käytetään tätä kyseistä palasta
+                    }
+                },
+                {
+                    "code": "Tiedot", 
+                    "selection": {
+                        "filter": "item", 
+                        "values": ["ip_khi"] # Sinun määrittämäsi uusi arvo
+                    }
+                }
+            ],
+            "response": {"format": "json-stat2"}
+        }
 
+        resp = requests.post(url, json=payload, headers=headers)
+        
+        # Virheenkäsittely: varmistetaan ettei API kaatunut tällä palasella
+        if resp.status_code != 200:
+            print(f"API-virhe osassa {idx+1}: HTTP {resp.status_code}")
+            print(resp.text)
+            continue
+            
+        data_json = resp.json()
+        
+        # 4. Puretaan JSON-stat2 data Dataframeksi
+        h_labels = list(data_json['dimension']['Hyödyke']['category']['label'].values())
+        t_labels = list(data_json['dimension']['Tiedot']['category']['label'].values())
+        times = list(data_json['dimension']['Kuukausi']['category']['index'].keys())
+        values = data_json['value']
 
-  payload = {
-  "query": [
-    {
-      "code": "Hyödyke",
-      "selection": {
-        "filter": "item",
-        "values": [
-         
-          "10",
-          "10.2",
-          "10.2.0",
-          "10.2.0.1",
-          "10.2.0.1.2",
-          "10.5",
-          "10.5.0",
-          "10.5.0.1",
-          "10.5.0.1.1",
-          "11",
-          "11.1",
-          "11.1.1",
-          "11.1.1.1",
-          "11.1.1.1.1",
-          "11.1.1.1.2",
-          "11.1.1.1.3",
-          "11.1.1.1.4",
-          "11.1.1.1.5",
-          "11.1.1.1.6",
-          "11.1.1.1.7",
-          "11.1.1.1.8",
-          "11.1.1.1.9",
-          "11.1.1.2",
-          "11.1.1.2.1",
-          "11.1.1.3",
-          "11.1.1.3.1",
-          "11.1.1.4",
-          "11.1.1.4.1",
-          "11.1.1.4.2",
-          "11.1.1.4.3",
-          "11.1.2",
-          "11.1.2.1",
-          "11.1.2.1.1",
-          "11.2",
-          "11.2.0",
-          "11.2.0.1",
-          "11.2.0.1.1",
-          "11.2.0.2",
-          "11.2.0.2.1",
-          "11.2.0.3",
-          "11.2.0.3.1",
-          "12",
-          "12.1",
-          "12.1.1",
-          "12.1.1.1",
-          "12.1.1.1.1",
-          "12.1.1.2",
-          "12.1.1.2.1",
-          "12.1.1.2.3",
-          "12.1.1.3",
-          "12.1.1.3.1",
-          "12.1.2",
-          "12.1.2.1",
-          "12.1.2.1.1",
-          "12.1.2.2",
-          "12.1.2.2.1",
-          "12.1.2.3",
-          "12.1.2.3.1",
-          "12.1.3",
-          "12.1.3.2",
-          "12.1.3.2.1",
-          "12.1.3.2.2",
-          "12.1.3.3",
-          "12.1.3.3.1",
-          "12.1.3.3.2",
-          "12.1.3.3.3",
-          "12.1.3.3.4",
-          "12.3",
-          "12.3.1",
-          "12.3.1.1",
-          "12.3.1.1.2",
-          "12.3.1.1.3",
-          "12.3.2",
-          "12.3.2.1",
-          "12.3.2.1.1",
-          "12.3.2.1.2",
-          "12.3.2.2",
-          "12.3.2.2.1",
-          "12.3.2.3",
-          "12.3.2.3.3",
-          "12.4",
-          "12.4.0",
-          "12.4.0.1",
-          "12.4.0.1.1",
-          "12.4.0.2",
-          "12.4.0.2.1",
-          "12.5",
-          "12.5.2",
-          "12.5.2.1",
-          "12.5.2.1.1",
-          "12.5.3",
-          "12.5.3.1",
-          "12.5.3.1.1",
-          "12.5.4",
-          "12.5.4.1",
-          "12.5.4.1.1",
-          "12.6",
-          "12.6.2",
-          "12.6.2.1",
-          "12.6.2.1.1",
-          "12.7",
-          "12.7.0",
-          "12.7.0.1",
-          "12.7.0.1.2",
-          "12.7.0.4",
-          "12.7.0.4.1"
-        ]
-      }
-    },
-    {
-      "code": "Tiedot",
-      "selection": {
-        "filter": "item",
-        "values": [
-          "pisteluku"
-        ]
-      }
-    }
-  ],
-  "response": {
-    "format": "json-stat2"
-  }
-}
-  data_json = requests.post(url,json=payload,headers=headers)
+        temp_list = []
+        val_idx = 0
+        
+        # Huomioidaan ulottuvuuksien oikea järjestys (Kuukausi -> Hyödyke -> Tiedot)
+        for time in times:
+            for hyodyke in h_labels:
+                for tieto in t_labels:
+                    temp_list.append({
+                        'Aika': time,
+                        'Hyödyke': hyodyke,
+                        'Tiedot': tieto,
+                        'Pisteluku': values[val_idx] if val_idx < len(values) else None
+                    })
+                    val_idx += 1
+        
+        results.append(pd.DataFrame(temp_list))
 
-  data = data_json.json()
-  
-  
+    # 5. Yhdistetään kaikki pyynnöt lopulliseksi taulukoksi
+    if not results:
+        print("Yhtään dataa ei saatu haettua.")
+        return pd.DataFrame()
+        
+    print("Yhdistetään data...")
+    full_df = pd.concat(results, ignore_index=True)
 
-  hyödyke_df = pd.DataFrame(data['dimension']['Hyödyke']['category']['label'].values(), columns = ['Hyödyke'])
-  tiedot_df = pd.DataFrame(data['dimension']['Tiedot']['category']['label'].values(), columns = ['Tiedot'])
-  kuukausi_df = pd.DataFrame(data['dimension']['Kuukausi']['category']['index'].keys(), columns = ['Aika'])
-  
-  kuukausi_df.Aika = pd.to_datetime(kuukausi_df.Aika.str.replace('M','-'))
+    # Muunnetaan aika (esim. 2023M01 -> 2023-01-01) ja asetetaan indeksi
+    full_df['Aika'] = pd.to_datetime(full_df['Aika'].str.replace('M', '-'))
+    
+    print("Valmis!")
+    return full_df.set_index('Aika')
 
-  hyödyke_df['index'] = kuukausi_df['index'] = tiedot_df['index'] = 0
-  df2 = pd.merge(left = pd.merge(left = kuukausi_df, right = hyödyke_df, on = 'index', how = 'outer'), right = tiedot_df, on = 'index', how ='outer').drop('index',axis=1).set_index('Aika')
-
-
-
-
-  # df['name'] = [' '.join(c.split()[1:]) for c in df.Hyödyke]
-  # df =df .reset_index()
-  # df =df.drop_duplicates(subset=['Aika','name'],keep='first')
-  # df = df.set_index('Aika')
-  # df = df.drop('name',axis=1)
-
-  return pd.concat([df,df2])
 
 def get_inflation_percentage():
 
@@ -1250,39 +425,60 @@ def get_inflation_percentage():
   return df.set_index('Aika') 
 
 
+
 def get_data():
-  unemployment_df = get_unemployment()
-  inflation_df = get_inflation()
+    unemployment_df = get_unemployment()
+    inflation_df = get_inflation()
 
-  inflation_df = pd.pivot_table(inflation_df.reset_index(), columns = 'Hyödyke', index = 'Aika' )
-  inflation_df.columns = [c[-1] for c in inflation_df.columns]
+    # KORJAUS 1: Määritellään 'values', jotta Pandas ei yritä laskea keskiarvoa tekstistä
+    inflation_df = pd.pivot_table(
+        inflation_df.reset_index(), 
+        columns='Hyödyke', 
+        index='Aika', 
+        values='Pisteluku'
+    )
+    
+    # Puhdistetaan sarakkeiden nimet (poistetaan mahdollinen MultiIndex-taso)
+    if isinstance(inflation_df.columns, pd.MultiIndex):
+        inflation_df.columns = [c[-1] for c in inflation_df.columns]
 
-  data = pd.merge(left = unemployment_df.drop('Tiedot',axis=1).reset_index(), right = inflation_df.reset_index(), how = 'outer', on = 'Aika').set_index('Aika')
-  data.Työttömyysaste = data.Työttömyysaste.fillna(-1)
-  data = data.dropna(axis=1)
+    # Yhdistetään työttömyysdata
+    data = pd.merge(
+        left=unemployment_df.drop('Tiedot', axis=1).reset_index(), 
+        right=inflation_df.reset_index(), 
+        how='outer', 
+        on='Aika'
+    ).set_index('Aika')
 
-  inflation_percentage_df = get_inflation_percentage()
+    # Täytetään työttömyysasteen puutteet väliaikaisesti, jotta merge ei hajoa
+    data.Työttömyysaste = data.Työttömyysaste.fillna(-1)
 
-  data = pd.merge(left = data.reset_index(), right = inflation_percentage_df.reset_index(), how = 'inner', on = 'Aika').set_index('Aika').sort_index()
+    # KORJAUS 2: dropna(axis=1) on liian vaarallinen. 
+    # Poistetaan vain ne sarakkeet, jotka ovat TÄYSIN tyhjiä.
+    data = data.dropna(axis=1, how='all')
+    
+    # Jos haluat silti karsia hyödykkeitä, joissa on liikaa puutteita, käytä 'thresh':
+    # Esim. sarakkeessa pitää olla vähintään 100 arvoa:
+    # data = data.dropna(axis=1, thresh=100)
 
-  data.Työttömyysaste = data.Työttömyysaste.replace(-1, np.nan)
+    inflation_percentage_df = get_inflation_percentage()
 
-  data['prev'] = data['Työttömyysaste'].shift(1)
+    data = pd.merge(
+        left=data.reset_index(), 
+        right=inflation_percentage_df.reset_index(), 
+        how='inner', 
+        on='Aika'
+    ).set_index('Aika').sort_index()
 
-  data['month'] = data.index.month
-  data['change'] = data.Työttömyysaste - data.prev
-  
-  # Näin poistetaan duplikaattisarakkeet arvojen perusteella.
-  # Jos näin tehdään niin saatetaan kuitenkin poistaa sarake, jolla on
-  # täsmälleen samat arvot kuin jollain toisella hyödykkeellä.
-  # Esim. 04.2.1 Uuden asunnon hankinta ja 04.2.1.1 Osakehuoneistot ja kiinteistöt.
-  
-  # data = data.T.drop_duplicates().T
+    data.Työttömyysaste = data.Työttömyysaste.replace(-1, np.nan)
+    data['prev'] = data['Työttömyysaste'].shift(1)
+    data['month'] = data.index.month
+    data['change'] = data.Työttömyysaste - data.prev
 
-  return data
+    return data
 
 
-data = get_data()
+data = get_data().dropna(subset=['Työttömyysaste','Inflaatio','change','prev']).dropna(axis=1, how='any')
   
 
 
@@ -1420,7 +616,7 @@ def get_shap_values(model, explainer, X_train, X_test):
     
     elif explainer.__name__ == 'Tree':
         explainer = explainer(model)
-        shap_values = explainer(X_test)
+        shap_values = explainer(X_test, check_additivity=False)
         feature_names = shap_values.feature_names
         shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
         vals = np.abs(shap_df.values).mean(0)
@@ -1438,7 +634,7 @@ def get_shap_values(model, explainer, X_train, X_test):
         return shap_importance,shap_df
     else:
         explainer = explainer(model,X_train)
-        shap_values = explainer(X_test)
+        shap_values = explainer(X_test, check_additivity=False)
         feature_names = X_test.columns
         feature_names = shap_values.feature_names
         shap_df = pd.DataFrame(shap_values.values, columns=feature_names)
@@ -2320,80 +1516,22 @@ fifth_class_options = [{'label':c, 'value':c} for c in fifth_classes]
 initial_options = feature_options
 
 
-example_basket_1 = [c for c in ['01.1.3 Kala ja äyriäiset',
- '01.1.3.3 Kuivattu, savustettu tai suolattu kala ja äyriäiset',
- '01.1.6.3.1 Pakastetut hedelmät ja marjat',
- '01.1.9.3.1 Vauvanruoat',
- '01.1.9.5.1 Muut ruokavalmisteet, muualla luokittelemattomat',
- '02.1.2.1.1 Rypäleviinit',
- '03.1 Vaatetus',
- '03.1.2.2 Naisten vaatteet',
- '03.1.2.2.1 Naisten päällystakit',
- '03.1.2.4 Vauvojen vaatteet (0-2 vuotiaat)',
- '03.2.1.3 Lasten jalkineet',
- '05.2.0.2.3 Lakanat, tyynyliinat ja pussilakanat',
- '05.6.1.1.1 Pesuaineet',
- '06.1.3 Hoitolaitteet ja -välineet',
- '06.1.3.1 Silmälasit ja piilolinssit',
- '07.3.1.1.1 Kotimaan junaliikenne',
- '09 KULTTUURI JA VAPAA-AIKA',
- '09.4.2.3.3 Kaapeli ja maksu-TV tilausmaksut',
- '09.6.0 Valmismatkat',
- '12.1.3.3.3 Vartalo-, käsi- ja hiusvoiteet'] if c in data.columns]
+example_basket_1 = [c for c in data.columns if c.split()[0] in ['01','02','03']]
 
-example_basket_2 = [c for c in data.columns if c.split()[0] in ['01.1.3',
-  '01.1.4.5',
-  '01.1.9',
-  '02.1.1.2.1',
-  '02.1.2.4',
-  '03.2.1.2',
-  '03.2.1.3',
-  '04.1.2',
-  '04.1.2.2.2',
-  '04.4.1.1',
-  '04.5.5',
-  '05.3.1.1.3',
-  '05.4.0.1.3',
-  '06.1.1.4',
-  '07.3.1.1.1',
-  '07.3.4.1',
-  '08.2.0.2',
-  '09.1.4.1.2',
-  '10.2',
-  '11.1.1.1.3',
-  '11.1.1.1.8',
-  '12.4.0']]
+
+example_basket_2 = [c for c in data.columns if c.split()[0] in ['04','05']]
 
 
 
-example_basket_3 = [c for c in data.columns if c.split()[0] in ['01.1.1.2.1',
- '01.1.9.3',
- '01.2.2.3',
- '04.5.3.1.1',
- '05.3',
- '05.4.0',
- '05.4.0.4.1',
- '06.2.3.3',
- '07.3.1',
- '07.3.4',
- '09.1.3.1',
- '09.1.3.1.1',
- '09.2.1.3',
- '09.4.1',
- '09.4.1.1.2',
- '09.5.2.1.2',
- '11.2.0.2',
- '12',
- '12.1.1.1.1',
- '12.1.3.2',
- '12.3.2.2',
- '12.7.0.1']]
+example_basket_3 = [c for c in data.columns if c.split()[0] in ['06','07','08']]
 
 initial_features = example_basket_1
 
 example_basket_1_options = [{'label':c, 'value':c} for c in example_basket_1]
 example_basket_2_options = [{'label':c, 'value':c} for c in example_basket_2]
 example_basket_3_options = [{'label':c, 'value':c} for c in example_basket_3]
+
+
 
 
 def layout():
@@ -6066,13 +5204,14 @@ def update_commodity_unemployment_graph(values, label):
                              )
           ),config = config_plots)]
 
+from dash import no_update # Varmista, että tämä on importattu ylhäällä!
+
 @callback(
     [
-     
      Output('feature_selection', 'options'),
      Output('sorting', 'label'),
-     # Output('feature_selection', 'value')
-     
+     # LISÄTÄÄN allow_duplicate=True TÄHÄN RIVILLE:
+     Output('feature_selection', 'value', allow_duplicate=True) 
      ],
     [Input('alphabet', 'n_clicks'),
      Input('corr_desc', 'n_clicks'),
@@ -6087,43 +5226,54 @@ def update_commodity_unemployment_graph(values, label):
      Input('example_basket_1', 'n_clicks'),
      Input('example_basket_2', 'n_clicks'),
      Input('example_basket_3', 'n_clicks')
-    ]
+    ],
+    # JA TÄMÄ ON PAKOLLINEN LISÄYS, KUN KÄYTETÄÄN ALLOW_DUPLICATE:
+    prevent_initial_call=True 
 )
 def update_selections(*args):
     
     ctx = callback_context
     
-    
     if not ctx.triggered:
-        return feature_options, "Aakkosjärjestyksessä"#,[f['value'] for f in corr_abs_asc_options[:4]]
+        return feature_options, "Aakkosjärjestyksessä", no_update
     else:
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
+    # Lajittelut ja luokat päivittävät vain dropdownin vaihtoehdot (options), 
+    # mutta eivät koske jo tehtyihin valintoihin (no_update)
     if button_id == 'alphabet':
-        return feature_options, "Aakkosjärjestyksessä"#,[f['value'] for f in feature_options[:4]]
+        return feature_options, "Aakkosjärjestyksessä", no_update
     elif button_id == 'corr_desc':
-        return corr_desc_options, "Korrelaatio (laskeva)"#,[f['value'] for f in corr_desc_options[:4]]
+        return corr_desc_options, "Korrelaatio (laskeva)", no_update
     elif button_id == 'corr_asc':
-        return corr_asc_options, "Korrelaatio (nouseva)"#,[f['value'] for f in corr_asc_options[:4]]
+        return corr_asc_options, "Korrelaatio (nouseva)", no_update
     elif button_id == 'corr_abs_desc':
-        return corr_abs_desc_options, "Absoluuttinen korrelaatio (laskeva)"#,[f['value'] for f in corr_abs_desc_options[:4]]
+        return corr_abs_desc_options, "Absoluuttinen korrelaatio (laskeva)", no_update
     elif button_id == 'corr_abs_asc':
-        return corr_abs_asc_options, "Absoluuttinen korrelaatio (nouseva)"#,[f['value'] for f in corr_abs_asc_options[:4]]
+        return corr_abs_asc_options, "Absoluuttinen korrelaatio (nouseva)", no_update
     elif button_id == 'main_class':
-        return main_class_options, "Pääluokittain"#,[f['value'] for f in main_class_options[:4]]
+        return main_class_options, "Pääluokittain", no_update
     elif button_id == 'second_class':
-        return second_class_options, "2. luokka"#,[f['value'] for f in second_class_options[:4]]
+        return second_class_options, "2. luokka", no_update
     elif button_id == 'third_class':
-        return third_class_options, "3. luokka"#,[f['value'] for f in third_class_options[:4]]
+        return third_class_options, "3. luokka", no_update
     elif button_id == 'fourth_class':
-        return fourth_class_options, "4. luokka"#,[f['value'] for f in fourth_class_options[:4]]
+        return fourth_class_options, "4. luokka", no_update
     elif button_id == 'fifth_class':
-        return fifth_class_options, "5. luokka"#,[f['value'] for f in fifth_class_options[:4]]
-    elif button_id == 'example_basket_1':
-        return example_basket_1_options, "Esimerkkikori 1"#,[f['value'] for f in fifth_class_options[:4]]
-    elif button_id == 'example_basket_2':
-        return example_basket_2_options, "Esimerkkikori 2"#,[f['value'] for f in fifth_class_options[:4]]
-    else:
-        return example_basket_3_options, "Esimerkkikori 3"#,[f['value'] for f in fifth_class_options[:4]]
+        return fifth_class_options, "5. luokka", no_update
     
+    # Esimerkkikorit päivittävät SEKÄ vaihtoehdot ETTÄ aktiiviset valinnat
+    elif button_id == 'example_basket_1':
+        values = [f['value'] for f in example_basket_1_options]
+        return example_basket_1_options, "Esimerkkikori 1", values
+        
+    elif button_id == 'example_basket_2':
+        values = [f['value'] for f in example_basket_2_options]
+        return example_basket_2_options, "Esimerkkikori 2", values
+        
+    elif button_id == 'example_basket_3':
+        values = [f['value'] for f in example_basket_3_options]
+        return example_basket_3_options, "Esimerkkikori 3", values
+
+    return feature_options, "Aakkosjärjestyksessä", no_update
     
