@@ -242,231 +242,116 @@ def en_set_color(x,y):
         return '#882255'
 
 
-def en_get_unemployment():
-    
+# ==========================================
+# 1. ROBUST DATA FETCHING FUNCTIONS 
+# ==========================================
 
-  url = 'https://statfin.stat.fi:443/PxWeb/api/v1/en/StatFin/tyti/statfin_tyti_pxt_135z.px'
-  headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
-                                    'Content-Type':'application/json'
-                                   }
-  payload = {
-  "query": [
-    {
-      "code": "Tiedot",
-      "selection": {
-        "filter": "item",
-        "values": [
-          "Tyottomyysaste"
-        ]
-      }
-    }
-  ],
-  "response": {
-    "format": "json-stat2"
-  }
-}
-  data_json = requests.post(url,json=payload,headers=headers)
-  data = data_json.json()
-
-  df = pd.DataFrame(data['dimension']['Kuukausi']['category']['index'].keys(), columns = ['Aika'])
-  df.Aika = pd.to_datetime(df.Aika.str.replace('M','-'))
-
-  tiedot_df = pd.DataFrame(data['dimension']['Tiedot']['category']['label'].values(), columns = ['Tiedot'])
-
-  df['index'] = tiedot_df['index'] = 0
-
-  df = pd.merge(left = df, right = tiedot_df, on = 'index', how = 'outer').drop('index',axis=1).set_index('Aika')
-
-
-  df['Työttömyysaste'] = data['value']
-
-  return df
-
-import pandas as pd
-import requests
-
-def en_get_inflation(num_chunks=2, lang='en'):
-    url = f'https://pxdata.stat.fi/PxWeb/api/v1/{lang}/StatFin/khi/statfin_khi_pxt_15b5.px'
+def safe_post(url, payload):
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         'Content-Type': 'application/json'
     }
+    resp = requests.post(url, json=payload, headers=headers)
+    if resp.status_code != 200:
+        raise ValueError(f"API Error ({resp.status_code}): {resp.text[:500]}")
+    return resp.json()
 
-    # 1. Haetaan rajapinnan metatiedot (GET-pyyntö), jotta saadaan kaikki Hyödyke-koodit
-    print("Haetaan metatiedot ja hyödykekoodit...")
+import itertools
+def json_stat2_to_df(data):
+    id_order = data['id']
+    dim_lists = []
+    for dim_name in id_order:
+        keys = list(data['dimension'][dim_name]['category']['index'].keys())
+        dim_lists.append(keys)
+    df = pd.DataFrame(list(itertools.product(*dim_lists)), columns=id_order)
+    df['value'] = data['value']
+    return df, id_order
+
+def en_get_unemployment():
+    url = 'https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/tyti/135z.px'
+    payload = {
+        "query": [{"code": "contentscode", "selection": {"filter": "item", "values": ["tyti-Tyottomyysaste"]}}],
+        "response": {"format": "json-stat2"}
+    }
+    data = safe_post(url, payload)
+    df, dimensions = json_stat2_to_df(data)
+    time_col = next(d for d in dimensions if any('M' in k for k in data['dimension'][d]['category']['index'].keys()))
+    df = df.rename(columns={time_col: 'Aika', 'value': 'Työttömyysaste'})
+    df['Aika'] = pd.to_datetime(df['Aika'].str.replace('M', '-'))
+    df = df.groupby('Aika')['Työttömyysaste'].mean().reset_index()
+    return df.set_index('Aika')
+
+def en_get_inflation(num_chunks=2):
+    url = 'https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/khi/15b5.px'
     meta_resp = requests.get(url)
-    if meta_resp.status_code != 200:
-        raise Exception(f"Metatietojen haku epäonnistui: {meta_resp.status_code}")
-    
+    if meta_resp.status_code != 200: 
+        raise Exception(f"Failed to fetch metadata: {meta_resp.status_code}")
     meta_json = meta_resp.json()
     
-    # Etsitään "Hyödyke"-muuttujan sallitut arvot
-    hyodyke_koodit = []
-    for var in meta_json['variables']:
-        if var['code'] == 'Hyödyke':
-            hyodyke_koodit = var['values']
-            break
-            
-    if not hyodyke_koodit:
-        raise Exception("Hyödykekoodien listaa ei löytynyt metatiedoista.")
+    hyodyke_var = next(v for v in meta_json['variables'] if 'coicop' in v['code'].lower() or 'commodity' in v['code'].lower())
+    hyodyke_code = hyodyke_var['code']
+    hyodyke_values = hyodyke_var['values']
         
-    print(f"Löydettiin yhteensä {len(hyodyke_koodit)} hyödykettä. Jaetaan {num_chunks} osaan.")
-
-    # 2. Jaetaan hyödykekoodit tasaisesti osiin (chunks)
-    chunk_size = math.ceil(len(hyodyke_koodit) / num_chunks)
-    chunks = [hyodyke_koodit[i:i + chunk_size] for i in range(0, len(hyodyke_koodit), chunk_size)]
-
+    chunk_size = math.ceil(len(hyodyke_values) / num_chunks)
+    chunks = [hyodyke_values[i:i + chunk_size] for i in range(0, len(hyodyke_values), chunk_size)]
     results = []
 
-    # 3. Tehdään POST-pyyntö jokaiselle palaselle erikseen
     for idx, chunk in enumerate(chunks):
-        print(f"Haetaan osa {idx + 1}/{len(chunks)} ({len(chunk)} hyödykettä)...")
-        
         payload = {
             "query": [
-                {
-                    "code": "Hyödyke", 
-                    "selection": {
-                        "filter": "item", 
-                        "values": chunk # Käytetään tätä kyseistä palasta
-                    }
-                },
-                {
-                    "code": "Tiedot", 
-                    "selection": {
-                        "filter": "item", 
-                        "values": ["ip_khi"] # Sinun määrittämäsi uusi arvo
-                    }
-                }
+                {"code": hyodyke_code, "selection": {"filter": "item", "values": chunk}},
+                {"code": "contentscode", "selection": {"filter": "item", "values": ["ip_khi"]}}
             ],
             "response": {"format": "json-stat2"}
         }
+        data = safe_post(url, payload)
+        df_chunk, dimensions = json_stat2_to_df(data)
+        time_col = next(d for d in dimensions if any('M' in k for k in data['dimension'][d]['category']['index'].keys()))
+        
+        df_chunk = df_chunk.rename(columns={time_col: 'Aika', hyodyke_code: 'Hyödyke', 'value': 'Pisteluku'})
+        df_chunk['Aika'] = pd.to_datetime(df_chunk['Aika'].str.replace('M', '-'))
+        labels_dict = data['dimension'][hyodyke_code]['category']['label']
+        df_chunk['Hyödyke'] = df_chunk['Hyödyke'].map(labels_dict)
+        results.append(df_chunk[['Aika', 'Hyödyke', 'Pisteluku']])
 
-        resp = requests.post(url, json=payload, headers=headers)
-        
-        # Virheenkäsittely: varmistetaan ettei API kaatunut tällä palasella
-        if resp.status_code != 200:
-            print(f"API-virhe osassa {idx+1}: HTTP {resp.status_code}")
-            print(resp.text)
-            continue
-            
-        data_json = resp.json()
-        
-        # 4. Puretaan JSON-stat2 data Dataframeksi
-        h_labels = list(data_json['dimension']['Hyödyke']['category']['label'].values())
-        t_labels = list(data_json['dimension']['Tiedot']['category']['label'].values())
-        times = list(data_json['dimension']['Kuukausi']['category']['index'].keys())
-        values = data_json['value']
-
-        temp_list = []
-        val_idx = 0
-        
-        # Huomioidaan ulottuvuuksien oikea järjestys (Kuukausi -> Hyödyke -> Tiedot)
-        for time in times:
-            for hyodyke in h_labels:
-                for tieto in t_labels:
-                    temp_list.append({
-                        'Aika': time,
-                        'Hyödyke': hyodyke,
-                        'Tiedot': tieto,
-                        'Pisteluku': values[val_idx] if val_idx < len(values) else None
-                    })
-                    val_idx += 1
-        
-        results.append(pd.DataFrame(temp_list))
-
-    # 5. Yhdistetään kaikki pyynnöt lopulliseksi taulukoksi
-    if not results:
-        print("Yhtään dataa ei saatu haettua.")
-        return pd.DataFrame()
-        
-    print("Yhdistetään data...")
-    full_df = pd.concat(results, ignore_index=True)
-
-    # Muunnetaan aika (esim. 2023M01 -> 2023-01-01) ja asetetaan indeksi
-    full_df['Aika'] = pd.to_datetime(full_df['Aika'].str.replace('M', '-'))
-    
-    print("Valmis!")
-    return full_df.set_index('Aika')
+    return pd.concat(results, ignore_index=True).set_index('Aika')
 
 def en_get_inflation_percentage():
-
-  url = 'https://pxweb2.stat.fi:443/PxWeb/api/v1/en/StatFin/khi/statfin_khi_pxt_122p.px'
-  headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
-                                    'Content-Type':'application/json'
-                                   }
-  payload = {
-  "query": [],
-  "response": {
-    "format": "json-stat2"
-  }
-  }
-  data_json = requests.post(url,json=payload,headers=headers)
-  
-  data = data_json.json()
-  
-  df = pd.DataFrame(data['dimension']['Kuukausi']['category']['index'].keys(), columns = ['Aika'])
-  
-  df.Aika = pd.to_datetime(df.Aika.str.replace('M','-'))
-
-
-  df['Inflaatio'] = data['value']
-
-  return df.set_index('Aika') 
-  
-
-
+    url = 'https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/khi/122p.px'
+    payload = {"query": [], "response": {"format": "json-stat2"}}
+    data = safe_post(url, payload)
+    df, dimensions = json_stat2_to_df(data)
+    time_col = next(d for d in dimensions if any('M' in k for k in data['dimension'][d]['category']['index'].keys()))
+    df = df.rename(columns={time_col: 'Aika', 'value': 'Inflaatio'})
+    df['Aika'] = pd.to_datetime(df['Aika'].str.replace('M', '-'))
+    df = df.groupby('Aika')['Inflaatio'].mean().reset_index()
+    return df.set_index('Aika') 
 
 def en_get_data():
+    print("1/3 Fetching unemployment data...")
     unemployment_df = en_get_unemployment()
+    print("2/3 Fetching COICOP inflation data (this may take a while)...")
     inflation_df = en_get_inflation()
 
-    # KORJAUS 1: Määritellään 'values', jotta Pandas ei yritä laskea keskiarvoa tekstistä
-    inflation_df = pd.pivot_table(
-        inflation_df.reset_index(), 
-        columns='Hyödyke', 
-        index='Aika', 
-        values='Pisteluku'
-    )
-    
-    # Puhdistetaan sarakkeiden nimet (poistetaan mahdollinen MultiIndex-taso)
+    inflation_df = pd.pivot_table(inflation_df.reset_index(), columns='Hyödyke', index='Aika', values='Pisteluku')
     if isinstance(inflation_df.columns, pd.MultiIndex):
         inflation_df.columns = [c[-1] for c in inflation_df.columns]
 
-    # Yhdistetään työttömyysdata
-    data = pd.merge(
-        left=unemployment_df.drop('Tiedot', axis=1).reset_index(), 
-        right=inflation_df.reset_index(), 
-        how='outer', 
-        on='Aika'
-    ).set_index('Aika')
-
-    # Täytetään työttömyysasteen puutteet väliaikaisesti, jotta merge ei hajoa
+    data = pd.merge(unemployment_df.reset_index(), inflation_df.reset_index(), how='outer', on='Aika').set_index('Aika')
     data.Työttömyysaste = data.Työttömyysaste.fillna(-1)
-
-    # KORJAUS 2: dropna(axis=1) on liian vaarallinen. 
-    # Poistetaan vain ne sarakkeet, jotka ovat TÄYSIN tyhjiä.
     data = data.dropna(axis=1, how='all')
     
-    # Jos haluat silti karsia hyödykkeitä, joissa on liikaa puutteita, käytä 'thresh':
-    # Esim. sarakkeessa pitää olla vähintään 100 arvoa:
-    # data = data.dropna(axis=1, thresh=100)
-
+    print("3/3 Fetching overall inflation...")
     inflation_percentage_df = en_get_inflation_percentage()
-
-    data = pd.merge(
-        left=data.reset_index(), 
-        right=inflation_percentage_df.reset_index(), 
-        how='inner', 
-        on='Aika'
-    ).set_index('Aika').sort_index()
+    data = pd.merge(data.reset_index(), inflation_percentage_df.reset_index(), how='inner', on='Aika').set_index('Aika').sort_index()
 
     data.Työttömyysaste = data.Työttömyysaste.replace(-1, np.nan)
     data['prev'] = data['Työttömyysaste'].shift(1)
     data['month'] = data.index.month
     data['change'] = data.Työttömyysaste - data.prev
 
-    return data
+    return data.dropna(subset=['Työttömyysaste','Inflaatio','change','prev']).dropna(axis=1, how='any')
+
 
 
 data_en = en_get_data().dropna(subset=['Työttömyysaste','Inflaatio','change','prev']).dropna(axis=1, how='any')
@@ -711,6 +596,9 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
     
     hovertemplate = ['<b>{}</b>:<br>True: {}<br>Predicted: {}'.format(df.index[i].strftime('%B %Y'),df.Työttömyysaste.values[i], df.Ennuste.values[i]) for i in range(len(df))]
     
+    # Uusi hovertemplate Baseline-arvoille
+    hovertemplate_base = ['<b>{}</b>:<br>Seasonal Naive Baseline: {}'.format(df.index[i].strftime('%B %Y'), round(df.Baseline.values[i], 2)) for i in range(len(df))]
+
     if chart_type == 'lines+bars':
     
         return go.Figure(data=[go.Scatter(x=df.index.strftime('%B %Y'), 
@@ -738,7 +626,17 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                            textfont = dict(
                                 family='Cadiz Semibold', 
                                size = 16)
-                           )
+                           ),
+                    
+                    # --- LISÄTTY BASELINE TRACE ---
+                    go.Scatter(x=df.index.strftime('%B %Y'), 
+                               y=df.Baseline, 
+                               name='Seasonal Naive',
+                               showlegend=True, 
+                               mode='lines',
+                               line=dict(color='grey', width=4, dash='dash'),
+                               hovertemplate=hovertemplate_base)
+                    
                     ],layout=go.Layout(xaxis = dict(title = dict(text='Time',font=dict(size=20, 
                                                                                        family = 'Cadiz Semibold'
                                                                                        )),
@@ -778,7 +676,7 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                                                          ),
                                        template = 'seaborn',
                                       # margin=dict(autoexpand=True),
-                                       title = dict(text = 'Unemployment Rate Forecast<br>per Month',
+                                       title = dict(text = 'Unemployment Rate Forecast vs. Seasonal Naive<br>per Month',
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
@@ -816,7 +714,17 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                             line = dict(width=2),
                             textfont = dict(
                                  family='Cadiz Semibold', 
-                                size = 16))
+                                size = 16)),
+
+                    # --- LISÄTTY BASELINE TRACE ---
+                    go.Scatter(x=df.index, 
+                               y=df.Baseline, 
+                               name='Seasonal Naive',
+                               showlegend=True, 
+                               mode='lines',
+                               line=dict(color='grey', width=4, dash='dash'),
+                               hovertemplate=hovertemplate_base)
+
                     ],layout=go.Layout(xaxis = dict(title = dict(text='Time',font=dict(size=16, 
                                                                                        family = 'Cadiz Semibold'
                                                                                        )),
@@ -854,7 +762,7 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                                                            font_family = 'Cadiz Book'
                                                           ),
                                         template = 'seaborn',
-                                        title = dict(text = 'Unemployment Rate Forecast<br>per Month',
+                                        title = dict(text = 'Unemployment Rate Forecast vs. Seasonal Naive<br>per Month',
                                                     x=.5,
                                                     font=dict(
                                                          family='Cadiz Semibold',
@@ -888,7 +796,17 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                            textfont = dict(
                                 family='Cadiz Semibold', 
                                size = 16)
-                                )
+                                ),
+
+                    # --- LISÄTTY BASELINE TRACE ---
+                    go.Scatter(x=df.index.strftime('%B %Y'), 
+                               y=df.Baseline, 
+                               name='Seasonal Naive',
+                               showlegend=True, 
+                               mode='lines',
+                               line=dict(color='grey', width=4, dash='dash'),
+                               hovertemplate=hovertemplate_base)
+
                         ],layout=go.Layout(xaxis = dict(title = dict(text='Time',font=dict(size=20, 
                                                                                            family = 'Cadiz Semibold'
                                                                                            )),
@@ -926,14 +844,14 @@ def en_plot_test_results(df, chart_type = 'lines+bars'):
                                                               font_family = 'Cadiz Book'
                                                               ),
                                             template = 'seaborn',
-                                            title = dict(text = 'Unemployment Rate Forecast<br>per Month',
+                                            title = dict(text = 'Unemployment Rate Forecast vs. Seasonal Naive<br>per Month',
                                                         x=.5,
                                                         font=dict(
                                                              family='Cadiz Semibold',
                                                             size=20)
                                                         )
                                             )
-                                                        )                                                   
+                                                        )                                               
 
                                                     
                                                     
@@ -1255,7 +1173,23 @@ def en_plot_forecast_data(df, chart_type):
                                        )) 
                                                     
                                                     
-
+def calculate_baselines(data_df, test_size):
+    """
+    Laskee vertailumallien virheet samalle testijaksolle kuin ML-malli.
+    Olettaa, että data_df sisältää sarakkeen 'Työttömyysaste'.
+    """
+    # Otetaan oikeat toteutuneet arvot testijaksolta
+    y_true = data_df['Työttömyysaste'].iloc[-test_size:]
+    
+    # Seasonal Naive: Ennuste on arvo tasan 12 kuukautta sitten
+    y_pred_seasonal = data_df['Työttömyysaste'].shift(12).iloc[-test_size:]
+    
+    # Paikataan mahdolliset nan-arvot (jos dataa on liian vähän)
+    y_pred_seasonal = y_pred_seasonal.fillna(method='bfill')
+    
+    mape_seasonal = mean_absolute_percentage_error(y_true, y_pred_seasonal)
+    
+    return mape_seasonal, y_pred_seasonal
 
 def en_test(model, features, test_size, explainer, use_pca = False, n_components=.99):
 
@@ -1461,8 +1395,8 @@ correlations_abs_asc_en = data_en[data_en.columns[:-4]].corr()['Työttömyysaste
 main_classes_en = sorted([c for c in data_en.columns[:-4] if len(c.split()[0])==2])
 second_classes_en = sorted([c for c in data_en.columns[:-4] if c.split()[0].count('.')==1])
 third_classes_en = sorted([c for c in data_en.columns[:-4] if c.split()[0].count('.')==2])
-fourth_classes_en = sorted([c for c in data_en.columns[:-4] if c.split()[0].count('.')==3])
-fifth_classes_en = sorted([c for c in data_en.columns[:-4] if c.split()[0].count('.')==4])
+# fourth_classes_en = sorted([c for c in data_en.columns[:-4] if c.split()[0].count('.')==3])
+# fifth_classes_en = sorted([c for c in data_en.columns[:-4] if c.split()[0].count('.')==4])
 
 feature_options_en = [{'label':c, 'value':c} for c in data_en.columns[1:-4]]
 corr_desc_options_en = [{'label':c, 'value':c} for c in correlations_desc_en.index]
@@ -1472,8 +1406,8 @@ corr_abs_asc_options_en = [{'label':c, 'value':c} for c in correlations_abs_asc_
 main_class_options_en = [{'label':c, 'value':c} for c in main_classes_en]
 second_class_options_en = [{'label':c, 'value':c} for c in second_classes_en]
 third_class_options_en = [{'label':c, 'value':c} for c in third_classes_en]
-fourth_class_options_en = [{'label':c, 'value':c} for c in fourth_classes_en]
-fifth_class_options_en = [{'label':c, 'value':c} for c in fifth_classes_en]
+# fourth_class_options_en = [{'label':c, 'value':c} for c in fourth_classes_en]
+# fifth_class_options_en = [{'label':c, 'value':c} for c in fifth_classes_en]
 
 
 
@@ -2001,16 +1935,16 @@ def layout():
                                                       #'font-family':'Cadiz Book'
                                                       }
                                                       ),
-                                                  dbc.DropdownMenuItem("4. class", id = 'fourth_class_en',style={
-                                                      'font-size':"0.9rem", 
-                                                      #'font-family':'Cadiz Book'
-                                                      }
-                                                      ),
-                                                  dbc.DropdownMenuItem("5. class", id = 'fifth_class_en',style={
-                                                      'font-size':"0.9rem", 
-                                                      #'font-family':'Cadiz Book'
-                                                      }
-                                                      ),
+                                                #   dbc.DropdownMenuItem("4. class", id = 'fourth_class_en',style={
+                                                #       'font-size':"0.9rem", 
+                                                #       #'font-family':'Cadiz Book'
+                                                #       }
+                                                #       ),
+                                                #   dbc.DropdownMenuItem("5. class", id = 'fifth_class_en',style={
+                                                #       'font-size':"0.9rem", 
+                                                #       #'font-family':'Cadiz Book'
+                                                #       }
+                                                #       ),
                                                   dbc.DropdownMenuItem("Example basket 1", id = 'example_basket_1_en',style={
                                                       'font-size':"0.9rem", 
                                                       #'font-family':'Cadiz Book'
@@ -3103,6 +3037,11 @@ def en_update_test_results(n_clicks,
         
         test_result, shap_results, local_shap_df = en_test(model, features, explainer = explainer, test_size=test_size, use_pca=pca,n_components=explained_variance)
 
+        # ---- UUSI LISÄYS: BASELINE-LASKENTA ----
+        mape_seasonal, y_pred_seasonal = calculate_baselines(data_en, test_size)
+        test_result['Baseline'] = y_pred_seasonal.values
+        # ----------------------------------------
+
         mape = test_result.mape.values[0]
         
         local_shap_df.index = test_result.index
@@ -3116,6 +3055,9 @@ def en_update_test_results(n_clicks,
             led_color='orange'
         if mape <= .1:
             led_color='green'
+
+        # Määritellään väri vertailumallille (jos ML on parempi, baseline on harmaa/sininen, muuten varoitusväri)
+        baseline_color = 'blue' if mape < mape_seasonal else 'red'
 
         
         test_plot =[html.Br(),
@@ -3161,40 +3103,48 @@ def en_update_test_results(n_clicks,
                         
                         [
                             dbc.Col([html.Br(),
-                                    html.H3('MAPE (%)', style = h3_style),
+                                    html.H3('ML Model MAPE (%)', style = h3_style),
                                      dash_daq.LEDDisplay(backgroundColor='black',
                                                          size =70,
                                                          color = led_color,
                                                          style = {'textAlign':'center'},
                                                          value = round(100*mape,1))
                                      ],
-                                    xs =12, sm=12, md=12, lg=6, xl=6
+                                    xs =12, sm=12, md=12, lg=4, xl=4 # Pienennety lg=6 -> lg=4
                                     ),
                             
                             dbc.Col([html.Br(),
-                                     html.H3('Accuracy (%)', style = h3_style),
+                                     html.H3('ML Accuracy (%)', style = h3_style),
                                      dash_daq.LEDDisplay(backgroundColor='black',
                                                          size =70,
                                                          color = led_color,
                                                          style = {'textAlign':'center'},
                                                          value = round(100*(1-mape),1))
                                      ],
-                                    xs =12, sm=12, md=12, lg=6, xl=6
+                                    xs =12, sm=12, md=12, lg=4, xl=4 # Pienennety lg=6 -> lg=4
+                                    ),
+                            
+                            dbc.Col([html.Br(),
+                                     html.H3('Baseline MAPE (%)', style = h3_style),
+                                     dash_daq.LEDDisplay(backgroundColor='black',
+                                                         size =70,
+                                                         color = baseline_color,
+                                                         style = {'textAlign':'center'},
+                                                         value = round(100*mape_seasonal,1))
+                                     ],
+                                    xs =12, sm=12, md=12, lg=4, xl=4 # Uusi sarake
                                     )
                             
                             ], justify ='center',style= {'textAlign':'center'}
                         
                         ),
                     html.Br(),
-                    # html.P('The mean absolute percentage error (MAPE) is the average of the relative errors of all forecast values. The accuracy in this case is calculated by the formula: 1 - MAPE.', 
-                    #        style = p_style,
-                    #        className="card-text"),
                     html.Div([
                         html.Label([html.A('The mean absolute percentage error ( '),
                                 html.A('MAPE', 
                                        href = 'https://en.wikipedia.org/wiki/Mean_absolute_percentage_error',
                                        target='_blank'),
-                                html.A(' ) is the average of the relative errors of all forecast values. The accuracy in this case is calculated by the formula: 1 - MAPE.', 
+                                html.A(' ) is the average of the relative errors of all forecast values. The accuracy in this case is calculated by the formula: 1 - MAPE. Baseline MAPE represents a Seasonal Naive forecast (predicting the same value as 12 months ago).', 
                            )
                             ],
                                    style ={'font-size':'1.2rem'}
@@ -3208,7 +3158,7 @@ def en_update_test_results(n_clicks,
              
 
         feat = features.copy()
-        feat = ['Työttömyysaste','Ennuste','prev','month','change','mape','n_feat', 'Ennustettu muutos']+feat
+        feat = ['Työttömyysaste','Ennuste','Baseline','prev','month','change','mape','n_feat', 'Ennustettu muutos']+feat # Lisätty 'Baseline'
         
         button_children = dbc.Button(children=[html.I(className="fa fa-download mr-1"), ' Download Test Results'],
                                        id='test_download_button_en',
@@ -5153,8 +5103,8 @@ from dash import no_update
      Input('main_class_en', 'n_clicks'),
      Input('second_class_en', 'n_clicks'),
      Input('third_class_en', 'n_clicks'),
-     Input('fourth_class_en', 'n_clicks'),
-     Input('fifth_class_en', 'n_clicks'),
+    #  Input('fourth_class_en', 'n_clicks'),
+    #  Input('fifth_class_en', 'n_clicks'),
      Input('example_basket_1_en', 'n_clicks'),
      Input('example_basket_2_en', 'n_clicks'),
      Input('example_basket_3_en', 'n_clicks')
@@ -5186,10 +5136,10 @@ def en_update_selections(*args):
         return second_class_options_en, "2. class", no_update
     elif button_id == 'third_class_en':
         return third_class_options_en, "3. class", no_update
-    elif button_id == 'fourth_class_en':
-        return fourth_class_options_en, "4. class", no_update
-    elif button_id == 'fifth_class_en':
-        return fifth_class_options_en, "5. class", no_update
+    # elif button_id == 'fourth_class_en':
+    #     return fourth_class_options_en, "4. class", no_update
+    # elif button_id == 'fifth_class_en':
+    #     return fifth_class_options_en, "5. class", no_update
         
     # Esimerkkikorit asettavat myös aktiiviset valinnat
     elif button_id == 'example_basket_1_en':
